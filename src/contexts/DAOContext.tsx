@@ -12,6 +12,9 @@ interface Proposal {
   createdAt: Date;
   status: 'active' | 'closed';
   votes?: Record<string, number>; // Choice ID -> vote count
+  protocol?: 'web2' | 'web3';
+  network?: string;
+  category?: string;
 }
 
 interface Project {
@@ -20,6 +23,9 @@ interface Project {
   description: string;
   status: 'active' | 'completed';
   dueDate: Date;
+  protocol?: 'web2' | 'web3';
+  network?: string;
+  category?: string;
 }
 
 interface Vote {
@@ -29,11 +35,33 @@ interface Vote {
   votedAt: Date;
 }
 
+// Categories, Networks and Protocols for the Web2 snapshot system
+export const protocolOptions = ['web2', 'web3'];
+export const networkOptions = [
+  'مجموعات الشراء الجماعي',
+  'بوابات تمويل المشروعات',
+  'بوابة التوظيف'
+];
+export const categoryOptions = [
+  'مورد',
+  'ممول',
+  'مشترى',
+  'مقدم خدمه'
+];
+
 interface DAOContextType {
   // Proposal methods
   proposals: Proposal[];
-  createProposal: (title: string, description: string, choices: string[]) => Promise<boolean>;
+  createProposal: (
+    title: string, 
+    description: string, 
+    choices: string[], 
+    protocol?: 'web2' | 'web3',
+    network?: string,
+    category?: string
+  ) => Promise<boolean>;
   getProposal: (id: string) => Proposal | undefined;
+  filterProposals: (protocol?: string, network?: string, category?: string) => Proposal[];
   
   // Voting methods
   castVote: (proposalId: string, choice: string) => Promise<boolean>;
@@ -42,11 +70,23 @@ interface DAOContextType {
   
   // Project methods
   projects: Project[];
-  createProject: (name: string, description: string, dueDate: Date) => Promise<boolean>;
+  createProject: (
+    name: string, 
+    description: string, 
+    dueDate: Date,
+    protocol?: 'web2' | 'web3',
+    network?: string,
+    category?: string
+  ) => Promise<boolean>;
   updateProject: (id: string, data: Partial<Project>) => Promise<boolean>;
   
   // Agreement methods
   signAgreement: (agreementId: string, password: string, otp: string) => Promise<boolean>;
+  
+  // Filter options
+  protocolOptions: string[];
+  networkOptions: string[];
+  categoryOptions: string[];
 }
 
 const DAOContext = createContext<DAOContextType | undefined>(undefined);
@@ -55,57 +95,75 @@ const DAOContext = createContext<DAOContextType | undefined>(undefined);
 const initialProposals: Proposal[] = [
   {
     id: '1',
-    title: 'Allocate budget for marketing campaign',
-    description: 'We need to allocate budget for our upcoming marketing campaign targeting new users.',
-    choices: ['Yes', 'No', 'Abstain'],
+    title: 'تخصيص ميزانية لحملة تسويق',
+    description: 'نحتاج إلى تخصيص ميزانية لحملة التسويق القادمة التي تستهدف مستخدمين جدد.',
+    choices: ['نعم', 'لا', 'امتناع'],
     createdBy: 'user1',
     createdAt: new Date(new Date().setHours(new Date().getHours() - 3)),
     status: 'active',
-    votes: { 'Yes': 12, 'No': 5, 'Abstain': 2 }
+    votes: { 'نعم': 12, 'لا': 5, 'امتناع': 2 },
+    protocol: 'web2',
+    network: 'بوابات تمويل المشروعات',
+    category: 'ممول'
   },
   {
     id: '2',
-    title: 'Expand product line with new offerings',
-    description: 'Proposal to expand our product lineup with new items to increase market share.',
-    choices: ['Yes', 'No', 'Abstain'],
+    title: 'توسيع خط المنتجات بعروض جديدة',
+    description: 'اقتراح لتوسيع مجموعة منتجاتنا بعناصر جديدة لزيادة حصتنا في السوق.',
+    choices: ['نعم', 'لا', 'امتناع'],
     createdBy: 'user2',
     createdAt: new Date(new Date().setDate(new Date().getDate() - 1)),
     status: 'closed',
-    votes: { 'Yes': 18, 'No': 7, 'Abstain': 3 }
+    votes: { 'نعم': 18, 'لا': 7, 'امتناع': 3 },
+    protocol: 'web2',
+    network: 'مجموعات الشراء الجماعي',
+    category: 'مشترى'
   },
   {
     id: '3',
-    title: 'Set quarterly sales targets',
-    description: 'Define our sales targets for the upcoming quarter based on market analysis.',
-    choices: ['Yes', 'No', 'Abstain'],
+    title: 'تحديد أهداف المبيعات الربعية',
+    description: 'تحديد أهداف المبيعات للربع القادم بناء على تحليل السوق.',
+    choices: ['نعم', 'لا', 'امتناع'],
     createdBy: 'user3',
     createdAt: new Date(new Date().setDate(new Date().getDate() - 4)),
     status: 'closed',
-    votes: { 'Yes': 20, 'No': 4, 'Abstain': 1 }
+    votes: { 'نعم': 20, 'لا': 4, 'امتناع': 1 },
+    protocol: 'web3',
+    network: 'بوابة التوظيف',
+    category: 'مقدم خدمه'
   }
 ];
 
 const initialProjects: Project[] = [
   {
     id: '1',
-    name: 'Website Redesign',
-    description: 'Overhaul the company website to improve user experience and conversion rates.',
+    name: 'إعادة تصميم الموقع',
+    description: 'تجديد موقع الشركة لتحسين تجربة المستخدم ومعدلات التحويل.',
     status: 'active',
-    dueDate: new Date(2024, 4, 15)
+    dueDate: new Date(2024, 4, 15),
+    protocol: 'web2',
+    network: 'بوابات تمويل المشروعات',
+    category: 'مقدم خدمه'
   },
   {
     id: '2',
-    name: 'Product Launch: Model X',
-    description: 'Prepare and execute launch for our new product Model X.',
+    name: 'إطلاق المنتج: النموذج X',
+    description: 'التحضير وتنفيذ إطلاق منتجنا الجديد النموذج X.',
     status: 'completed',
-    dueDate: new Date(2024, 3, 10)
+    dueDate: new Date(2024, 3, 10),
+    protocol: 'web2',
+    network: 'مجموعات الشراء الجماعي',
+    category: 'مورد'
   },
   {
     id: '3',
-    name: 'Market Research Study',
-    description: 'Conduct comprehensive market research on our key competitors.',
+    name: 'دراسة بحث سوق',
+    description: 'إجراء بحث سوقي شامل على منافسينا الرئيسيين.',
     status: 'active',
-    dueDate: new Date(2023, 11, 20)
+    dueDate: new Date(2023, 11, 20),
+    protocol: 'web3',
+    network: 'بوابة التوظيف',
+    category: 'مشترى'
   }
 ];
 
@@ -115,7 +173,14 @@ export const DAOProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   const [votes, setVotes] = useState<Vote[]>([]);
   
   // Proposals
-  const createProposal = async (title: string, description: string, choices: string[]): Promise<boolean> => {
+  const createProposal = async (
+    title: string, 
+    description: string, 
+    choices: string[],
+    protocol: 'web2' | 'web3' = 'web2',
+    network?: string,
+    category?: string
+  ): Promise<boolean> => {
     try {
       const newProposal: Proposal = {
         id: Math.random().toString(36).substr(2, 9),
@@ -125,7 +190,10 @@ export const DAOProvider: React.FC<{children: ReactNode}> = ({ children }) => {
         createdBy: 'currentUser', // In real app, get from auth context
         createdAt: new Date(),
         status: 'active',
-        votes: {}
+        votes: {},
+        protocol,
+        network,
+        category
       };
       
       setProposals(prev => [newProposal, ...prev]);
@@ -140,6 +208,16 @@ export const DAOProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   
   const getProposal = (id: string): Proposal | undefined => {
     return proposals.find(p => p.id === id);
+  };
+  
+  // Filter proposals based on protocol, network, and category
+  const filterProposals = (protocol?: string, network?: string, category?: string): Proposal[] => {
+    return proposals.filter(proposal => {
+      const protocolMatch = !protocol || proposal.protocol === protocol;
+      const networkMatch = !network || proposal.network === network;
+      const categoryMatch = !category || proposal.category === category;
+      return protocolMatch && networkMatch && categoryMatch;
+    });
   };
   
   // Voting
@@ -192,14 +270,24 @@ export const DAOProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   };
   
   // Projects
-  const createProject = async (name: string, description: string, dueDate: Date): Promise<boolean> => {
+  const createProject = async (
+    name: string, 
+    description: string, 
+    dueDate: Date,
+    protocol: 'web2' | 'web3' = 'web2',
+    network?: string,
+    category?: string
+  ): Promise<boolean> => {
     try {
       const newProject: Project = {
         id: Math.random().toString(36).substr(2, 9),
         name,
         description,
         status: 'active',
-        dueDate
+        dueDate,
+        protocol,
+        network,
+        category
       };
       
       setProjects(prev => [newProject, ...prev]);
@@ -255,13 +343,17 @@ export const DAOProvider: React.FC<{children: ReactNode}> = ({ children }) => {
       proposals, 
       createProposal, 
       getProposal,
+      filterProposals,
       castVote,
       getVotesForProposal,
       hasVoted,
       projects,
       createProject,
       updateProject,
-      signAgreement
+      signAgreement,
+      protocolOptions,
+      networkOptions,
+      categoryOptions
     }}>
       {children}
     </DAOContext.Provider>

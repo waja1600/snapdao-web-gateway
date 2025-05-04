@@ -18,6 +18,7 @@ import Projects from "./pages/Projects";
 import Voting from "./pages/Voting";
 import Members from "./pages/Members";
 import CollectiveAgreement from "./pages/CollectiveAgreement";
+import Explore from "./pages/Explore";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const App = () => (
                 <Route path="/voting" element={<Voting />} />
                 <Route path="/members" element={<Members />} />
                 <Route path="/agreement" element={<CollectiveAgreement />} />
+                <Route path="/explore" element={<Explore />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

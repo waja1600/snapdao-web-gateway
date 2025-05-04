@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { FileText, Vote, Globe, Users } from "lucide-react";
+import { FileText, Vote, Globe, Users, Search } from "lucide-react";
 
 const Index = () => {
   const { t, language, setLanguage } = useLanguage();
@@ -24,19 +24,24 @@ const Index = () => {
   
   const features = [
     {
+      icon: Search,
+      title: "استكشاف المنصة",
+      description: "استكشف المقترحات والمشاريع عبر البروتوكولات والشبكات المختلفة."
+    },
+    {
       icon: FileText,
-      title: "Proposal Creation",
-      description: "Create and manage proposals for your organization with ease."
+      title: "إنشاء المقترحات",
+      description: "إنشاء وإدارة المقترحات لمؤسستك بسهولة."
     },
     {
       icon: Vote,
-      title: "Voting System",
-      description: "Secure voting system for making collective decisions."
+      title: "نظام التصويت",
+      description: "نظام تصويت آمن لاتخاذ القرارات الجماعية."
     },
     {
       icon: Users,
-      title: "Member Management",
-      description: "Easily manage members and their roles within your organization."
+      title: "إدارة الأعضاء",
+      description: "إدارة الأعضاء وأدوارهم داخل مؤسستك بسهولة."
     }
   ];
   
@@ -77,16 +82,16 @@ const Index = () => {
               : 'قم بإنشاء مقترحات والتصويت على القرارات وإدارة مؤسستك باستخدام أدوات DAO القوية.'}
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button size="lg" onClick={() => navigate("/register")}>
-              {language === 'en' ? 'Get Started' : 'ابدأ الآن'}
+            <Button size="lg" onClick={() => navigate("/explore")}>
+              {language === 'en' ? 'Explore' : 'استكشف'}
             </Button>
             <Button size="lg" variant="outline" onClick={() => navigate("/login")}>
-              {language === 'en' ? 'Learn More' : 'اعرف المزيد'}
+              {language === 'en' ? 'Sign In' : 'تسجيل الدخول'}
             </Button>
           </div>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8 mt-20">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
           {features.map((feature, index) => (
             <div key={index} className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
               <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">

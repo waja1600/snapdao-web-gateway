@@ -8,6 +8,7 @@ import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { ArrowLeft, Check, FileText, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -119,7 +120,7 @@ const ProposalDetail = () => {
                 ? 'bg-green-100 text-green-800'
                 : 'bg-gray-100 text-gray-800'
             }`}>
-              {proposal.status === 'active' ? 'Active' : 'Closed'}
+              {proposal.status === 'active' ? 'نشط' : 'مغلق'}
             </span>
           </div>
         </div>
@@ -131,6 +132,19 @@ const ProposalDetail = () => {
               <div className="flex items-center gap-2 text-sm text-gray-500 mt-2">
                 <FileText className="h-4 w-4" />
                 <span>Created on {format(new Date(proposal.createdAt), 'MMM d, yyyy')}</span>
+              </div>
+              
+              {/* Display Protocol, Network, Category */}
+              <div className="flex flex-wrap gap-2 mt-3">
+                {proposal.protocol && (
+                  <Badge variant="outline">{proposal.protocol}</Badge>
+                )}
+                {proposal.network && (
+                  <Badge variant="secondary">{proposal.network}</Badge>
+                )}
+                {proposal.category && (
+                  <Badge variant="outline" className="bg-blue-50">{proposal.category}</Badge>
+                )}
               </div>
             </div>
             
