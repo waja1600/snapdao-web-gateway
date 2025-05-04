@@ -167,7 +167,7 @@ const Proposals = () => {
                         <SelectValue placeholder="اختر الشبكة" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">بدون شبكة</SelectItem>
+                        <SelectItem value="none">بدون شبكة</SelectItem>
                         {networkOptions.map((option) => (
                           <SelectItem key={option} value={option}>
                             {option}
@@ -188,7 +188,7 @@ const Proposals = () => {
                         <SelectValue placeholder="اختر الفئة" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">بدون فئة</SelectItem>
+                        <SelectItem value="none">بدون فئة</SelectItem>
                         {categoryOptions.map((option) => (
                           <SelectItem key={option} value={option}>
                             {option}

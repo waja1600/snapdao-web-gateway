@@ -72,7 +72,7 @@ const Explore = () => {
                     <SelectValue placeholder="اختر البروتوكول" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">جميع البروتوكولات</SelectItem>
+                    <SelectItem value="all">جميع البروتوكولات</SelectItem>
                     {protocolOptions.map((option) => (
                       <SelectItem key={option} value={option}>
                         {option}
@@ -89,7 +89,7 @@ const Explore = () => {
                     <SelectValue placeholder="اختر الشبكة" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">جميع الشبكات</SelectItem>
+                    <SelectItem value="all">جميع الشبكات</SelectItem>
                     {networkOptions.map((option) => (
                       <SelectItem key={option} value={option}>
                         {option}
@@ -106,7 +106,7 @@ const Explore = () => {
                     <SelectValue placeholder="اختر الفئة" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">جميع الفئات</SelectItem>
+                    <SelectItem value="all">جميع الفئات</SelectItem>
                     {categoryOptions.map((option) => (
                       <SelectItem key={option} value={option}>
                         {option}

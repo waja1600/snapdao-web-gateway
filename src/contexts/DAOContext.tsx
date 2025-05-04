@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { toast } from "sonner";
 
@@ -213,9 +212,9 @@ export const DAOProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   // Filter proposals based on protocol, network, and category
   const filterProposals = (protocol?: string, network?: string, category?: string): Proposal[] => {
     return proposals.filter(proposal => {
-      const protocolMatch = !protocol || proposal.protocol === protocol;
-      const networkMatch = !network || proposal.network === network;
-      const categoryMatch = !category || proposal.category === category;
+      const protocolMatch = !protocol || protocol === 'all' || proposal.protocol === protocol;
+      const networkMatch = !network || network === 'all' || proposal.network === network;
+      const categoryMatch = !category || category === 'all' || proposal.category === category;
       return protocolMatch && networkMatch && categoryMatch;
     });
   };
@@ -241,7 +240,7 @@ export const DAOProvider: React.FC<{children: ReactNode}> = ({ children }) => {
       
       setVotes(prev => [...prev, newVote]);
       
-      // Update proposal vote counts - fixing the "always truthy" error here
+      // Update proposal vote counts
       setProposals(prev => prev.map(p => {
         if (p.id === proposalId) {
           const updatedVotes = p.votes || {};
