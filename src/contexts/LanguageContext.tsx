@@ -1,196 +1,178 @@
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
-type Languages = 'en' | 'ar';
+type Language = 'en' | 'ar';
 
-type TranslationsType = {
-  [key in Languages]: {
-    [key: string]: string;
+interface TranslationDictionary {
+  [key: string]: {
+    en: string;
+    ar: string;
   };
-};
-
-const translations: TranslationsType = {
-  en: {
-    // Navigation
-    overview: "Overview",
-    projects: "Projects",
-    proposals: "Proposals",
-    voting: "Voting",
-    members: "Members",
-    dashboard: "Dashboard",
-    
-    // Actions
-    submit: "Submit",
-    cancel: "Cancel",
-    create: "Create",
-    edit: "Edit",
-    delete: "Delete",
-    add: "Add",
-    
-    // Proposal
-    newProposal: "New Proposal",
-    proposalTitle: "Proposal Title",
-    description: "Description",
-    choices: "Choices",
-    addChoice: "Add choice",
-    choice: "Choice",
-    viewDetails: "View Details",
-    
-    // Voting
-    voteOnProposal: "Vote on Proposal",
-    castVote: "Cast Vote",
-    yes: "Yes",
-    no: "No",
-    results: "Results",
-    
-    // Projects
-    manageProjects: "Manage Projects",
-    newProject: "New Project",
-    searchProjects: "Search projects",
-    project: "Project",
-    status: "Status",
-    dueDate: "Due Date",
-    actions: "Actions",
-    active: "Active",
-    completed: "Completed",
-    
-    // Agreement
-    collectiveAgreement: "Collective Agreement",
-    agreementText: "Agreement Text",
-    agreeAndSign: "I agree and sign the contract",
-    password: "Password",
-    enterOTPCode: "Enter OTP Code",
-    signContract: "Sign Contract",
-    company: "Company",
-    registrationNumber: "Registration Number",
-    
-    // Authentication
-    login: "Login",
-    register: "Register",
-    email: "Email",
-    password: "Password",
-    forgotPassword: "Forgot Password?",
-    dontHaveAccount: "Don't have an account?",
-    alreadyHaveAccount: "Already have an account?",
-    
-    // Misc
-    loading: "Loading...",
-    error: "Error",
-    success: "Success",
-  },
-  ar: {
-    // Navigation
-    overview: "نظرة عامة",
-    projects: "المشاريع",
-    proposals: "المقترحات",
-    voting: "التصويت",
-    members: "الأعضاء",
-    dashboard: "لوحة التحكم",
-    
-    // Actions
-    submit: "إرسال",
-    cancel: "إلغاء",
-    create: "إنشاء",
-    edit: "تعديل",
-    delete: "حذف",
-    add: "إضافة",
-    
-    // Proposal
-    newProposal: "مقترح جديد",
-    proposalTitle: "عنوان المقترح",
-    description: "الوصف",
-    choices: "الخيارات",
-    addChoice: "إضافة خيار",
-    choice: "خيار",
-    viewDetails: "عرض التفاصيل",
-    
-    // Voting
-    voteOnProposal: "التصويت على المقترح",
-    castVote: "الإدلاء بصوتك",
-    yes: "نعم",
-    no: "لا",
-    results: "النتائج",
-    
-    // Projects
-    manageProjects: "إدارة المشاريع",
-    newProject: "مشروع جديد",
-    searchProjects: "بحث في المشاريع",
-    project: "المشروع",
-    status: "الحالة",
-    dueDate: "تاريخ الاستحقاق",
-    actions: "الإجراءات",
-    active: "نشط",
-    completed: "مكتمل",
-    
-    // Agreement
-    collectiveAgreement: "اتفاقية عقد الجماعي",
-    agreementText: "نص العقد...",
-    agreeAndSign: "أوافق وأوقع على العقد",
-    password: "كلمة المرور",
-    enterOTPCode: "أدخل رمز التحقق المرسل",
-    signContract: "توقيع العقد",
-    company: "الشركة",
-    registrationNumber: "رقم التسجيل",
-    
-    // Authentication
-    login: "تسجيل الدخول",
-    register: "تسجيل جديد",
-    email: "البريد الإلكتروني",
-    password: "كلمة المرور",
-    forgotPassword: "نسيت كلمة المرور؟",
-    dontHaveAccount: "ليس لديك حساب؟",
-    alreadyHaveAccount: "لديك حساب بالفعل؟",
-    
-    // Misc
-    loading: "جاري التحميل...",
-    error: "خطأ",
-    success: "نجاح",
-  }
-};
+}
 
 interface LanguageContextType {
-  language: Languages;
-  setLanguage: (language: Languages) => void;
+  language: Language;
+  setLanguage: (language: Language) => void;
   t: (key: string) => string;
 }
+
+const translations: TranslationDictionary = {
+  // Navigation
+  dashboard: {
+    en: 'Dashboard',
+    ar: 'لوحة التحكم'
+  },
+  projects: {
+    en: 'Projects',
+    ar: 'المشاريع'
+  },
+  proposals: {
+    en: 'Proposals',
+    ar: 'المقترحات'
+  },
+  voting: {
+    en: 'Voting',
+    ar: 'التصويت'
+  },
+  members: {
+    en: 'Members',
+    ar: 'الأعضاء'
+  },
+  
+  // Common actions
+  submit: {
+    en: 'Submit',
+    ar: 'إرسال'
+  },
+  cancel: {
+    en: 'Cancel',
+    ar: 'إلغاء'
+  },
+  create: {
+    en: 'Create',
+    ar: 'إنشاء'
+  },
+  update: {
+    en: 'Update',
+    ar: 'تحديث'
+  },
+  delete: {
+    en: 'Delete',
+    ar: 'حذف'
+  },
+  
+  // Form labels
+  name: {
+    en: 'Name',
+    ar: 'الاسم'
+  },
+  email: {
+    en: 'Email',
+    ar: 'البريد الإلكتروني'
+  },
+  description: {
+    en: 'Description',
+    ar: 'الوصف'
+  },
+  
+  // Proposals
+  newProposal: {
+    en: 'New Proposal',
+    ar: 'اقتراح جديد'
+  },
+  proposalTitle: {
+    en: 'Proposal Title',
+    ar: 'عنوان الاقتراح'
+  },
+  choices: {
+    en: 'Choices',
+    ar: 'الخيارات'
+  },
+  choice: {
+    en: 'Choice',
+    ar: 'خيار'
+  },
+  addChoice: {
+    en: 'Add Choice',
+    ar: 'إضافة خيار'
+  },
+  castVote: {
+    en: 'Cast Vote',
+    ar: 'تصويت'
+  },
+  results: {
+    en: 'Results',
+    ar: 'النتائج'
+  },
+  voteOnProposal: {
+    en: 'Vote on Proposal',
+    ar: 'التصويت على الاقتراح'
+  },
+  
+  // Auth
+  login: {
+    en: 'Login',
+    ar: 'تسجيل الدخول'
+  },
+  logout: {
+    en: 'Logout',
+    ar: 'تسجيل الخروج'
+  },
+  password: {
+    en: 'Password',
+    ar: 'كلمة المرور'
+  },
+  
+  // Loading state
+  loading: {
+    en: 'Loading...',
+    ar: 'جاري التحميل...'
+  },
+  
+  // Utilities
+  vote: {
+    en: 'Vote',
+    ar: 'تصويت'
+  }
+};
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{children: ReactNode}> = ({ children }) => {
-  const [language, setLanguage] = useState<Languages>('en');
-
-  useEffect(() => {
-    // Set document direction based on language
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
+  const [language, setLanguage] = useState<Language>(() => {
+    // Get from localstorage, fallback to browser language preference, or default to English
+    const saved = localStorage.getItem('language') as Language;
+    if (saved) return saved;
     
-    // Save language preference to localStorage
-    localStorage.setItem('language', language);
-  }, [language]);
-
+    const browserLang = navigator.language.split('-')[0];
+    return browserLang === 'ar' ? 'ar' : 'en';
+  });
+  
   useEffect(() => {
-    // Load language preference from localStorage on initial render
-    const savedLanguage = localStorage.getItem('language') as Languages;
-    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ar')) {
-      setLanguage(savedLanguage);
+    // Save to localStorage whenever language changes
+    localStorage.setItem('language', language);
+    
+    // Update document direction
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    
+    // Update body class
+    if (language === 'ar') {
+      document.body.classList.add('font-arabic');
     } else {
-      // Detect browser language if no saved preference
-      const browserLang = navigator.language.split('-')[0];
-      if (browserLang === 'ar') {
-        setLanguage('ar');
-      }
+      document.body.classList.remove('font-arabic');
     }
-  }, []);
-
-  const translate = (key: string): string => {
-    if (translations[language][key]) {
-      return translations[language][key];
+  }, [language]);
+  
+  const t = (key: string): string => {
+    if (!translations[key]) {
+      console.warn(`Translation missing for key: ${key}`);
+      return key;
     }
-    return key;
+    return translations[key][language];
   };
-
+  
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t: translate }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );
