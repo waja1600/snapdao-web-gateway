@@ -163,10 +163,10 @@ export const DAOProvider: React.FC<{children: ReactNode}> = ({ children }) => {
       
       setVotes(prev => [...prev, newVote]);
       
-      // Update proposal vote counts
+      // Update proposal vote counts - fixing the "always truthy" error here
       setProposals(prev => prev.map(p => {
         if (p.id === proposalId) {
-          const updatedVotes = { ...p.votes } || {};
+          const updatedVotes = p.votes || {};
           updatedVotes[choice] = (updatedVotes[choice] || 0) + 1;
           return { ...p, votes: updatedVotes };
         }
