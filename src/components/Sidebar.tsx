@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,7 +13,9 @@ import {
   FileSignature, 
   LogOut, 
   Settings,
-  Search
+  Search,
+  Gavel,
+  SlidersHorizontal
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -21,6 +24,7 @@ export const Sidebar = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
   const isMobile = useIsMobile();
+  const [isCollapsed, setIsCollapsed] = useState(false);
   
   const navigation = [
     {
@@ -58,20 +62,40 @@ export const Sidebar = () => {
       href: "/agreement",
       icon: FileSignature,
     },
+    {
+      name: t('arbitration'),
+      href: "/arbitration",
+      icon: Gavel,
+    },
   ];
+  
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
   
   return (
     <aside className={cn(
-      "bg-sidebar fixed inset-y-0 right-0 z-30 flex w-72 flex-col border-l border-sidebar-border bg-sidebar text-sidebar-foreground md:right-auto md:left-0 md:z-0 md:border-r lg:w-80",
+      "bg-sidebar fixed inset-y-0 right-0 z-30 flex flex-col border-l border-sidebar-border bg-sidebar text-sidebar-foreground md:right-auto md:left-0 md:z-0 md:border-r transition-all duration-300",
+      isCollapsed ? "w-16" : "w-72 lg:w-80",
       isMobile && "hidden"
     )}>
       <div className="flex items-center justify-between h-14 border-b border-sidebar-border px-4 py-2">
         <Link
           to="/"
-          className="flex items-center gap-2 font-bold tracking-tight"
+          className={cn("flex items-center gap-2 font-bold tracking-tight", 
+            isCollapsed && "justify-center"
+          )}
         >
-          SnapDAO
+          {isCollapsed ? "SD" : "SnapDAO"}
         </Link>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="p-0 h-8 w-8" 
+          onClick={toggleSidebar}
+        >
+          <SlidersHorizontal className="h-4 w-4" />
+        </Button>
       </div>
       
       <div className="flex-1 overflow-auto py-2">
@@ -87,11 +111,12 @@ export const Sidebar = () => {
                   "flex items-center gap-3 rounded-md px-3 py-2 text-sidebar-foreground transition-all hover:text-sidebar-foreground",
                   isActive
                     ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "hover:bg-sidebar-accent/50"
+                    : "hover:bg-sidebar-accent/50",
+                  isCollapsed && "justify-center px-0"
                 )}
               >
                 <item.icon className="h-4 w-4" />
-                {item.name}
+                {!isCollapsed && <span>{item.name}</span>}
               </Link>
             );
           })}
@@ -101,22 +126,27 @@ export const Sidebar = () => {
       <div className="mt-auto p-4">
         {user && (
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 rounded-md bg-sidebar-accent/50 px-3 py-2">
-              <div className="h-8 w-8 rounded-full bg-sidebar-accent flex items-center justify-center">
-                {user.name[0]}
+            {!isCollapsed && (
+              <div className="flex items-center gap-2 rounded-md bg-sidebar-accent/50 px-3 py-2">
+                <div className="h-8 w-8 rounded-full bg-sidebar-accent flex items-center justify-center">
+                  {user.name[0]}
+                </div>
+                <div className="flex-1 truncate">
+                  <div className="font-medium truncate">{user.name}</div>
+                  <div className="text-xs opacity-70 truncate">{user.email}</div>
+                </div>
               </div>
-              <div className="flex-1 truncate">
-                <div className="font-medium truncate">{user.name}</div>
-                <div className="text-xs opacity-70 truncate">{user.email}</div>
-              </div>
-            </div>
+            )}
             <Button
               variant="outline"
-              className="w-full justify-start gap-2"
+              className={cn(
+                "w-full gap-2",
+                isCollapsed ? "justify-center" : "justify-start"
+              )}
               onClick={() => logout()}
             >
               <LogOut className="h-4 w-4" />
-              {t('logout')}
+              {!isCollapsed && t('logout')}
             </Button>
           </div>
         )}
