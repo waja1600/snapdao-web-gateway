@@ -4,6 +4,7 @@ import { Proposal, Project, protocolOptions, networkOptions, categoryOptions } f
 import { ProposalService } from '../services/proposal-service';
 import { ProjectService } from '../services/project-service';
 import { AgreementService } from '../services/agreement-service';
+import { ArbitrationService } from '../services/arbitration-service';
 
 interface DAOContextType {
   // Proposal methods
@@ -39,6 +40,14 @@ interface DAOContextType {
   // Agreement methods
   signAgreement: (agreementId: string, password: string, otp: string) => Promise<boolean>;
   
+  // Arbitration methods
+  getAllDisputes: () => any[];
+  getActiveDisputes: () => any[];
+  getResolvedDisputes: () => any[];
+  getDisputeById: (id: string) => any;
+  createDispute: (disputeData: any) => any;
+  updateDisputeStatus: (id: string, newStatus: string) => boolean;
+  
   // Filter options
   protocolOptions: string[];
   networkOptions: string[];
@@ -51,6 +60,7 @@ const DAOContext = createContext<DAOContextType | undefined>(undefined);
 const proposalService = new ProposalService();
 const projectService = new ProjectService();
 const agreementService = new AgreementService();
+const arbitrationService = new ArbitrationService();
 
 export const DAOProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
   return (
@@ -73,6 +83,14 @@ export const DAOProvider: React.FC<{children: React.ReactNode}> = ({ children })
       
       // Agreement methods
       signAgreement: agreementService.signAgreement.bind(agreementService),
+      
+      // Arbitration methods
+      getAllDisputes: arbitrationService.getAllDisputes.bind(arbitrationService),
+      getActiveDisputes: arbitrationService.getActiveDisputes.bind(arbitrationService),
+      getResolvedDisputes: arbitrationService.getResolvedDisputes.bind(arbitrationService),
+      getDisputeById: arbitrationService.getDisputeById.bind(arbitrationService),
+      createDispute: arbitrationService.createDispute.bind(arbitrationService),
+      updateDisputeStatus: arbitrationService.updateDisputeStatus.bind(arbitrationService),
       
       // Filter options
       protocolOptions,

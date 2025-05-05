@@ -7,6 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Gavel, FileText, Handshake } from "lucide-react";
+import { ArbitrationForm } from "@/components/arbitration/ArbitrationForm";
+import { ArbitrationDetails } from "@/components/arbitration/ArbitrationDetails";
 
 const Arbitration = () => {
   const { t } = useLanguage();
@@ -16,6 +18,7 @@ const Arbitration = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">{t('arbitration')}</h1>
+          <ArbitrationForm />
         </div>
         
         <Tabs defaultValue="active">
@@ -42,9 +45,14 @@ const Arbitration = () => {
                     <span>{t('contractReference')}: CT-2023-0542</span>
                   </div>
                   <div className="flex gap-2 mt-2">
-                    <Button size="sm" variant="outline">
-                      {t('viewDetails')}
-                    </Button>
+                    <ArbitrationDetails 
+                      disputeId="ARB-2023-001"
+                      title={t('disputeTitle1')}
+                      description={t('disputeDesc1')}
+                      contractReference="CT-2023-0542"
+                      status="pending"
+                      date="2023-12-15"
+                    />
                     <Button size="sm">
                       <Gavel className="h-4 w-4 mr-2" />
                       {t('initiateArbitration')}
@@ -69,9 +77,14 @@ const Arbitration = () => {
                     <span>{t('contractReference')}: CT-2023-0126</span>
                   </div>
                   <div className="flex gap-2 mt-2">
-                    <Button size="sm" variant="outline">
-                      {t('viewDetails')}
-                    </Button>
+                    <ArbitrationDetails 
+                      disputeId="ARB-2023-002"
+                      title={t('disputeTitle2')}
+                      description={t('disputeDesc2')}
+                      contractReference="CT-2023-0126"
+                      status="inProgress"
+                      date="2023-11-10"
+                    />
                     <Button size="sm" variant="secondary">
                       {t('viewArbitrationProcess')}
                     </Button>
@@ -100,9 +113,14 @@ const Arbitration = () => {
                     <Handshake className="h-4 w-4" />
                     <span>{t('resolvedDate')}: 2023-11-15</span>
                   </div>
-                  <Button size="sm" variant="outline">
-                    {t('viewResolution')}
-                  </Button>
+                  <ArbitrationDetails 
+                    disputeId="ARB-2023-003"
+                    title={t('disputeTitle3')}
+                    description={t('disputeDesc3')}
+                    contractReference="CT-2023-0098"
+                    status="resolved"
+                    date="2023-11-15"
+                  />
                 </CardContent>
               </Card>
             </div>
