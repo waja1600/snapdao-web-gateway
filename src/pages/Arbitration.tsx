@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Gavel, FileText, HandShake } from "lucide-react";
+import { Gavel, FileText, Handshake } from "lucide-react";
 
 const Arbitration = () => {
   const { t } = useLanguage();
@@ -97,7 +97,7 @@ const Arbitration = () => {
                 <CardContent>
                   <p className="text-sm text-gray-500 mb-3">{t('disputeDesc3')}</p>
                   <div className="flex items-center gap-2 text-sm mb-4">
-                    <HandShake className="h-4 w-4" />
+                    <Handshake className="h-4 w-4" />
                     <span>{t('resolvedDate')}: 2023-11-15</span>
                   </div>
                   <Button size="sm" variant="outline">
