@@ -1,13 +1,9 @@
 
-import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useDAO } from "@/contexts/DAOContext";
-import { useAuth } from "@/contexts/AuthContext";
 import { Layout } from "@/components/Layout";
 import { Card, CardContent } from "@/components/ui/card";
-import { toast } from "sonner";
 
-// Import the newly created components
+// Import components
 import ProposalHeader from "@/components/proposals/ProposalHeader";
 import ProposalInfo from "@/components/proposals/ProposalInfo";
 import VotingSection from "@/components/proposals/VotingSection";
@@ -15,44 +11,12 @@ import ResultsSection from "@/components/proposals/ResultsSection";
 import ProposalNotFound from "@/components/proposals/ProposalNotFound";
 import ProposalLoading from "@/components/proposals/ProposalLoading";
 
+// Import custom hook
+import { useProposalDetails } from "@/hooks/useProposalDetails";
+
 const ProposalDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { getProposal, castVote, hasVoted, getVotesForProposal } = useDAO();
-  const { user } = useAuth();
-  
-  const [proposal, setProposal] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [votes, setVotes] = useState<Record<string, number>>({});
-  const [userVoted, setUserVoted] = useState(false);
-  
-  useEffect(() => {
-    if (id) {
-      const proposalData = getProposal(id);
-      if (proposalData) {
-        setProposal(proposalData);
-        setVotes(getVotesForProposal(id));
-        if (user) {
-          setUserVoted(hasVoted(id, user.id));
-        }
-      } else {
-        toast.error("Proposal not found");
-      }
-      setLoading(false);
-    }
-  }, [id, getProposal, user, hasVoted, getVotesForProposal]);
-  
-  const handleVoteComplete = async (proposalId: string, choice: string): Promise<boolean> => {
-    try {
-      const success = await castVote(proposalId, choice);
-      if (success) {
-        setUserVoted(true);
-        setVotes(getVotesForProposal(proposalId));
-      }
-      return success;
-    } catch (error) {
-      return false;
-    }
-  };
+  const { proposal, loading, votes, userVoted, handleVoteComplete } = useProposalDetails(id);
   
   if (loading) {
     return (
