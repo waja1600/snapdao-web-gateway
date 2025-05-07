@@ -31,12 +31,12 @@ export const ProposalFilters = ({
         onValueChange={setFilterStatus}
       >
         <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Filter by status" />
+          <SelectValue placeholder={t('filterByStatus')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All status</SelectItem>
-          <SelectItem value="active">Active</SelectItem>
-          <SelectItem value="closed">Closed</SelectItem>
+          <SelectItem value="all">{t('allStatus')}</SelectItem>
+          <SelectItem value="active">{t('active')}</SelectItem>
+          <SelectItem value="closed">{t('closed')}</SelectItem>
         </SelectContent>
       </Select>
       

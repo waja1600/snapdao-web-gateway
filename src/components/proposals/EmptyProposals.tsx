@@ -14,9 +14,9 @@ export const EmptyProposals = ({ onCreateProposal }: EmptyProposalsProps) => {
   return (
     <div className="text-center py-12 bg-gray-50 border border-dashed border-gray-200 rounded-lg">
       <FileText className="mx-auto h-10 w-10 text-gray-400" />
-      <h3 className="mt-4 text-lg font-medium text-gray-900">No proposals found</h3>
+      <h3 className="mt-4 text-lg font-medium text-gray-900">{t('proposalNotFound')}</h3>
       <p className="mt-1 text-sm text-gray-500">
-        Get started by creating a new proposal.
+        {t('createProposal')}
       </p>
       <Button className="mt-6" onClick={onCreateProposal}>
         <Plus className="mr-2 h-4 w-4" />

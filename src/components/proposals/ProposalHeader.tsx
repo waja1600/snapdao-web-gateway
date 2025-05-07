@@ -20,7 +20,7 @@ const ProposalHeader: React.FC<ProposalHeaderProps> = ({ status }) => {
         onClick={() => navigate("/proposals")}
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Proposals
+        {t('backToProposals')}
       </Button>
       
       <div className="flex items-center justify-between">
@@ -31,7 +31,7 @@ const ProposalHeader: React.FC<ProposalHeaderProps> = ({ status }) => {
               ? 'bg-green-100 text-green-800'
               : 'bg-gray-100 text-gray-800'
           }`}>
-            {status === 'active' ? 'نشط' : 'مغلق'}
+            {status === 'active' ? t('active') : t('closed')}
           </span>
         </div>
       </div>

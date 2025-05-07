@@ -29,7 +29,7 @@ const ProposalInfo: React.FC<ProposalInfoProps> = ({
         <h2 className="text-xl font-semibold">{title}</h2>
         <div className="flex items-center gap-2 text-sm text-gray-500 mt-2">
           <FileText className="h-4 w-4" />
-          <span>Created on {format(new Date(createdAt), 'MMM d, yyyy')}</span>
+          <span>{t('createdOn')} {format(new Date(createdAt), 'MMM d, yyyy')}</span>
         </div>
         
         {/* Display Protocol, Network, Category */}

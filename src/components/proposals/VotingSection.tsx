@@ -35,7 +35,7 @@ const VotingSection: React.FC<VotingSectionProps> = ({
     }
     
     if (!selectedChoice) {
-      toast.error("Please select an option to vote");
+      toast.error(t('selectOption'));
       return;
     }
     

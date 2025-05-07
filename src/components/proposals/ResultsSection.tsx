@@ -32,19 +32,19 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
               <div key={choice} className="space-y-1">
                 <div className="flex justify-between text-sm">
                   <span>{choice}</span>
-                  <span>{votes[choice] || 0} votes ({Math.round(percentage)}%)</span>
+                  <span>{votes[choice] || 0} {t('votes')} ({Math.round(percentage)}%)</span>
                 </div>
                 <Progress value={percentage} className="h-2" />
               </div>
             );
           })}
           <p className="text-sm text-gray-500 mt-2">
-            Total votes: {totalVotes}
+            {t('totalVotes')}: {totalVotes}
           </p>
         </div>
       ) : (
         <div className="text-center py-8 bg-gray-50 border border-dashed border-gray-200 rounded-lg">
-          <p className="text-gray-500">No votes have been cast yet.</p>
+          <p className="text-gray-500">{t('noVotesCastYet')}</p>
         </div>
       )}
     </div>
