@@ -24,4 +24,8 @@ export const navigationTranslations = {
     en: 'Expenses',
     ar: 'التكاليف'
   },
+  workflow: {
+    en: 'Project Workflow',
+    ar: 'مخطط سير العمل'
+  }
 };
