@@ -20,6 +20,7 @@ import Members from "./pages/Members";
 import CollectiveAgreement from "./pages/CollectiveAgreement";
 import Explore from "./pages/Explore";
 import Arbitration from "./pages/Arbitration";
+import ClientExpenses from "./pages/ClientExpenses";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,7 @@ const App = () => (
                 <Route path="/agreement" element={<CollectiveAgreement />} />
                 <Route path="/explore" element={<Explore />} />
                 <Route path="/arbitration" element={<Arbitration />} />
+                <Route path="/expenses" element={<ClientExpenses />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

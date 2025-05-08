@@ -20,4 +20,8 @@ export const navigationTranslations = {
     en: 'Members',
     ar: 'الأعضاء'
   },
+  expenses: {
+    en: 'Expenses',
+    ar: 'التكاليف'
+  },
 };
