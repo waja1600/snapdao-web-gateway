@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
-import { FileText, Bell, Shield, Vote, Gavel, Users, FileText as Invoice, ShoppingCart, CheckCircle } from "lucide-react";
+import { FileText, Bell, Shield, Vote, Gavel, Users, FileText as Invoice, ShoppingCart, CheckCircle, User, Truck, ClipboardList, Star, FileSignature, Package } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Dashboard = () => {
@@ -16,10 +16,15 @@ const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   
+  // Mock user role - in a real app, this would come from the auth context
+  // Possible roles: 'company', 'freelancer', 'supplier', 'supervisor'
+  const [userRole, setUserRole] = useState<string>('company');
+  
   // KYC Status - in a real app, this would come from the backend
   const [kycStatus, setKycStatus] = useState<'pending' | 'verified' | 'not_started'>('not_started');
   
-  const dashboardItems = [
+  // Common dashboard items for all roles
+  const commonDashboardItems = [
     {
       icon: Invoice,
       title: language === 'en' ? 'Invoices' : 'الفواتير',
@@ -44,28 +49,289 @@ const Dashboard = () => {
       description: language === 'en' ? 'New notifications' : 'إشعارات جديدة',
       route: '/notifications'
     },
-    {
-      icon: Vote,
-      title: language === 'en' ? 'Voting Proposals' : 'مقترحات التصويت',
-      value: '2',
-      description: language === 'en' ? 'Active proposals' : 'مقترحات نشطة',
-      route: '/proposals'
-    },
-    {
-      icon: Gavel,
-      title: language === 'en' ? 'Arbitration' : 'التحكيم',
-      value: '0',
-      description: language === 'en' ? 'Open cases' : 'حالات مفتوحة',
-      route: '/arbitration'
-    },
-    {
-      icon: Users,
-      title: language === 'en' ? 'My Groups' : 'مجموعاتي',
-      value: '3',
-      description: language === 'en' ? 'Active memberships' : 'عضويات نشطة',
-      route: '/groups'
-    }
   ];
+  
+  // Role-specific dashboard items
+  const roleDashboardItems = {
+    company: [
+      {
+        icon: FileSignature,
+        title: language === 'en' ? 'Contracts' : 'العقود',
+        value: '2',
+        description: language === 'en' ? 'Active contracts' : 'عقود نشطة',
+        route: '/contracts'
+      },
+      {
+        icon: Vote,
+        title: language === 'en' ? 'Voting Proposals' : 'مقترحات التصويت',
+        value: '2',
+        description: language === 'en' ? 'Active proposals' : 'مقترحات نشطة',
+        route: '/proposals'
+      },
+      {
+        icon: Users,
+        title: language === 'en' ? 'My Groups' : 'مجموعاتي',
+        value: '3',
+        description: language === 'en' ? 'Active memberships' : 'عضويات نشطة',
+        route: '/groups'
+      }
+    ],
+    freelancer: [
+      {
+        icon: ClipboardList,
+        title: language === 'en' ? 'Offers' : 'العروض',
+        value: '4',
+        description: language === 'en' ? 'Open offers' : 'عروض مفتوحة',
+        route: '/offers'
+      },
+      {
+        icon: ClipboardList,
+        title: language === 'en' ? 'Tasks' : 'المهام',
+        value: '2',
+        description: language === 'en' ? 'In progress' : 'قيد التنفيذ',
+        route: '/tasks'
+      },
+      {
+        icon: Star,
+        title: language === 'en' ? 'Ratings' : 'التقييمات',
+        value: '4.8',
+        description: language === 'en' ? 'Average rating' : 'متوسط التقييم',
+        route: '/ratings'
+      }
+    ],
+    supplier: [
+      {
+        icon: Package,
+        title: language === 'en' ? 'Products' : 'المنتجات',
+        value: '12',
+        description: language === 'en' ? 'Active listings' : 'منتجات نشطة',
+        route: '/products'
+      },
+      {
+        icon: ClipboardList,
+        title: language === 'en' ? 'Offers' : 'العروض',
+        value: '3',
+        description: language === 'en' ? 'Group offers' : 'عروض للمجموعات',
+        route: '/supplier-offers'
+      }
+    ],
+    supervisor: [
+      {
+        icon: FileSignature,
+        title: language === 'en' ? 'Contracts' : 'العقود',
+        value: '8',
+        description: language === 'en' ? 'Under supervision' : 'تحت الإشراف',
+        route: '/monitor-contracts'
+      },
+      {
+        icon: Gavel,
+        title: language === 'en' ? 'Arbitration' : 'التحكيم',
+        value: '1',
+        description: language === 'en' ? 'Open cases' : 'حالات مفتوحة',
+        route: '/arbitration'
+      }
+    ]
+  };
+  
+  // Combine common items with role-specific items
+  const dashboardItems = [
+    ...commonDashboardItems,
+    ...(roleDashboardItems[userRole as keyof typeof roleDashboardItems] || [])
+  ];
+  
+  // Role-specific tab content
+  const roleTabContent = {
+    company: (
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            {language === 'en' ? 'Cooperative Buying Groups' : 'مجموعات الشراء التعاوني'}
+          </CardTitle>
+          <CardDescription>
+            {language === 'en' 
+              ? 'Join groups to get better deals on bulk purchases' 
+              : 'انضم إلى المجموعات للحصول على صفقات أفضل على المشتريات بالجملة'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="border rounded-lg p-4">
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-medium">
+                  {language === 'en' ? 'Office Supplies Group' : 'مجموعة مستلزمات المكتب'}
+                </h3>
+                <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+                  {language === 'en' ? 'Active' : 'نشط'}
+                </span>
+              </div>
+              <p className="text-sm text-gray-600 mb-2">
+                {language === 'en' 
+                  ? 'Bulk purchase of office supplies at wholesale prices' 
+                  : 'شراء بالجملة لمستلزمات المكتب بأسعار الجملة'}
+              </p>
+              <div className="flex justify-between text-sm mb-1">
+                <span>{language === 'en' ? 'Members' : 'الأعضاء'}: 15/20</span>
+                <span>75%</span>
+              </div>
+              <Progress value={75} className="h-2" />
+              <Button className="mt-4 w-full" onClick={() => navigate('/groups/office-supplies')}>
+                {language === 'en' ? 'View Group' : 'عرض المجموعة'}
+              </Button>
+            </div>
+            
+            <div className="border rounded-lg p-4">
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-medium">
+                  {language === 'en' ? 'IT Equipment Group' : 'مجموعة معدات تكنولوجيا المعلومات'}
+                </h3>
+                <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">
+                  {language === 'en' ? 'Forming' : 'قيد التشكيل'}
+                </span>
+              </div>
+              <p className="text-sm text-gray-600 mb-2">
+                {language === 'en' 
+                  ? 'Group purchase of computers and IT equipment' 
+                  : 'شراء جماعي لأجهزة الكمبيوتر ومعدات تكنولوجيا المعلومات'}
+              </p>
+              <div className="flex justify-between text-sm mb-1">
+                <span>{language === 'en' ? 'Members' : 'الأعضاء'}: 8/30</span>
+                <span>27%</span>
+              </div>
+              <Progress value={27} className="h-2" />
+              <Button className="mt-4 w-full" variant="outline" onClick={() => navigate('/groups/it-equipment')}>
+                {language === 'en' ? 'Join Group' : 'الانضمام للمجموعة'}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    ),
+    freelancer: (
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            {language === 'en' ? 'Available Opportunities' : 'الفرص المتاحة'}
+          </CardTitle>
+          <CardDescription>
+            {language === 'en' 
+              ? 'Browse and apply for projects matching your skills' 
+              : 'تصفح وتقدم للمشاريع التي تتناسب مع مهاراتك'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="border rounded-lg p-4">
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-medium">
+                  {language === 'en' ? 'Website Development' : 'تطوير موقع إلكتروني'}
+                </h3>
+                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                  {language === 'en' ? 'New' : 'جديد'}
+                </span>
+              </div>
+              <p className="text-sm text-gray-600 mb-2">
+                {language === 'en' 
+                  ? 'Building an e-commerce website with payment integration' 
+                  : 'بناء موقع للتجارة الإلكترونية مع دمج نظام دفع'}
+              </p>
+              <div className="flex justify-between text-sm mb-1">
+                <span>{language === 'en' ? 'Budget' : 'الميزانية'}: $3,000</span>
+                <span>{language === 'en' ? 'Duration' : 'المدة'}: 30 days</span>
+              </div>
+              <Button className="mt-4 w-full" variant="outline" onClick={() => navigate('/offers/web-dev')}>
+                {language === 'en' ? 'Submit Offer' : 'تقديم عرض'}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    ),
+    supplier: (
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            {language === 'en' ? 'Active Group Requests' : 'طلبات المجموعات النشطة'}
+          </CardTitle>
+          <CardDescription>
+            {language === 'en' 
+              ? 'Group buying requests matching your product categories' 
+              : 'طلبات شراء جماعية تتطابق مع فئات منتجاتك'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="border rounded-lg p-4">
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-medium">
+                  {language === 'en' ? 'Bulk Office Chairs' : 'كراسي مكتبية بالجملة'}
+                </h3>
+                <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+                  {language === 'en' ? 'Active' : 'نشط'}
+                </span>
+              </div>
+              <p className="text-sm text-gray-600 mb-2">
+                {language === 'en' 
+                  ? 'Group of 5 companies seeking 100 office chairs' 
+                  : 'مجموعة من 5 شركات تبحث عن 100 كرسي مكتبي'}
+              </p>
+              <div className="flex justify-between text-sm mb-1">
+                <span>{language === 'en' ? 'Quantity' : 'الكمية'}: 100 units</span>
+                <span>{language === 'en' ? 'Deadline' : 'الموعد النهائي'}: 7 days</span>
+              </div>
+              <Button className="mt-4 w-full" onClick={() => navigate('/supplier-offers/create')}>
+                {language === 'en' ? 'Submit Bid' : 'تقديم عطاء'}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    ),
+    supervisor: (
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            {language === 'en' ? 'Contracts Under Supervision' : 'العقود تحت الإشراف'}
+          </CardTitle>
+          <CardDescription>
+            {language === 'en' 
+              ? 'Monitor ongoing contracts and their progress' 
+              : 'مراقبة العقود الجارية وتقدمها'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="border rounded-lg p-4">
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-medium">
+                  {language === 'en' ? 'Software Development Project' : 'مشروع تطوير برمجيات'}
+                </h3>
+                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                  {language === 'en' ? 'In Progress' : 'قيد التنفيذ'}
+                </span>
+              </div>
+              <p className="text-sm text-gray-600 mb-2">
+                {language === 'en' 
+                  ? 'Contract between TechGroup and DeveloperOne' 
+                  : 'عقد بين مجموعة التقنية والمطور الأول'}
+              </p>
+              <div className="flex justify-between text-sm mb-1">
+                <span>{language === 'en' ? 'Completion' : 'الإكتمال'}: 45%</span>
+              </div>
+              <Progress value={45} className="h-2" />
+              <Button className="mt-4 w-full" onClick={() => navigate('/monitor-contracts/tech-dev')}>
+                {language === 'en' ? 'View Details' : 'عرض التفاصيل'}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  };
+  
+  // Function to change user role (for demo purposes)
+  const changeRole = (role: string) => {
+    setUserRole(role);
+  };
   
   // Render a KYC verification prompt if not verified
   const renderKYCPrompt = () => {
@@ -97,6 +363,53 @@ const Dashboard = () => {
     );
   };
   
+  // Role selection for demo purposes
+  const renderRoleSelector = () => {
+    return (
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle className="text-sm font-medium">
+            {language === 'en' ? 'Demo: Switch User Role' : 'تجريبي: تبديل دور المستخدم'}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-wrap gap-2">
+          <Button 
+            size="sm" 
+            variant={userRole === 'company' ? 'default' : 'outline'} 
+            onClick={() => changeRole('company')}
+          >
+            <Users className="h-4 w-4 mr-2" />
+            {language === 'en' ? 'Company/Group' : 'شركة / مجموعة'}
+          </Button>
+          <Button 
+            size="sm" 
+            variant={userRole === 'freelancer' ? 'default' : 'outline'} 
+            onClick={() => changeRole('freelancer')}
+          >
+            <User className="h-4 w-4 mr-2" />
+            {language === 'en' ? 'Freelancer' : 'مستقل'}
+          </Button>
+          <Button 
+            size="sm" 
+            variant={userRole === 'supplier' ? 'default' : 'outline'} 
+            onClick={() => changeRole('supplier')}
+          >
+            <Truck className="h-4 w-4 mr-2" />
+            {language === 'en' ? 'Supplier' : 'مورّد'}
+          </Button>
+          <Button 
+            size="sm" 
+            variant={userRole === 'supervisor' ? 'default' : 'outline'} 
+            onClick={() => changeRole('supervisor')}
+          >
+            <Shield className="h-4 w-4 mr-2" />
+            {language === 'en' ? 'Supervisor' : 'مشرف'}
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  };
+  
   return (
     <Layout>
       <div className="space-y-6">
@@ -108,6 +421,10 @@ const Dashboard = () => {
           </h1>
         </div>
         
+        {/* Demo role selector */}
+        {renderRoleSelector()}
+        
+        {/* KYC verification prompt */}
         {renderKYCPrompt()}
         
         <Tabs defaultValue="all" className="space-y-6">
@@ -214,113 +531,15 @@ const Dashboard = () => {
           </TabsContent>
           
           <TabsContent value="cooperative">
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  {language === 'en' ? 'Cooperative Buying Groups' : 'مجموعات الشراء التعاوني'}
-                </CardTitle>
-                <CardDescription>
-                  {language === 'en' 
-                    ? 'Join groups to get better deals on bulk purchases' 
-                    : 'انضم إلى المجموعات للحصول على صفقات أفضل على المشتريات بالجملة'}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="border rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <h3 className="font-medium">
-                        {language === 'en' ? 'Office Supplies Group' : 'مجموعة مستلزمات المكتب'}
-                      </h3>
-                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
-                        {language === 'en' ? 'Active' : 'نشط'}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-2">
-                      {language === 'en' 
-                        ? 'Bulk purchase of office supplies at wholesale prices' 
-                        : 'شراء بالجملة لمستلزمات المكتب بأسعار الجملة'}
-                    </p>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>{language === 'en' ? 'Members' : 'الأعضاء'}: 15/20</span>
-                      <span>75%</span>
-                    </div>
-                    <Progress value={75} className="h-2" />
-                    <Button className="mt-4 w-full" onClick={() => navigate('/groups/office-supplies')}>
-                      {language === 'en' ? 'View Group' : 'عرض المجموعة'}
-                    </Button>
-                  </div>
-                  
-                  <div className="border rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <h3 className="font-medium">
-                        {language === 'en' ? 'IT Equipment Group' : 'مجموعة معدات تكنولوجيا المعلومات'}
-                      </h3>
-                      <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">
-                        {language === 'en' ? 'Forming' : 'قيد التشكيل'}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-2">
-                      {language === 'en' 
-                        ? 'Group purchase of computers and IT equipment' 
-                        : 'شراء جماعي لأجهزة الكمبيوتر ومعدات تكنولوجيا المعلومات'}
-                    </p>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>{language === 'en' ? 'Members' : 'الأعضاء'}: 8/30</span>
-                      <span>27%</span>
-                    </div>
-                    <Progress value={27} className="h-2" />
-                    <Button className="mt-4 w-full" variant="outline" onClick={() => navigate('/groups/it-equipment')}>
-                      {language === 'en' ? 'Join Group' : 'الانضمام للمجموعة'}
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            {roleTabContent.company}
           </TabsContent>
           
           <TabsContent value="freelancers">
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  {language === 'en' ? 'Freelancer Services' : 'خدمات المستقلين'}
-                </CardTitle>
-                <CardDescription>
-                  {language === 'en' 
-                    ? 'Connect with skilled freelancers for your projects' 
-                    : 'تواصل مع المستقلين المهرة لمشاريعك'}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <Button className="w-full" onClick={() => navigate('/freelancers')}>
-                    {language === 'en' ? 'Browse Freelancers' : 'تصفح المستقلين'}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            {roleTabContent.freelancer}
           </TabsContent>
           
           <TabsContent value="suppliers">
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  {language === 'en' ? 'Supplier Directory' : 'دليل الموردين'}
-                </CardTitle>
-                <CardDescription>
-                  {language === 'en' 
-                    ? 'Find verified suppliers for your business needs' 
-                    : 'ابحث عن موردين معتمدين لاحتياجات عملك'}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <Button className="w-full" onClick={() => navigate('/suppliers')}>
-                    {language === 'en' ? 'Browse Suppliers' : 'تصفح الموردين'}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            {roleTabContent.supplier}
           </TabsContent>
         </Tabs>
       </div>

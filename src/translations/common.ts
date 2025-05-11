@@ -36,4 +36,62 @@ export const commonTranslations = {
     en: 'Register',
     ar: 'تسجيل'
   },
+  // Role-related translations
+  chooseRole: {
+    en: 'Choose Your Role',
+    ar: 'اختر دورك'
+  },
+  company: {
+    en: 'Company/Group',
+    ar: 'شركة / مجموعة'
+  },
+  freelancer: {
+    en: 'Freelancer',
+    ar: 'مستقل'
+  },
+  supplier: {
+    en: 'Supplier',
+    ar: 'مورّد'
+  },
+  supervisor: {
+    en: 'Internal Supervisor',
+    ar: 'المشرف الداخلي'
+  },
+  // Feature-related translations
+  contracts: {
+    en: 'Contracts',
+    ar: 'العقود'
+  },
+  offers: {
+    en: 'Offers',
+    ar: 'العروض'
+  },
+  tasks: {
+    en: 'Tasks',
+    ar: 'المهام'
+  },
+  products: {
+    en: 'Products & Services',
+    ar: 'المنتجات والخدمات'
+  },
+  ratings: {
+    en: 'Ratings',
+    ar: 'التقييمات'
+  },
+  groups: {
+    en: 'Groups',
+    ar: 'المجموعات'
+  },
+  explore: {
+    en: 'Explore',
+    ar: 'استكشاف'
+  },
+  viewDetails: {
+    en: 'View Details',
+    ar: 'عرض التفاصيل'
+  },
+  submitOffer: {
+    en: 'Submit Offer',
+    ar: 'تقديم عرض'
+  }
 };

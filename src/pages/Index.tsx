@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { FileText, Search, Users, ShoppingCart, Briefcase, Globe, ChevronDown } from "lucide-react";
+import { FileText, Search, Users, ShoppingCart, Briefcase, Globe, ChevronDown, User, Truck, Shield } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -21,6 +21,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Index = () => {
   const { t, language, setLanguage } = useLanguage();
@@ -58,6 +59,34 @@ const Index = () => {
       title: language === 'en' ? 'Suppliers Portal' : 'بوابة الموردين',
       description: language === 'en' ? 'Find reliable suppliers for your business requirements.' : 'ابحث عن موردين موثوقين لمتطلبات عملك.',
       route: "/suppliers"
+    }
+  ];
+  
+  const roles = [
+    {
+      icon: Users,
+      title: language === 'en' ? 'Company/Group' : 'شركة / مجموعة',
+      description: language === 'en' ? 'Create contracts, request freelancers, vote, and manage contracts.' : 'إنشاء العقود، طلب مستقلين، التصويت، إدارة العقود.',
+      color: 'blue'
+    },
+    {
+      icon: User,
+      title: language === 'en' ? 'Freelancer' : 'مستقل',
+      description: language === 'en' ? 'Submit offers, complete tasks, and get rated.' : 'تقديم العروض، تنفيذ المهام، الحصول على تقييمات.',
+      color: 'green'
+    },
+    {
+      icon: Truck,
+      title: language === 'en' ? 'Supplier' : 'مورّد',
+      description: language === 'en' ? 'Offer products or services to groups with a dedicated interface.' : 'عرض السلع أو الخدمات للمجموعات، واجهة مخصصة داخل نفس الحساب.',
+      color: 'purple'
+    },
+    {
+      icon: Shield,
+      title: language === 'en' ? 'Internal Supervisor' : 'المشرف الداخلي',
+      description: language === 'en' ? 'Monitor contract progress without voting rights (appointed by the platform).' : 'مراقبة سير العقود دون صلاحية التصويت (يُعين تلقائيًا من المنصة).',
+      color: 'gray',
+      disabled: true
     }
   ];
   
@@ -204,6 +233,50 @@ const Index = () => {
               </Button>
             </div>
           ))}
+        </div>
+        
+        {/* User Roles Section */}
+        <div className="mt-20">
+          <h2 className="text-2xl font-bold text-center mb-8">
+            {language === 'en' ? 'Choose Your Role' : 'اختر دورك'}
+          </h2>
+          <p className="text-center text-gray-600 max-w-2xl mx-auto mb-10">
+            {language === 'en' 
+              ? 'Select the role that best describes your needs on our platform.'
+              : 'اختر الدور الذي يناسب احتياجاتك على منصتنا.'}
+          </p>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {roles.map((role, index) => {
+              const colorClasses = {
+                blue: "bg-blue-100 text-blue-600",
+                green: "bg-green-100 text-green-600",
+                purple: "bg-purple-100 text-purple-600",
+                gray: "bg-gray-100 text-gray-600"
+              };
+              
+              const iconColorClass = colorClasses[role.color as keyof typeof colorClasses] || colorClasses.blue;
+              
+              return (
+                <Card key={index} className={role.disabled ? "opacity-60 cursor-not-allowed" : "hover:shadow-md cursor-pointer"}>
+                  <CardContent className="p-6 flex flex-col items-center text-center">
+                    <div className={`h-14 w-14 rounded-full ${iconColorClass} flex items-center justify-center mb-4 mt-4`}>
+                      <role.icon className="h-7 w-7" />
+                    </div>
+                    <CardTitle className="mb-2">{role.title}</CardTitle>
+                    <CardDescription className="mb-6">{role.description}</CardDescription>
+                    <Button 
+                      className="w-full" 
+                      disabled={role.disabled}
+                      onClick={() => role.disabled ? null : navigate("/register", { state: { role: role.title } })}
+                    >
+                      {language === 'en' ? 'Register as ' + role.title : 'تسجيل كـ ' + role.title}
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </div>
       </main>
       

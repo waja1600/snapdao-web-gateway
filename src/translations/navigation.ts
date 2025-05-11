@@ -71,5 +71,46 @@ export const navigationTranslations = {
   suppliers: {
     en: 'Suppliers',
     ar: 'الموردين'
+  },
+  // User role translations
+  roles: {
+    en: 'Roles',
+    ar: 'الأدوار'
+  },
+  roleCompany: {
+    en: 'Company/Group',
+    ar: 'شركة / مجموعة'
+  },
+  roleFreelancer: {
+    en: 'Freelancer',
+    ar: 'مستقل'
+  },
+  roleSupplier: {
+    en: 'Supplier',
+    ar: 'مورّد'
+  },
+  roleSupervisor: {
+    en: 'Internal Supervisor',
+    ar: 'المشرف الداخلي'
+  },
+  contracts: {
+    en: 'Contracts',
+    ar: 'العقود'
+  },
+  offers: {
+    en: 'Offers',
+    ar: 'العروض'
+  },
+  tasks: {
+    en: 'Tasks',
+    ar: 'المهام'
+  },
+  ratings: {
+    en: 'Ratings',
+    ar: 'التقييمات'
+  },
+  products: {
+    en: 'Products & Services',
+    ar: 'المنتجات والخدمات'
   }
 };
