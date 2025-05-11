@@ -24,6 +24,17 @@ import ClientExpenses from "./pages/ClientExpenses";
 import ProjectWorkflow from "./pages/ProjectWorkflow";
 import NotFound from "./pages/NotFound";
 
+// New paths for ForGPO
+const newRoutes = [
+  { path: "/invoices", element: <ClientExpenses /> }, // Reusing ClientExpenses for invoices
+  { path: "/verification", element: <Members /> }, // Temporarily reusing Members for verification
+  { path: "/notifications", element: <Proposals /> }, // Temporarily reusing Proposals for notifications
+  { path: "/groups", element: <Members /> }, // Temporarily reusing Members for groups
+  { path: "/cooperative-buying", element: <Projects /> }, // Temporarily reusing Projects for cooperative buying
+  { path: "/freelancers", element: <Explore /> }, // Temporarily reusing Explore for freelancers
+  { path: "/suppliers", element: <Explore /> }, // Temporarily reusing Explore for suppliers
+];
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -49,6 +60,12 @@ const App = () => (
                 <Route path="/arbitration" element={<Arbitration />} />
                 <Route path="/expenses" element={<ClientExpenses />} />
                 <Route path="/workflow" element={<ProjectWorkflow />} />
+                
+                {/* Add the new routes */}
+                {newRoutes.map((route) => (
+                  <Route key={route.path} path={route.path} element={route.element} />
+                ))}
+
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

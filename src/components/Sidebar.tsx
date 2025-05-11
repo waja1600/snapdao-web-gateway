@@ -15,7 +15,12 @@ import {
   Settings,
   Search,
   Gavel,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Bell,
+  Shield,
+  ShoppingCart,
+  Briefcase,
+  UserCircle
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -38,9 +43,24 @@ export const Sidebar = () => {
       icon: Search,
     },
     {
-      name: t('proposals'),
-      href: "/proposals",
+      name: t('myGroups'),
+      href: "/groups",
+      icon: Users,
+    },
+    {
+      name: t('invoices'),
+      href: "/invoices",
       icon: FileText,
+    },
+    {
+      name: t('verification'),
+      href: "/verification",
+      icon: Shield,
+    },
+    {
+      name: t('notifications'),
+      href: "/notifications",
+      icon: Bell,
     },
     {
       name: t('voting'),
@@ -48,24 +68,24 @@ export const Sidebar = () => {
       icon: Vote,
     },
     {
-      name: t('projects'),
-      href: "/projects",
-      icon: Settings,
-    },
-    {
-      name: t('members'),
-      href: "/members",
-      icon: Users,
-    },
-    {
-      name: t('agreement'),
-      href: "/agreement",
-      icon: FileSignature,
-    },
-    {
       name: t('arbitration'),
       href: "/arbitration",
       icon: Gavel,
+    },
+    {
+      name: t('cooperativeBuying'),
+      href: "/cooperative-buying",
+      icon: ShoppingCart,
+    },
+    {
+      name: t('freelancers'),
+      href: "/freelancers",
+      icon: UserCircle,
+    },
+    {
+      name: t('suppliers'),
+      href: "/suppliers",
+      icon: Briefcase,
     },
   ];
   
@@ -86,7 +106,7 @@ export const Sidebar = () => {
             isCollapsed && "justify-center"
           )}
         >
-          {isCollapsed ? "SD" : "SnapDAO"}
+          {isCollapsed ? "FG" : "ForGPO"}
         </Link>
         <Button 
           variant="ghost" 
