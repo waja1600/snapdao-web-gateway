@@ -11,6 +11,16 @@ import { format } from "date-fns";
 import { FileText, Bell, Shield, Vote, Gavel, Users, FileText as Invoice, ShoppingCart, CheckCircle, User, Truck, ClipboardList, Star, FileSignature, Package } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+// Define types for dashboard items
+interface DashboardItem {
+  icon: React.ElementType;
+  title: string;
+  value: string;
+  description: string;
+  route: string;
+  status?: 'verified' | 'pending' | 'not_started'; // Add optional status property
+}
+
 const Dashboard = () => {
   const { t, language } = useLanguage();
   const { user } = useAuth();
@@ -24,7 +34,7 @@ const Dashboard = () => {
   const [kycStatus, setKycStatus] = useState<'pending' | 'verified' | 'not_started'>('not_started');
   
   // Common dashboard items for all roles
-  const commonDashboardItems = [
+  const commonDashboardItems: DashboardItem[] = [
     {
       icon: Invoice,
       title: language === 'en' ? 'Invoices' : 'الفواتير',
@@ -52,7 +62,9 @@ const Dashboard = () => {
   ];
   
   // Role-specific dashboard items
-  const roleDashboardItems = {
+  const roleDashboardItems: {
+    [key: string]: DashboardItem[]
+  } = {
     company: [
       {
         icon: FileSignature,
@@ -134,7 +146,7 @@ const Dashboard = () => {
   };
   
   // Combine common items with role-specific items
-  const dashboardItems = [
+  const dashboardItems: DashboardItem[] = [
     ...commonDashboardItems,
     ...(roleDashboardItems[userRole as keyof typeof roleDashboardItems] || [])
   ];

@@ -93,5 +93,29 @@ export const commonTranslations = {
   submitOffer: {
     en: 'Submit Offer',
     ar: 'تقديم عرض'
+  },
+  view: {
+    en: 'View',
+    ar: 'عرض'
+  },
+  verification: {
+    en: 'Verification',
+    ar: 'التوثيق'
+  },
+  verified: {
+    en: 'Verified',
+    ar: 'تم التحقق'
+  },
+  pending: {
+    en: 'Pending',
+    ar: 'قيد الانتظار'
+  },
+  notStarted: {
+    en: 'Not Started',
+    ar: 'لم يبدأ'
+  },
+  completeVerification: {
+    en: 'Complete Verification',
+    ar: 'إكمال التحقق'
   }
 };
