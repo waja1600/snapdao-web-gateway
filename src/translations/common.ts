@@ -1,3 +1,4 @@
+
 export const commonTranslations = {
   submit: {
     en: 'Submit',
@@ -117,7 +118,7 @@ export const commonTranslations = {
     en: 'Complete Verification',
     ar: 'إكمال التحقق'
   },
-  // New Explore page translations
+  // Explore page translations
   filters: {
     en: 'Filters',
     ar: 'فلترة'
@@ -194,4 +195,8 @@ export const commonTranslations = {
     en: 'Try adjusting your search criteria or create a new proposal.',
     ar: 'جرب تعديل معايير البحث أو إنشاء مقترح جديد.'
   },
+  proposals: {
+    en: 'Proposals',
+    ar: 'المقترحات'
+  }
 };
