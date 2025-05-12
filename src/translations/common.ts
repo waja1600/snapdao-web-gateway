@@ -1,4 +1,3 @@
-
 export const commonTranslations = {
   submit: {
     en: 'Submit',
@@ -198,5 +197,98 @@ export const commonTranslations = {
   proposals: {
     en: 'Proposals',
     ar: 'المقترحات'
+  },
+  // Contract-related translations
+  contractDetails: {
+    en: 'Contract Details',
+    ar: 'تفاصيل العقد'
+  },
+  dealStages: {
+    en: 'Deal Stages',
+    ar: 'مراحل الصفقة'
+  },
+  votingStatus: {
+    en: 'Voting Status',
+    ar: 'حالة التصويت'
+  },
+  downloadContract: {
+    en: 'Download Contract PDF',
+    ar: 'تحميل العقد بصيغة PDF'
+  },
+  comments: {
+    en: 'Comments',
+    ar: 'التعليقات'
+  },
+  addComment: {
+    en: 'Add Comment',
+    ar: 'إضافة تعليق'
+  },
+  postComment: {
+    en: 'Post Comment',
+    ar: 'نشر التعليق'
+  },
+  notifyAll: {
+    en: 'Notify All Parties',
+    ar: 'إشعار جميع الأطراف'
+  },
+  members: {
+    en: 'Members',
+    ar: 'الأعضاء'
+  },
+  addMember: {
+    en: 'Add Member',
+    ar: 'إضافة عضو'
+  },
+  supervisors: {
+    en: 'Supervisors',
+    ar: 'المشرفين'
+  },
+  joinNetwork: {
+    en: 'Join Network',
+    ar: 'الانضمام للشبكة'
+  },
+  submitOffer: {
+    en: 'Submit Offer',
+    ar: 'تقديم عرض'
+  },
+  approved: {
+    en: 'Approved',
+    ar: 'تمت الموافقة'
+  },
+  rejected: {
+    en: 'Rejected',
+    ar: 'مرفوض'
+  },
+  inProgress: {
+    en: 'In Progress',
+    ar: 'قيد التنفيذ'
+  },
+  completed: {
+    en: 'Completed',
+    ar: 'مكتمل'
+  },
+  negotiations: {
+    en: 'Negotiations',
+    ar: 'المفاوضات'
+  },
+  agreement: {
+    en: 'Agreement',
+    ar: 'الاتفاق'
+  },
+  implementation: {
+    en: 'Implementation',
+    ar: 'التنفيذ'
+  },
+  closing: {
+    en: 'Closing',
+    ar: 'الإغلاق'
+  },
+  writeYourComment: {
+    en: 'Write your comment here...',
+    ar: 'اكتب تعليقك هنا...'
+  },
+  selectSupervisor: {
+    en: 'Select Supervisor',
+    ar: 'اختر المشرف'
   }
 };

@@ -6,6 +6,23 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Search, UserPlus, MoreHorizontal } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "sonner";
 
 // Mock data for members
 const mockMembers = [
@@ -16,9 +33,19 @@ const mockMembers = [
   { id: '5', name: 'Mohammed Ali', email: 'mohammed@example.com', role: 'Member', joinedDate: '2023-05-18' },
 ];
 
+// Mock data for supervisors
+const mockSupervisors = [
+  { id: '101', name: 'Ali Ahmed', email: 'ali@example.com', specialization: 'Finance' },
+  { id: '102', name: 'Layla Hassan', email: 'layla@example.com', specialization: 'Legal' },
+  { id: '103', name: 'Omar Khalid', email: 'omar@example.com', specialization: 'Technical' },
+  { id: '104', name: 'Nour Mohamed', email: 'nour@example.com', specialization: 'Operations' },
+];
+
 const Members = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedSupervisor, setSelectedSupervisor] = useState("");
   
   const filteredMembers = mockMembers.filter(member => 
     member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -33,16 +60,67 @@ const Members = () => {
       .toUpperCase()
       .substring(0, 2);
   };
+
+  const handleAddMember = () => {
+    if (!selectedSupervisor) {
+      toast.error(t('pleaseSelectSupervisor'));
+      return;
+    }
+    
+    const supervisor = mockSupervisors.find(s => s.id === selectedSupervisor);
+    if (supervisor) {
+      toast.success(`${supervisor.name} ${t('addedAsSuper')}`);
+      setDialogOpen(false);
+      setSelectedSupervisor("");
+    }
+  };
   
   return (
     <Layout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">{t('members')}</h1>
-          <Button>
-            <UserPlus className="mr-2 h-4 w-4" />
-            Add Member
-          </Button>
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <UserPlus className="mr-2 h-4 w-4" />
+                {t('addMember')}
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{t('selectSupervisor')}</DialogTitle>
+                <DialogDescription>
+                  {t('selectSupervisorDesc')}
+                </DialogDescription>
+              </DialogHeader>
+              
+              <Select value={selectedSupervisor} onValueChange={setSelectedSupervisor}>
+                <SelectTrigger>
+                  <SelectValue placeholder={t('selectSupervisor')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {mockSupervisors.map((supervisor) => (
+                    <SelectItem key={supervisor.id} value={supervisor.id}>
+                      <div className="flex flex-col">
+                        <span>{supervisor.name}</span>
+                        <span className="text-xs text-gray-500">{supervisor.specialization}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                  {t('cancel')}
+                </Button>
+                <Button onClick={handleAddMember}>
+                  {t('addMember')}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
         
         <div className="flex items-center gap-4">
