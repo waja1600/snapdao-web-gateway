@@ -1,4 +1,3 @@
-
 export const commonTranslations = {
   submit: {
     en: 'Submit',
@@ -117,5 +116,82 @@ export const commonTranslations = {
   completeVerification: {
     en: 'Complete Verification',
     ar: 'إكمال التحقق'
-  }
+  },
+  // New Explore page translations
+  filters: {
+    en: 'Filters',
+    ar: 'فلترة'
+  },
+  search: {
+    en: 'Search',
+    ar: 'البحث'
+  },
+  searchPlaceholder: {
+    en: 'What are you looking for...',
+    ar: 'عن ماذا تبحث...'
+  },
+  protocol: {
+    en: 'Protocol',
+    ar: 'البروتوكول'
+  },
+  selectProtocol: {
+    en: 'Select Protocol',
+    ar: 'اختر البروتوكول'
+  },
+  allProtocols: {
+    en: 'All Protocols',
+    ar: 'جميع البروتوكولات'
+  },
+  network: {
+    en: 'Network',
+    ar: 'الشبكة'
+  },
+  selectNetwork: {
+    en: 'Select Network',
+    ar: 'اختر الشبكة'
+  },
+  allNetworks: {
+    en: 'All Networks',
+    ar: 'جميع الشبكات'
+  },
+  category: {
+    en: 'Category',
+    ar: 'الفئة'
+  },
+  selectCategory: {
+    en: 'Select Category',
+    ar: 'اختر الفئة'
+  },
+  allCategories: {
+    en: 'All Categories',
+    ar: 'جميع الفئات'
+  },
+  resetFilters: {
+    en: 'Reset Filters',
+    ar: 'إعادة تعيين الفلاتر'
+  },
+  active: {
+    en: 'Active',
+    ar: 'نشط'
+  },
+  closed: {
+    en: 'Closed',
+    ar: 'مغلق'
+  },
+  createdAt: {
+    en: 'Created on',
+    ar: 'تم الإنشاء في'
+  },
+  votes: {
+    en: 'votes',
+    ar: 'أصوات'
+  },
+  noProposalsFound: {
+    en: 'No proposals found',
+    ar: 'لم يتم العثور على مقترحات'
+  },
+  tryAdjustingFilters: {
+    en: 'Try adjusting your search criteria or create a new proposal.',
+    ar: 'جرب تعديل معايير البحث أو إنشاء مقترح جديد.'
+  },
 };
