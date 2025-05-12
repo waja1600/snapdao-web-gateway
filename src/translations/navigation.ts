@@ -149,5 +149,42 @@ export const navigationTranslations = {
   ourVision: {
     en: 'Our Vision',
     ar: 'رؤيتنا'
+  },
+  // New translations for active deals pages
+  activeDeals: {
+    en: 'Active Deals',
+    ar: 'الصفقات النشطة'
+  },
+  networkRequests: {
+    en: 'Network Requests',
+    ar: 'طلبات الشبكات'
+  },
+  submitOffer: {
+    en: 'Submit Offer',
+    ar: 'تقديم عرض'
+  },
+  joinFunding: {
+    en: 'Join Funding',
+    ar: 'انضم للتمويل'
+  },
+  supplyOffer: {
+    en: 'Supply Offer',
+    ar: 'عرض توريد'
+  },
+  dealDetails: {
+    en: 'Deal Details',
+    ar: 'تفاصيل الصفقة'
+  },
+  requirements: {
+    en: 'Requirements',
+    ar: 'المتطلبات'
+  },
+  licensing: {
+    en: 'Licensing & Documentation',
+    ar: 'الترخيص والوثائق'
+  },
+  groupMembers: {
+    en: 'Group Members',
+    ar: 'أعضاء المجموعة'
   }
 };

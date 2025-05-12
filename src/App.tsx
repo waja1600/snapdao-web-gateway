@@ -27,6 +27,8 @@ import HowItWorks from "./pages/HowItWorks";
 import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
 import FAQ from "./pages/FAQ";
+import ActiveDeals from "./pages/ActiveDeals";
+import DealDetail from "./pages/DealDetail";
 
 // New paths for ForGPO
 const newRoutes = [
@@ -41,6 +43,8 @@ const newRoutes = [
   { path: "/about", element: <AboutUs /> }, // New About Us page
   { path: "/contact", element: <ContactUs /> }, // New Contact Us page
   { path: "/faq", element: <FAQ /> }, // New FAQ page
+  { path: "/active-deals", element: <ActiveDeals /> }, // New Active Deals page
+  { path: "/deals/:id", element: <DealDetail /> }, // New Deal Detail page
 ];
 
 const queryClient = new QueryClient();
