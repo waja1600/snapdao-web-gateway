@@ -112,5 +112,42 @@ export const navigationTranslations = {
   products: {
     en: 'Products & Services',
     ar: 'المنتجات والخدمات'
+  },
+  // New translations for additional pages
+  faq: {
+    en: 'FAQ',
+    ar: 'الأسئلة الشائعة'
+  },
+  contactUs: {
+    en: 'Contact Us',
+    ar: 'اتصل بنا'
+  },
+  termsOfService: {
+    en: 'Terms of Service',
+    ar: 'شروط الخدمة'
+  },
+  privacyPolicy: {
+    en: 'Privacy Policy',
+    ar: 'سياسة الخصوصية'
+  },
+  explore: {
+    en: 'Explore',
+    ar: 'استكشاف'
+  },
+  platformBenefits: {
+    en: 'Platform Benefits',
+    ar: 'مزايا المنصة'
+  },
+  ourValues: {
+    en: 'Our Values',
+    ar: 'قيمنا'
+  },
+  ourStory: {
+    en: 'Our Story',
+    ar: 'قصتنا'
+  },
+  ourVision: {
+    en: 'Our Vision',
+    ar: 'رؤيتنا'
   }
 };

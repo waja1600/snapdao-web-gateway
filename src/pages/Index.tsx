@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -100,18 +99,23 @@ const Index = () => {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuLink className="px-3 py-2 text-sm font-medium" href="#about">
+                <NavigationMenuLink className="px-3 py-2 text-sm font-medium" href="/about">
                   {language === 'en' ? 'About Us' : 'من نحن'}
                 </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuLink className="px-3 py-2 text-sm font-medium" href="#mission">
-                  {language === 'en' ? 'Our Mission' : 'رسالتنا'}
+                <NavigationMenuLink className="px-3 py-2 text-sm font-medium" href="/how-it-works">
+                  {language === 'en' ? 'How It Works' : 'كيف تعمل المنصة'}
                 </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuLink className="px-3 py-2 text-sm font-medium" href="#how-it-works">
-                  {language === 'en' ? 'How It Works' : 'كيف تعمل المنصة'}
+                <NavigationMenuLink className="px-3 py-2 text-sm font-medium" href="/faq">
+                  {language === 'en' ? 'FAQ' : 'الأسئلة الشائعة'}
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink className="px-3 py-2 text-sm font-medium" href="/contact">
+                  {language === 'en' ? 'Contact Us' : 'اتصل بنا'}
                 </NavigationMenuLink>
               </NavigationMenuItem>
             </NavigationMenuList>
@@ -278,11 +282,73 @@ const Index = () => {
             })}
           </div>
         </div>
+        
+        {/* New Call to Action Section */}
+        <div className="mt-24 bg-blue-50 py-16">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-2xl font-bold mb-6">
+              {language === 'en' ? 'Ready to Get Started?' : 'هل أنت مستعد للبدء؟'}
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto mb-8">
+              {language === 'en' 
+                ? 'Join thousands of businesses and professionals already using our platform to streamline their collaboration.'
+                : 'انضم إلى آلاف الشركات والمهنيين الذين يستخدمون منصتنا بالفعل لتبسيط تعاونهم.'}
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Button size="lg" onClick={() => navigate("/register")}>
+                {language === 'en' ? 'Register Now' : 'سجل الآن'}
+              </Button>
+              <Button size="lg" variant="outline" onClick={() => navigate("/how-it-works")}>
+                {language === 'en' ? 'Learn More' : 'اعرف المزيد'}
+              </Button>
+            </div>
+          </div>
+        </div>
       </main>
       
       <footer className="bg-gray-50 mt-20 py-12">
-        <div className="container mx-auto px-4 text-center text-gray-600">
-          <p>© 2025 ForGPO. All rights reserved.</p>
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <h3 className="font-bold text-lg mb-4">{language === 'en' ? 'ForGPO' : 'ForGPO'}</h3>
+              <p className="text-gray-600 mb-4">
+                {language === 'en' 
+                  ? 'Connecting businesses, freelancers, and suppliers for efficient collaboration.'
+                  : 'ربط الشركات والمستقلين والموردين للتعاون الفعال.'}
+              </p>
+            </div>
+            
+            <div>
+              <h3 className="font-bold text-lg mb-4">{language === 'en' ? 'Quick Links' : 'روابط سريعة'}</h3>
+              <ul className="space-y-2">
+                <li><a href="/about" className="text-gray-600 hover:text-blue-600">{language === 'en' ? 'About Us' : 'من نحن'}</a></li>
+                <li><a href="/how-it-works" className="text-gray-600 hover:text-blue-600">{language === 'en' ? 'How It Works' : 'كيف تعمل المنصة'}</a></li>
+                <li><a href="/faq" className="text-gray-600 hover:text-blue-600">{language === 'en' ? 'FAQ' : 'الأسئلة الشائعة'}</a></li>
+                <li><a href="/contact" className="text-gray-600 hover:text-blue-600">{language === 'en' ? 'Contact Us' : 'اتصل بنا'}</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-bold text-lg mb-4">{language === 'en' ? 'Services' : 'الخدمات'}</h3>
+              <ul className="space-y-2">
+                <li><a href="/cooperative-buying" className="text-gray-600 hover:text-blue-600">{language === 'en' ? 'Cooperative Buying' : 'الشراء التعاوني'}</a></li>
+                <li><a href="/freelancers" className="text-gray-600 hover:text-blue-600">{language === 'en' ? 'Freelancers' : 'المستقلين'}</a></li>
+                <li><a href="/suppliers" className="text-gray-600 hover:text-blue-600">{language === 'en' ? 'Suppliers' : 'الموردين'}</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-bold text-lg mb-4">{language === 'en' ? 'Legal' : 'قانوني'}</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-gray-600 hover:text-blue-600">{language === 'en' ? 'Terms of Service' : 'شروط الخدمة'}</a></li>
+                <li><a href="#" className="text-gray-600 hover:text-blue-600">{language === 'en' ? 'Privacy Policy' : 'سياسة الخصوصية'}</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-200 pt-8 text-center text-gray-600">
+            <p>© 2025 ForGPO. {language === 'en' ? 'All rights reserved.' : 'جميع الحقوق محفوظة.'}</p>
+          </div>
         </div>
       </footer>
     </div>
