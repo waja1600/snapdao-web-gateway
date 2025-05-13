@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -13,6 +12,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const mockDealStages = [
   { id: 1, name: 'negotiations', status: 'completed' },

@@ -1,3 +1,4 @@
+
 export const commonTranslations = {
   submit: {
     en: 'Submit',
@@ -89,10 +90,7 @@ export const commonTranslations = {
     en: 'View Details',
     ar: 'عرض التفاصيل'
   },
-  submitOffer: {
-    en: 'Submit Offer',
-    ar: 'تقديم عرض'
-  },
+  // Removed duplicate submitOffer entry
   view: {
     en: 'View',
     ar: 'عرض'
@@ -290,5 +288,45 @@ export const commonTranslations = {
   selectSupervisor: {
     en: 'Select Supervisor',
     ar: 'اختر المشرف'
+  },
+  contractDownloaded: {
+    en: 'Contract downloaded successfully',
+    ar: 'تم تحميل العقد بنجاح'
+  },
+  commentPosted: {
+    en: 'Comment posted successfully',
+    ar: 'تم نشر التعليق بنجاح'
+  },
+  commentPostedWithNotification: {
+    en: 'Comment posted with notification to all parties',
+    ar: 'تم نشر التعليق مع إشعار لجميع الأطراف'
+  },
+  back: {
+    en: 'Back',
+    ar: 'رجوع'
+  },
+  yes: {
+    en: 'Yes',
+    ar: 'نعم'
+  },
+  no: {
+    en: 'No',
+    ar: 'لا'
+  },
+  abstain: {
+    en: 'Abstain',
+    ar: 'امتناع'
+  },
+  viewAll: {
+    en: 'View All',
+    ar: 'عرض الكل'
+  },
+  signContract: {
+    en: 'Sign Contract',
+    ar: 'توقيع العقد'
+  },
+  addProposal: {
+    en: 'Add Proposal',
+    ar: 'إضافة مقترح'
   }
 };
