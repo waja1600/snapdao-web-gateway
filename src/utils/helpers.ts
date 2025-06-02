@@ -5,9 +5,9 @@ export function generateId(): string {
 }
 
 // Format currency based on user's locale
-export const formatter = new Intl.NumberFormat('ar-SA', {
+export const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
-  currency: 'SAR',
+  currency: 'USD',
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
