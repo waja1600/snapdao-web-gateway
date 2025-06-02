@@ -30,7 +30,7 @@ export function Header() {
   return (
     <header className="bg-white border-b border-gray-200 py-3 px-6 flex items-center justify-between">
       <div className="flex items-center gap-4">
-        <h2 className="text-xl font-semibold">ForGPO</h2>
+        <h2 className="text-xl font-semibold">SnapDAO</h2>
       </div>
       
       <div className="flex items-center gap-4">
@@ -45,10 +45,8 @@ export function Header() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate('/notifications')}
         >
           <Bell className="h-5 w-5" />
-          <span className="absolute top-0 right-0 h-4 w-4 text-xs bg-red-500 text-white rounded-full flex items-center justify-center">3</span>
         </Button>
         
         {user ? (
@@ -65,7 +63,6 @@ export function Header() {
               <DropdownMenuItem>{user.email}</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => navigate('/profile')}>Profile</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/verification')}>Verification</DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/settings')}>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>

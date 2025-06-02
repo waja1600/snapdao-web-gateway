@@ -19,7 +19,7 @@ import { format } from "date-fns";
 import { Search, FileText } from "lucide-react";
 
 const Explore = () => {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const { proposals, protocolOptions, networkOptions, categoryOptions, filterProposals } = useDAO();
   const navigate = useNavigate();
   
@@ -49,15 +49,15 @@ const Explore = () => {
         <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-6">
           {/* Filters Section */}
           <div className="space-y-6 bg-white p-6 rounded-lg border">
-            <h2 className="font-semibold text-lg mb-4">{t('filters')}</h2>
+            <h2 className="font-semibold text-lg mb-4">فلترة</h2>
             
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">{t('search')}</label>
+                <label className="text-sm font-medium">البحث</label>
                 <div className="relative">
                   <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                   <Input 
-                    placeholder={t('searchPlaceholder')}
+                    placeholder="عن ماذا تبحث..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10"
@@ -66,13 +66,13 @@ const Explore = () => {
               </div>
               
               <div className="space-y-2">
-                <label className="text-sm font-medium">{t('protocol')}</label>
+                <label className="text-sm font-medium">البروتوكول</label>
                 <Select value={protocol} onValueChange={setProtocol}>
                   <SelectTrigger>
-                    <SelectValue placeholder={t('selectProtocol')} />
+                    <SelectValue placeholder="اختر البروتوكول" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">{t('allProtocols')}</SelectItem>
+                    <SelectItem value="all">جميع البروتوكولات</SelectItem>
                     {protocolOptions.map((option) => (
                       <SelectItem key={option} value={option}>
                         {option}
@@ -83,13 +83,13 @@ const Explore = () => {
               </div>
               
               <div className="space-y-2">
-                <label className="text-sm font-medium">{t('network')}</label>
+                <label className="text-sm font-medium">الشبكة</label>
                 <Select value={network} onValueChange={setNetwork}>
                   <SelectTrigger>
-                    <SelectValue placeholder={t('selectNetwork')} />
+                    <SelectValue placeholder="اختر الشبكة" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">{t('allNetworks')}</SelectItem>
+                    <SelectItem value="all">جميع الشبكات</SelectItem>
                     {networkOptions.map((option) => (
                       <SelectItem key={option} value={option}>
                         {option}
@@ -100,13 +100,13 @@ const Explore = () => {
               </div>
               
               <div className="space-y-2">
-                <label className="text-sm font-medium">{t('category')}</label>
+                <label className="text-sm font-medium">الفئة</label>
                 <Select value={category} onValueChange={setCategory}>
                   <SelectTrigger>
-                    <SelectValue placeholder={t('selectCategory')} />
+                    <SelectValue placeholder="اختر الفئة" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">{t('allCategories')}</SelectItem>
+                    <SelectItem value="all">جميع الفئات</SelectItem>
                     {categoryOptions.map((option) => (
                       <SelectItem key={option} value={option}>
                         {option}
@@ -126,7 +126,7 @@ const Explore = () => {
                   setSearchQuery("");
                 }}
               >
-                {t('resetFilters')}
+                إعادة تعيين الفلاتر
               </Button>
             </div>
           </div>
@@ -160,18 +160,18 @@ const Explore = () => {
                       </div>
                       
                       <Badge variant={proposal.status === 'active' ? 'default' : 'secondary'}>
-                        {proposal.status === 'active' ? t('active') : t('closed')}
+                        {proposal.status === 'active' ? 'نشط' : 'مغلق'}
                       </Badge>
                     </div>
                     
                     <div className="flex items-center justify-between mt-4 text-sm text-gray-500">
                       <div className="flex items-center">
                         <FileText className="mr-2 h-4 w-4" />
-                        <span>{t('createdAt')} {format(new Date(proposal.createdAt), 'MMM d, yyyy')}</span>
+                        <span>تم الإنشاء في {format(new Date(proposal.createdAt), 'MMM d, yyyy')}</span>
                       </div>
                       
                       <div className="flex items-center gap-1">
-                        {Object.values(proposal.votes || {}).reduce((sum, count) => sum + count, 0)} {t('votes')}
+                        {Object.values(proposal.votes || {}).reduce((sum, count) => sum + count, 0)} أصوات
                       </div>
                     </div>
                   </CardContent>
@@ -180,9 +180,9 @@ const Explore = () => {
             ) : (
               <div className="text-center p-12 bg-gray-50 border border-dashed rounded-lg">
                 <FileText className="mx-auto h-12 w-12 text-gray-400" />
-                <h3 className="mt-4 text-xl font-medium">{t('noProposalsFound')}</h3>
+                <h3 className="mt-4 text-xl font-medium">لم يتم العثور على مقترحات</h3>
                 <p className="mt-2 text-gray-500">
-                  {t('tryAdjustingFilters')}
+                  جرب تعديل معايير البحث أو إنشاء مقترح جديد.
                 </p>
               </div>
             )}

@@ -5,10 +5,6 @@ import { ProposalService } from '../services/proposal-service';
 import { ProjectService } from '../services/project-service';
 import { AgreementService } from '../services/agreement-service';
 import { ArbitrationService } from '../services/arbitration-service';
-import { loomioService } from '../services/loomio-service';
-import { snapshotService } from '../services/snapshot-service';
-import { projectManagementService } from '../services/project-management-service';
-import { mcpService } from '../services/mcp-service';
 
 interface DAOContextType {
   // Proposal methods
@@ -51,16 +47,6 @@ interface DAOContextType {
   getDisputeById: (id: string) => any;
   createDispute: (disputeData: any) => any;
   updateDisputeStatus: (id: string, newStatus: string) => boolean;
-  
-  // Integrated voting and discussion services
-  loomioService: typeof loomioService;
-  snapshotService: typeof snapshotService;
-  
-  // Project Management Service
-  projectManagementService: typeof projectManagementService;
-  
-  // MCP Service
-  mcpService: typeof mcpService;
   
   // Filter options
   protocolOptions: string[];
@@ -105,12 +91,6 @@ export const DAOProvider: React.FC<{children: React.ReactNode}> = ({ children })
       getDisputeById: arbitrationService.getDisputeById.bind(arbitrationService),
       createDispute: arbitrationService.createDispute.bind(arbitrationService),
       updateDisputeStatus: arbitrationService.updateDisputeStatus.bind(arbitrationService),
-      
-      // Integrated services
-      loomioService,
-      snapshotService,
-      projectManagementService,
-      mcpService,
       
       // Filter options
       protocolOptions,
