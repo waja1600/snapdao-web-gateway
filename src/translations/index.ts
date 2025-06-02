@@ -1,6 +1,13 @@
 
 import { navigationTranslations } from './navigation';
-import { commonTranslations } from './common';
+import { authTranslations } from './auth';
+import { actionsTranslations } from './actions';
+import { statusTranslations } from './status';
+import { rolesTranslations } from './roles';
+import { featuresTranslations } from './features';
+import { contractsTranslations } from './contracts';
+import { filtersTranslations } from './filters';
+import { messagesTranslations } from './messages';
 import { formTranslations } from './forms';
 import { proposalTranslations } from './proposals';
 import { arbitrationTranslations } from './arbitration';
@@ -9,7 +16,14 @@ import { expensesTranslations } from './expenses';
 // Combine all translation dictionaries
 const translations = {
   ...navigationTranslations,
-  ...commonTranslations,
+  ...authTranslations,
+  ...actionsTranslations,
+  ...statusTranslations,
+  ...rolesTranslations,
+  ...featuresTranslations,
+  ...contractsTranslations,
+  ...filtersTranslations,
+  ...messagesTranslations,
   ...formTranslations,
   ...proposalTranslations,
   ...arbitrationTranslations,
