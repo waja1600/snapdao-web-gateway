@@ -4,7 +4,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { AuthProvider } from "./contexts/AuthContext";
-import { DAOProvider } from "./contexts/DAOContext";
 
 // Pages
 import Index from "./pages/Index";
@@ -26,40 +25,38 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
         <AuthProvider>
-          <DAOProvider>
-            <Router>
-              <div className="min-h-screen">
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/groups" element={<MyGroups />} />
-                  <Route path="/create-group" element={<CreateGroup />} />
-                  <Route path="/group-room/:id" element={<GroupRoom />} />
-                  <Route path="/group-details/:id" element={<Navigate to="/group-room/:id" replace />} />
-                  
-                  {/* Service Landing Pages */}
-                  <Route path="/cooperative-buying" element={<ServiceLanding />} />
-                  <Route path="/cooperative-marketing" element={<ServiceLanding />} />
-                  <Route path="/freelancers" element={<ServiceLanding />} />
-                  <Route path="/suppliers" element={<ServiceLanding />} />
-                  
-                  {/* Offer Pages */}
-                  <Route path="/supplier-offer/:id" element={<SupplierOffer />} />
-                  <Route path="/freelancer-offer/:id" element={<FreelancerOffer />} />
-                  
-                  {/* Voting */}
-                  <Route path="/voting" element={<Voting />} />
-                  <Route path="/voting/:groupId" element={<Voting />} />
-                  
-                  {/* Catch all route */}
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </div>
-              <Toaster position="top-center" />
-            </Router>
-          </DAOProvider>
+          <Router>
+            <div className="min-h-screen">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/groups" element={<MyGroups />} />
+                <Route path="/create-group" element={<CreateGroup />} />
+                <Route path="/group-room/:id" element={<GroupRoom />} />
+                <Route path="/group-details/:id" element={<Navigate to="/group-room/:id" replace />} />
+                
+                {/* Service Landing Pages */}
+                <Route path="/cooperative-buying" element={<ServiceLanding />} />
+                <Route path="/cooperative-marketing" element={<ServiceLanding />} />
+                <Route path="/freelancers" element={<ServiceLanding />} />
+                <Route path="/suppliers" element={<ServiceLanding />} />
+                
+                {/* Offer Pages */}
+                <Route path="/supplier-offer/:id" element={<SupplierOffer />} />
+                <Route path="/freelancer-offer/:id" element={<FreelancerOffer />} />
+                
+                {/* Voting */}
+                <Route path="/voting" element={<Voting />} />
+                <Route path="/voting/:groupId" element={<Voting />} />
+                
+                {/* Catch all route */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </div>
+            <Toaster position="top-center" />
+          </Router>
         </AuthProvider>
       </LanguageProvider>
     </QueryClientProvider>
