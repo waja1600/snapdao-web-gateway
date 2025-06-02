@@ -67,13 +67,12 @@ const Register = () => {
       // Simulate OTP verification
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Mock login
+      // Mock login - fix the argument issue by providing proper user object
       const mockUser = {
         id: '1',
         name: formData.fullName,
         email: formData.email,
-        role: formData.role,
-        country: formData.country
+        role: formData.role as 'company' | 'supplier' | 'freelancer' | 'browser'
       };
       
       login(mockUser);
