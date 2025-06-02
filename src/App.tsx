@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 import Index from "@/pages/Index";
 import Login from "@/pages/Login";
-import Register from "@/pages/Register";
 import Dashboard from "@/pages/Dashboard";
 import NotFound from "@/pages/NotFound";
 import Proposals from "@/pages/Proposals";
@@ -19,11 +18,6 @@ import HowItWorks from "@/pages/HowItWorks";
 import AboutUs from "@/pages/AboutUs";
 import FAQ from "@/pages/FAQ";
 import ContactUs from "@/pages/ContactUs";
-import CreateGroup from "@/pages/CreateGroup";
-import MyGroups from "@/pages/MyGroups";
-import GroupRoom from "@/pages/GroupRoom";
-import SupplierOffer from "@/pages/SupplierOffer";
-import FreelancerOffer from "@/pages/FreelancerOffer";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { DAOProvider } from "@/contexts/DAOContext";
@@ -41,13 +35,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/create-group" element={<CreateGroup />} />
-              <Route path="/groups" element={<MyGroups />} />
-              <Route path="/group-room/:id" element={<GroupRoom />} />
-              <Route path="/supplier-offer/:groupId" element={<SupplierOffer />} />
-              <Route path="/freelancer-offer/:groupId" element={<FreelancerOffer />} />
               <Route path="/proposals" element={<Proposals />} />
               <Route path="/proposals/:id" element={<ProposalDetail />} />
               <Route path="/projects" element={<Projects />} />
