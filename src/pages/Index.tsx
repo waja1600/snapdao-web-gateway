@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Globe, Clock, MapPin, DollarSign } from "lucide-react";
+import { Globe } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -31,10 +31,12 @@ const Index = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   
-  const currentTime = new Date().toLocaleTimeString(language === 'ar' ? 'ar-SA' : 'en-US', {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  useEffect(() => {
+    // If user is already logged in, redirect to dashboard
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
   
   const toggleLanguage = () => {
     setLanguage(language === 'en' ? 'ar' : 'en');
@@ -42,101 +44,16 @@ const Index = () => {
   
   return (
     <div className={`min-h-screen bg-white ${language === 'ar' ? 'text-right' : 'text-left'}`}>
-      {/* Enhanced Top Bar */}
-      <div className="bg-gray-100 border-b py-2 px-4">
-        <div className="container mx-auto flex items-center justify-between text-sm">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              <Globe className="w-4 h-4" />
-              <Select defaultValue="sa">
-                <SelectTrigger className="h-8 w-[120px] border-none bg-transparent">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="sa">
-                    {language === 'en' ? 'Saudi Arabia' : 'السعودية'}
-                  </SelectItem>
-                  <SelectItem value="ae">
-                    {language === 'en' ? 'UAE' : 'الإمارات'}
-                  </SelectItem>
-                  <SelectItem value="eg">
-                    {language === 'en' ? 'Egypt' : 'مصر'}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="flex items-center gap-1">
-              <DollarSign className="w-4 h-4" />
-              <Select defaultValue="sar">
-                <SelectTrigger className="h-8 w-[80px] border-none bg-transparent">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="sar">SAR</SelectItem>
-                  <SelectItem value="usd">USD</SelectItem>
-                  <SelectItem value="eur">EUR</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1 text-gray-600">
-              <Clock className="w-4 h-4" />
-              <span>{currentTime}</span>
-            </div>
-            
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleLanguage}
-              className="h-8 px-2"
-            >
-              {language === 'en' ? 'العربية' : 'English'}
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Header */}
+      {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold text-blue-600">GPOsaas</h1>
-            <span className="text-sm text-gray-500 bg-blue-50 px-2 py-1 rounded">
-              {language === 'en' ? 'Smart Cooperation Platform' : 'منصة التعاون الذكي'}
-            </span>
           </div>
           
           <div className="flex items-center gap-4">
             <NavigationMenu>
               <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger>
-                    {language === 'en' ? 'Services' : 'الخدمات'}
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="grid gap-3 p-6 w-[400px] lg:w-[500px] lg:grid-cols-2">
-                      <NavigationMenuLink className="block p-3 rounded-md hover:bg-gray-50" href="/cooperative-buying">
-                        <div className="text-sm font-medium">{language === 'en' ? 'Group Buying' : 'الشراء الجماعي'}</div>
-                        <div className="text-xs text-gray-600">{language === 'en' ? 'Join buying groups' : 'انضم لمجموعات الشراء'}</div>
-                      </NavigationMenuLink>
-                      <NavigationMenuLink className="block p-3 rounded-md hover:bg-gray-50" href="/cooperative-marketing">
-                        <div className="text-sm font-medium">{language === 'en' ? 'Marketing' : 'التسويق'}</div>
-                        <div className="text-xs text-gray-600">{language === 'en' ? 'Collaborative campaigns' : 'حملات تسويقية'}</div>
-                      </NavigationMenuLink>
-                      <NavigationMenuLink className="block p-3 rounded-md hover:bg-gray-50" href="/freelancers">
-                        <div className="text-sm font-medium">{language === 'en' ? 'Freelancers' : 'المستقلون'}</div>
-                        <div className="text-xs text-gray-600">{language === 'en' ? 'Find skilled professionals' : 'ابحث عن محترفين'}</div>
-                      </NavigationMenuLink>
-                      <NavigationMenuLink className="block p-3 rounded-md hover:bg-gray-50" href="/suppliers">
-                        <div className="text-sm font-medium">{language === 'en' ? 'Suppliers' : 'الموردون'}</div>
-                        <div className="text-xs text-gray-600">{language === 'en' ? 'Submit your offers' : 'قدم عروضك'}</div>
-                      </NavigationMenuLink>
-                    </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuLink className="px-3 py-2 text-sm font-medium hover:text-blue-600" href="/about">
                     {language === 'en' ? 'About Us' : 'من نحن'}
@@ -149,30 +66,51 @@ const Index = () => {
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuLink className="px-3 py-2 text-sm font-medium hover:text-blue-600" href="/support">
-                    {language === 'en' ? 'Support' : 'الدعم'}
+                    {language === 'en' ? 'Support & Help' : 'الدعم والمساعدة'}
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
 
             <div className="flex items-center gap-2">
-              {!user ? (
-                <>
-                  <Button
-                    variant="outline"
-                    onClick={() => navigate("/login")}
-                  >
-                    {t('login')}
-                  </Button>
-                  <Button onClick={() => navigate("/register")}>
-                    {t('register')}
-                  </Button>
-                </>
-              ) : (
-                <Button onClick={() => navigate("/dashboard")}>
-                  {language === 'en' ? 'Dashboard' : 'لوحة التحكم'}
-                </Button>
-              )}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleLanguage}
+                title={language === 'en' ? 'Switch to Arabic' : 'التبديل إلى الإنجليزية'}
+              >
+                <Globe className="h-5 w-5" />
+              </Button>
+              
+              <Select onValueChange={(value) => console.log("Country selected:", value)}>
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue placeholder={language === 'en' ? 'Country' : 'الدولة'} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="sa">
+                    {language === 'en' ? 'Saudi Arabia' : 'السعودية'}
+                  </SelectItem>
+                  <SelectItem value="ae">
+                    {language === 'en' ? 'UAE' : 'الإمارات'}
+                  </SelectItem>
+                  <SelectItem value="eg">
+                    {language === 'en' ? 'Egypt' : 'مصر'}
+                  </SelectItem>
+                  <SelectItem value="other">
+                    {language === 'en' ? 'Other' : 'أخرى'}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Button
+                variant="outline"
+                onClick={() => navigate("/login")}
+              >
+                {t('login')}
+              </Button>
+              <Button onClick={() => navigate("/login")}>
+                {t('register')}
+              </Button>
             </div>
           </div>
         </div>
@@ -182,11 +120,11 @@ const Index = () => {
         {/* Hero Section */}
         <HeroSection />
         
-        {/* Search Section - Above Service Cards */}
-        <SearchSection />
-        
-        {/* Service Cards - 4 Gateway Cards */}
+        {/* Service Cards */}
         <ServiceCards />
+        
+        {/* Search Section */}
+        <SearchSection />
         
         {/* Open Deals Cards */}
         <OpenDealsCards />
@@ -195,26 +133,26 @@ const Index = () => {
         <section className="py-16 bg-blue-50">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold mb-6">
-              {language === 'en' ? 'Ready to Start Your Journey?' : 'هل أنت مستعد لبدء رحلتك؟'}
+              {language === 'en' ? 'Ready to Get Started?' : 'هل أنت مستعد للبدء؟'}
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto mb-8">
               {language === 'en' 
-                ? 'Join thousands of businesses and professionals already using our platform to achieve better deals through smart cooperation.'
-                : 'انضم إلى آلاف الشركات والمهنيين الذين يستخدمون منصتنا للحصول على صفقات أفضل من خلال التعاون الذكي.'}
+                ? 'Join thousands of businesses and professionals already using our platform to streamline their collaboration.'
+                : 'انضم إلى آلاف الشركات والمهنيين الذين يستخدمون منصتنا بالفعل لتبسيط تعاونهم.'}
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button size="lg" onClick={() => navigate("/register")}>
-                {language === 'en' ? 'Start Free Today' : 'ابدأ مجاناً اليوم'}
+              <Button size="lg" onClick={() => navigate("/login")}>
+                {language === 'en' ? 'Register Now' : 'سجل الآن'}
               </Button>
               <Button size="lg" variant="outline" onClick={() => navigate("/how-it-works")}>
-                {language === 'en' ? 'Watch Demo' : 'شاهد العرض التوضيحي'}
+                {language === 'en' ? 'Learn More' : 'اعرف المزيد'}
               </Button>
             </div>
           </div>
         </section>
       </main>
       
-      {/* Enhanced Footer */}
+      {/* Footer */}
       <FooterSection />
     </div>
   );
