@@ -7,6 +7,8 @@ import { AgreementService } from '../services/agreement-service';
 import { ArbitrationService } from '../services/arbitration-service';
 import { loomioService } from '../services/loomio-service';
 import { snapshotService } from '../services/snapshot-service';
+import { projectManagementService } from '../services/project-management-service';
+import { mcpService } from '../services/mcp-service';
 
 interface DAOContextType {
   // Proposal methods
@@ -53,6 +55,12 @@ interface DAOContextType {
   // Integrated voting and discussion services
   loomioService: typeof loomioService;
   snapshotService: typeof snapshotService;
+  
+  // Project Management Service
+  projectManagementService: typeof projectManagementService;
+  
+  // MCP Service
+  mcpService: typeof mcpService;
   
   // Filter options
   protocolOptions: string[];
@@ -101,6 +109,8 @@ export const DAOProvider: React.FC<{children: React.ReactNode}> = ({ children })
       // Integrated services
       loomioService,
       snapshotService,
+      projectManagementService,
+      mcpService,
       
       // Filter options
       protocolOptions,

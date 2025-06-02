@@ -18,6 +18,7 @@ import ServiceLanding from "./pages/ServiceLanding";
 import SupplierOffer from "./pages/SupplierOffer";
 import FreelancerOffer from "./pages/FreelancerOffer";
 import Voting from "./pages/Voting";
+import ProjectManagement from "./pages/ProjectManagement";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,10 @@ function App() {
                   <Route path="/create-group" element={<CreateGroup />} />
                   <Route path="/group-room/:id" element={<GroupRoom />} />
                   <Route path="/group-details/:id" element={<Navigate to="/group-room/:id" replace />} />
+                  
+                  {/* Project Management */}
+                  <Route path="/project-management" element={<ProjectManagement />} />
+                  <Route path="/projects" element={<Navigate to="/project-management" replace />} />
                   
                   {/* Service Landing Pages */}
                   <Route path="/cooperative-buying" element={<ServiceLanding />} />
