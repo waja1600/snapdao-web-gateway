@@ -1,37 +1,19 @@
 
 import { navigationTranslations } from './navigation';
-import { authTranslations } from './auth';
-import { actionsTranslations } from './actions';
-import { statusTranslations } from './status';
-import { rolesTranslations } from './roles';
-import { featuresTranslations } from './features';
-import { contractsTranslations } from './contracts';
-import { filtersTranslations } from './filters';
-import { messagesTranslations } from './messages';
+import { commonTranslations } from './common';
 import { formTranslations } from './forms';
 import { proposalTranslations } from './proposals';
 import { arbitrationTranslations } from './arbitration';
 import { expensesTranslations } from './expenses';
-import { countriesTranslations } from './countries';
-import { uiTranslations } from './ui';
 
 // Combine all translation dictionaries
 const translations = {
   ...navigationTranslations,
-  ...authTranslations,
-  ...actionsTranslations,
-  ...statusTranslations,
-  ...rolesTranslations,
-  ...featuresTranslations,
-  ...contractsTranslations,
-  ...filtersTranslations,
-  ...messagesTranslations,
+  ...commonTranslations,
   ...formTranslations,
   ...proposalTranslations,
   ...arbitrationTranslations,
   ...expensesTranslations,
-  ...countriesTranslations,
-  ...uiTranslations,
 };
 
 export type TranslationKey = keyof typeof translations;
