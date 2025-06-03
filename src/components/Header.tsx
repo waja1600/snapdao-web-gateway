@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Bell, Globe, Clock, DollarSign, MapPin, User } from 'lucide-react';
+import { Bell, Globe, Clock, DollarSign, MapPin, User, Calendar } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const currencies = [
@@ -30,57 +30,143 @@ const currencies = [
 ];
 
 const countries = [
-  { code: 'US', name: 'United States', flag: '🇺🇸' },
-  { code: 'UK', name: 'United Kingdom', flag: '🇬🇧' },
-  { code: 'DE', name: 'Germany', flag: '🇩🇪' },
-  { code: 'FR', name: 'France', flag: '🇫🇷' },
-  { code: 'CN', name: 'China', flag: '🇨🇳' },
-  { code: 'JP', name: 'Japan', flag: '🇯🇵' },
-  { code: 'KR', name: 'South Korea', flag: '🇰🇷' },
-  { code: 'SA', name: 'Saudi Arabia', flag: '🇸🇦' },
-  { code: 'AE', name: 'UAE', flag: '🇦🇪' },
+  { code: 'US', name: 'United States', flag: '🇺🇸', timezone: 'America/New_York', currency: 'USD' },
+  { code: 'UK', name: 'United Kingdom', flag: '🇬🇧', timezone: 'Europe/London', currency: 'GBP' },
+  { code: 'DE', name: 'Germany', flag: '🇩🇪', timezone: 'Europe/Berlin', currency: 'EUR' },
+  { code: 'FR', name: 'France', flag: '🇫🇷', timezone: 'Europe/Paris', currency: 'EUR' },
+  { code: 'CN', name: 'China', flag: '🇨🇳', timezone: 'Asia/Shanghai', currency: 'CNY' },
+  { code: 'JP', name: 'Japan', flag: '🇯🇵', timezone: 'Asia/Tokyo', currency: 'JPY' },
+  { code: 'KR', name: 'South Korea', flag: '🇰🇷', timezone: 'Asia/Seoul', currency: 'KRW' },
+  { code: 'SA', name: 'Saudi Arabia', flag: '🇸🇦', timezone: 'Asia/Riyadh', currency: 'SAR' },
+  { code: 'AE', name: 'UAE', flag: '🇦🇪', timezone: 'Asia/Dubai', currency: 'AED' },
 ];
 
 const languages = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'ar', name: 'العربية', flag: '🇸🇦' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  { code: 'cn', name: '中文', flag: '🇨🇳' },
-  { code: 'es', name: 'Español', flag: '🇪🇸' },
-  { code: 'hi', name: 'हिंदी', flag: '🇮🇳' },
-  { code: 'ko', name: '한국어', flag: '🇰🇷' },
-  { code: 'jp', name: '日本語', flag: '🇯🇵' },
+  { code: 'en', name: 'English', flag: '🇺🇸', nativeName: 'English' },
+  { code: 'ar', name: 'العربية', flag: '🇸🇦', nativeName: 'العربية' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷', nativeName: 'Français' },
+  { code: 'cn', name: '中文', flag: '🇨🇳', nativeName: '中文' },
+  { code: 'es', name: 'Español', flag: '🇪🇸', nativeName: 'Español' },
+  { code: 'hi', name: 'हिंदी', flag: '🇮🇳', nativeName: 'हिंदी' },
+  { code: 'ko', name: '한국어', flag: '🇰🇷', nativeName: '한국어' },
+  { code: 'jp', name: '日本語', flag: '🇯🇵', nativeName: '日本語' },
 ];
 
-const timezones = [
-  { value: 'UTC', label: 'UTC (GMT+0)' },
-  { value: 'EST', label: 'EST (GMT-5)' },
-  { value: 'PST', label: 'PST (GMT-8)' },
-  { value: 'CET', label: 'CET (GMT+1)' },
-  { value: 'JST', label: 'JST (GMT+9)' },
-  { value: 'CST', label: 'CST (GMT+8)' },
-  { value: 'AST', label: 'AST (GMT+3)' },
-  { value: 'GST', label: 'GST (GMT+4)' },
-];
+// Auto-detect user's location and preferences
+const detectUserLocation = async () => {
+  try {
+    // Try to get user's timezone
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    
+    // Try to get user's locale
+    const locale = navigator.language || 'en-US';
+    const [langCode, countryCode] = locale.split('-');
+    
+    // Find matching country
+    const country = countries.find(c => 
+      c.code === countryCode?.toUpperCase() || 
+      c.timezone === timezone
+    ) || countries[0]; // fallback to US
+    
+    // Find matching language
+    const language = languages.find(l => l.code === langCode) || languages[0];
+    
+    return {
+      country: country.code,
+      timezone,
+      currency: country.currency,
+      language: language.code
+    };
+  } catch (error) {
+    console.error('Error detecting user location:', error);
+    return {
+      country: 'US',
+      timezone: 'America/New_York',
+      currency: 'USD',
+      language: 'en'
+    };
+  }
+};
 
 export const Header = () => {
   const { language, setLanguage } = useLanguage();
   const { user, logout } = useAuth();
+  
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
   const [selectedCountry, setSelectedCountry] = useState('US');
-  const [selectedTimezone, setSelectedTimezone] = useState('UTC');
-  const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
+  const [userTimezone, setUserTimezone] = useState('America/New_York');
+  const [currentTime, setCurrentTime] = useState('');
+  const [currentDate, setCurrentDate] = useState('');
 
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date().toLocaleTimeString());
-    }, 1000);
+  // Auto-detect user preferences on mount
+  useEffect(() => {
+    const detectAndSetPreferences = async () => {
+      const detected = await detectUserLocation();
+      setSelectedCountry(detected.country);
+      setSelectedCurrency(detected.currency);
+      setUserTimezone(detected.timezone);
+      if (detected.language !== language) {
+        setLanguage(detected.language as 'en' | 'ar');
+      }
+    };
+    
+    detectAndSetPreferences();
+  }, [language, setLanguage]);
+
+  // Update time and date based on user's timezone
+  useEffect(() => {
+    const updateDateTime = () => {
+      const now = new Date();
+      
+      try {
+        // Format time based on user's timezone
+        const timeOptions: Intl.DateTimeFormatOptions = {
+          timeZone: userTimezone,
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true
+        };
+        
+        // Format date based on user's timezone and language
+        const dateOptions: Intl.DateTimeFormatOptions = {
+          timeZone: userTimezone,
+          weekday: 'short',
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        };
+        
+        const locale = language === 'ar' ? 'ar-SA' : 
+                      language === 'en' ? 'en-US' :
+                      `${language}-${selectedCountry}`;
+        
+        setCurrentTime(now.toLocaleTimeString(locale, timeOptions));
+        setCurrentDate(now.toLocaleDateString(locale, dateOptions));
+      } catch (error) {
+        // Fallback to simple formatting
+        setCurrentTime(now.toLocaleTimeString());
+        setCurrentDate(now.toLocaleDateString());
+      }
+    };
+
+    updateDateTime();
+    const timer = setInterval(updateDateTime, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [userTimezone, language, selectedCountry]);
 
   const selectedCurrencyData = currencies.find(c => c.code === selectedCurrency);
   const selectedCountryData = countries.find(c => c.code === selectedCountry);
   const selectedLanguageData = languages.find(l => l.code === language);
+
+  const handleCountryChange = (countryCode: string) => {
+    const country = countries.find(c => c.code === countryCode);
+    if (country) {
+      setSelectedCountry(countryCode);
+      setUserTimezone(country.timezone);
+      setSelectedCurrency(country.currency);
+    }
+  };
 
   return (
     <header className="bg-white border-b shadow-sm sticky top-0 z-50">
@@ -95,25 +181,17 @@ export const Header = () => {
 
           {/* Central Controls */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* Current Time */}
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <Clock className="h-4 w-4" />
-              <span>{currentTime}</span>
+            {/* Current Date and Time */}
+            <div className="flex items-center space-x-3 text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
+              <div className="flex items-center space-x-1">
+                <Calendar className="h-4 w-4" />
+                <span className="font-medium">{currentDate}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <Clock className="h-4 w-4" />
+                <span className="font-mono">{currentTime}</span>
+              </div>
             </div>
-
-            {/* Timezone Selector */}
-            <Select value={selectedTimezone} onValueChange={setSelectedTimezone}>
-              <SelectTrigger className="w-32 h-8">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {timezones.map((tz) => (
-                  <SelectItem key={tz.value} value={tz.value}>
-                    {tz.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
 
             {/* Country Selector */}
             <DropdownMenu>
@@ -123,11 +201,11 @@ export const Header = () => {
                   {selectedCountryData?.flag} {selectedCountryData?.code}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="max-h-64 overflow-y-auto">
                 {countries.map((country) => (
                   <DropdownMenuItem
                     key={country.code}
-                    onClick={() => setSelectedCountry(country.code)}
+                    onClick={() => handleCountryChange(country.code)}
                   >
                     {country.flag} {country.name}
                   </DropdownMenuItem>
@@ -143,7 +221,7 @@ export const Header = () => {
                   {selectedCurrencyData?.symbol} {selectedCurrency}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="max-h-64 overflow-y-auto">
                 {currencies.map((currency) => (
                   <DropdownMenuItem
                     key={currency.code}
@@ -160,7 +238,7 @@ export const Header = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8">
                   <Globe className="h-4 w-4 mr-1" />
-                  {selectedLanguageData?.flag} {selectedLanguageData?.code.toUpperCase()}
+                  {selectedLanguageData?.flag} {selectedLanguageData?.nativeName}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -169,7 +247,7 @@ export const Header = () => {
                     key={lang.code}
                     onClick={() => setLanguage(lang.code as 'en' | 'ar')}
                   >
-                    {lang.flag} {lang.name}
+                    {lang.flag} {lang.nativeName}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>

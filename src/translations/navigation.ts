@@ -1,3 +1,4 @@
+
 export const navigationTranslations = {
   // Main navigation
   dashboard: {
@@ -105,6 +106,24 @@ export const navigationTranslations = {
     ar: 'إدارة المستقلين'
   },
   
+  // New dashboard routes
+  notificationCenter: {
+    en: 'Notification Center',
+    ar: 'مركز الإشعارات'
+  },
+  invoiceManagement: {
+    en: 'Invoice Management',
+    ar: 'إدارة الفواتير'
+  },
+  billingCenter: {
+    en: 'Billing Center',
+    ar: 'مركز الفوترة'
+  },
+  paymentProcessing: {
+    en: 'Payment Processing',
+    ar: 'معالجة المدفوعات'
+  },
+  
   // Workflow Navigation
   workflowSteps: {
     en: 'Workflow Steps',
@@ -189,6 +208,16 @@ export const navigationTranslations = {
     ar: 'المنتجات'
   },
   
+  // Gateway specific
+  gateways: {
+    en: 'Platform Gateways',
+    ar: 'بوابات المنصة'
+  },
+  gatewayOverview: {
+    en: 'Gateway Overview',
+    ar: 'نظرة عامة على البوابات'
+  },
+  
   // Role names
   roleCompany: {
     en: 'Company/Group',
@@ -205,6 +234,28 @@ export const navigationTranslations = {
   roleSupervisor: {
     en: 'Supervisor',
     ar: 'مشرف'
+  },
+  
+  // Time and location
+  currentTime: {
+    en: 'Current Time',
+    ar: 'الوقت الحالي'
+  },
+  timezone: {
+    en: 'Timezone',
+    ar: 'المنطقة الزمنية'
+  },
+  country: {
+    en: 'Country',
+    ar: 'البلد'
+  },
+  currency: {
+    en: 'Currency',
+    ar: 'العملة'
+  },
+  language: {
+    en: 'Language',
+    ar: 'اللغة'
   },
   
   // Common actions

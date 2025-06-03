@@ -91,11 +91,14 @@ const Dashboard = () => {
             <TabsTrigger value="notifications">
               {language === 'en' ? 'Notifications' : 'الإشعارات'}
             </TabsTrigger>
-            <TabsTrigger value="cooperative">
-              {language === 'en' ? 'Cooperative Buying' : 'الشراء التعاوني'}
+            <TabsTrigger value="invoices">
+              {language === 'en' ? 'Invoices' : 'الفواتير'}
             </TabsTrigger>
             <TabsTrigger value="freelancers">
-              {language === 'en' ? 'Freelancers' : 'المستقلين'}
+              {language === 'en' ? 'Freelancer Management' : 'إدارة المستقلين'}
+            </TabsTrigger>
+            <TabsTrigger value="cooperative">
+              {language === 'en' ? 'Cooperative Buying' : 'الشراء التعاوني'}
             </TabsTrigger>
             <TabsTrigger value="suppliers">
               {language === 'en' ? 'Suppliers' : 'الموردين'}
@@ -105,6 +108,9 @@ const Dashboard = () => {
           <TabsContent value="overview" className="space-y-6">
             {/* Display dashboard items */}
             <DashboardItems items={dashboardItems} />
+            
+            {/* Gateways overview on main dashboard */}
+            <GatewaysOverview />
             
             {/* Recent activities section */}
             <RecentActivities />
@@ -121,13 +127,45 @@ const Dashboard = () => {
           <TabsContent value="notifications">
             <NotificationCenter />
           </TabsContent>
+
+          <TabsContent value="invoices">
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">
+                {language === 'en' ? 'Invoice Management' : 'إدارة الفواتير'}
+              </h3>
+              <p className="text-gray-600">
+                {language === 'en' 
+                  ? 'Manage your invoices, payment plans, and billing information.'
+                  : 'إدارة فواتيرك وخطط الدفع ومعلومات الفوترة.'}
+              </p>
+              <iframe 
+                src="/invoices" 
+                className="w-full h-96 border rounded-lg"
+                title={language === 'en' ? 'Invoice Management' : 'إدارة الفواتير'}
+              />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="freelancers">
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">
+                {language === 'en' ? 'Freelancer Management' : 'إدارة المستقلين'}
+              </h3>
+              <p className="text-gray-600">
+                {language === 'en' 
+                  ? 'Manage freelancer projects, payments, and contracts.'
+                  : 'إدارة مشاريع المستقلين والمدفوعات والعقود.'}
+              </p>
+              <iframe 
+                src="/freelancer-management" 
+                className="w-full h-96 border rounded-lg"
+                title={language === 'en' ? 'Freelancer Management' : 'إدارة المستقلين'}
+              />
+            </div>
+          </TabsContent>
           
           <TabsContent value="cooperative">
             {roleTabContent.company}
-          </TabsContent>
-          
-          <TabsContent value="freelancers">
-            {roleTabContent.freelancer}
           </TabsContent>
           
           <TabsContent value="suppliers">
