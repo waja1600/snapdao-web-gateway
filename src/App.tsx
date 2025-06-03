@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 import Index from "@/pages/Index";
@@ -31,16 +32,6 @@ import DealDetail from "@/pages/DealDetail";
 import ProjectWorkflow from "@/pages/ProjectWorkflow";
 import CollectiveAgreement from "@/pages/CollectiveAgreement";
 import ContractPage from "@/pages/ContractPage";
-
-// New Gateway Pages
-import GroupBuying from "@/pages/GroupBuying";
-import CooperativeMarketing from "@/pages/CooperativeMarketing";
-import CompanyIncorporation from "@/pages/CompanyIncorporation";
-import SuppliersFreelancers from "@/pages/SuppliersFreelancers";
-
-// New Management Pages
-import Invoices from "@/pages/Invoices";
-import FreelancerManagement from "@/pages/FreelancerManagement";
 
 function App() {
   return (
@@ -76,17 +67,6 @@ function App() {
               <Route path="/project-workflow" element={<ProjectWorkflow />} />
               <Route path="/collective-agreement" element={<CollectiveAgreement />} />
               <Route path="/contract/:id" element={<ContractPage />} />
-              
-              {/* Gateway Routes */}
-              <Route path="/group-buying" element={<GroupBuying />} />
-              <Route path="/cooperative-marketing" element={<CooperativeMarketing />} />
-              <Route path="/company-incorporation" element={<CompanyIncorporation />} />
-              <Route path="/suppliers-freelancers" element={<SuppliersFreelancers />} />
-              
-              {/* Management Routes */}
-              <Route path="/invoices" element={<Invoices />} />
-              <Route path="/freelancer-management" element={<FreelancerManagement />} />
-              
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Router>
