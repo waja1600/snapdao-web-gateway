@@ -16,6 +16,8 @@ import { DashboardItems } from "@/components/dashboard/DashboardItems";
 import { KYCPrompt } from "@/components/dashboard/KYCPrompt";
 import { RoleSelector } from "@/components/dashboard/RoleSelector";
 import { RecentActivities } from "@/components/dashboard/RecentActivities";
+import { ProjectsOverview } from "@/components/dashboard/ProjectsOverview";
+import { MCPAssistant } from "@/components/mcp/MCPAssistant";
 import { getCommonDashboardItems, getRoleDashboardItems } from "@/components/dashboard/dashboardData";
 import { DashboardItemProps } from "@/components/dashboard/DashboardItem";
 
@@ -74,6 +76,9 @@ const Dashboard = () => {
             <TabsTrigger value="all">
               {language === 'en' ? 'All Services' : 'كل الخدمات'}
             </TabsTrigger>
+            <TabsTrigger value="projects">
+              {language === 'en' ? 'Project Management' : 'إدارة المشاريع'}
+            </TabsTrigger>
             <TabsTrigger value="cooperative">
               {language === 'en' ? 'Cooperative Buying' : 'الشراء التعاوني'}
             </TabsTrigger>
@@ -93,6 +98,10 @@ const Dashboard = () => {
             <RecentActivities />
           </TabsContent>
           
+          <TabsContent value="projects">
+            <ProjectsOverview />
+          </TabsContent>
+          
           <TabsContent value="cooperative">
             {roleTabContent.company}
           </TabsContent>
@@ -105,6 +114,9 @@ const Dashboard = () => {
             {roleTabContent.supplier}
           </TabsContent>
         </Tabs>
+
+        {/* MCP Assistant */}
+        <MCPAssistant />
       </div>
     </Layout>
   );

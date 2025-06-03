@@ -24,6 +24,7 @@ import MyGroups from "@/pages/MyGroups";
 import GroupRoom from "@/pages/GroupRoom";
 import SupplierOffer from "@/pages/SupplierOffer";
 import FreelancerOffer from "@/pages/FreelancerOffer";
+import ProjectManagement from "@/pages/ProjectManagement";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { DAOProvider } from "@/contexts/DAOContext";
@@ -51,6 +52,7 @@ function App() {
               <Route path="/proposals" element={<Proposals />} />
               <Route path="/proposals/:id" element={<ProposalDetail />} />
               <Route path="/projects" element={<Projects />} />
+              <Route path="/project-management" element={<ProjectManagement />} />
               <Route path="/deals" element={<ActiveDeals />} />
               <Route path="/deals/:id" element={<DealDetail />} />
               <Route path="/members" element={<Members />} />
