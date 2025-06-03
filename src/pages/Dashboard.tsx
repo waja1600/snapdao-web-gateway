@@ -4,6 +4,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Layout } from "@/components/Layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { MCPAssistant } from "@/components/mcp/MCPAssistant";
 
 // Import role-specific tab components
 import { CompanyTab } from "@/components/dashboard/roleTabs/CompanyTab";
@@ -16,6 +17,7 @@ import { DashboardItems } from "@/components/dashboard/DashboardItems";
 import { KYCPrompt } from "@/components/dashboard/KYCPrompt";
 import { RoleSelector } from "@/components/dashboard/RoleSelector";
 import { RecentActivities } from "@/components/dashboard/RecentActivities";
+import { ProjectsOverview } from "@/components/dashboard/ProjectsOverview";
 import { getCommonDashboardItems, getRoleDashboardItems } from "@/components/dashboard/dashboardData";
 import { DashboardItemProps } from "@/components/dashboard/DashboardItem";
 
@@ -68,11 +70,20 @@ const Dashboard = () => {
         
         {/* KYC verification prompt */}
         <KYCPrompt kycStatus={kycStatus} />
+
+        {/* MCP Assistant */}
+        <MCPAssistant position="relative" />
         
-        <Tabs defaultValue="all" className="space-y-6">
+        <Tabs defaultValue="overview" className="space-y-6">
           <TabsList>
+            <TabsTrigger value="overview">
+              {language === 'en' ? 'Overview' : 'نظرة عامة'}
+            </TabsTrigger>
             <TabsTrigger value="all">
               {language === 'en' ? 'All Services' : 'كل الخدمات'}
+            </TabsTrigger>
+            <TabsTrigger value="projects">
+              {language === 'en' ? 'Projects' : 'المشاريع'}
             </TabsTrigger>
             <TabsTrigger value="cooperative">
               {language === 'en' ? 'Cooperative Buying' : 'الشراء التعاوني'}
@@ -85,12 +96,24 @@ const Dashboard = () => {
             </TabsTrigger>
           </TabsList>
           
+          <TabsContent value="overview" className="space-y-6">
+            {/* Projects Overview */}
+            <ProjectsOverview />
+            
+            {/* Recent activities section */}
+            <RecentActivities />
+          </TabsContent>
+          
           <TabsContent value="all" className="space-y-6">
             {/* Display dashboard items */}
             <DashboardItems items={dashboardItems} />
             
             {/* Recent activities section */}
             <RecentActivities />
+          </TabsContent>
+
+          <TabsContent value="projects" className="space-y-6">
+            <ProjectsOverview />
           </TabsContent>
           
           <TabsContent value="cooperative">
