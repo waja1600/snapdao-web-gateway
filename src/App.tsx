@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 import Index from "@/pages/Index";
@@ -37,10 +38,6 @@ import GroupBuying from "@/pages/GroupBuying";
 import CooperativeMarketing from "@/pages/CooperativeMarketing";
 import CompanyIncorporation from "@/pages/CompanyIncorporation";
 import SuppliersFreelancers from "@/pages/SuppliersFreelancers";
-
-// New Management Pages
-import Invoices from "@/pages/Invoices";
-import FreelancerManagement from "@/pages/FreelancerManagement";
 
 function App() {
   return (
@@ -82,10 +79,6 @@ function App() {
               <Route path="/cooperative-marketing" element={<CooperativeMarketing />} />
               <Route path="/company-incorporation" element={<CompanyIncorporation />} />
               <Route path="/suppliers-freelancers" element={<SuppliersFreelancers />} />
-              
-              {/* Management Routes */}
-              <Route path="/invoices" element={<Invoices />} />
-              <Route path="/freelancer-management" element={<FreelancerManagement />} />
               
               <Route path="*" element={<NotFound />} />
             </Routes>

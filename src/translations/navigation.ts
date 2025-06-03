@@ -1,3 +1,4 @@
+
 export const navigationTranslations = {
   // Main navigation
   dashboard: {
@@ -87,52 +88,6 @@ export const navigationTranslations = {
     ar: 'الموردين'
   },
   
-  // Financial Management
-  invoices: {
-    en: 'Invoices',
-    ar: 'الفواتير'
-  },
-  payments: {
-    en: 'Payments',
-    ar: 'المدفوعات'
-  },
-  paymentPlans: {
-    en: 'Payment Plans',
-    ar: 'خطط الدفع'
-  },
-  freelancerManagement: {
-    en: 'Freelancer Management',
-    ar: 'إدارة المستقلين'
-  },
-  
-  // Workflow Navigation
-  workflowSteps: {
-    en: 'Workflow Steps',
-    ar: 'خطوات سير العمل'
-  },
-  nextSteps: {
-    en: 'Next Steps',
-    ar: 'الخطوات التالية'
-  },
-  completedSteps: {
-    en: 'Completed Steps',
-    ar: 'الخطوات المكتملة'
-  },
-  
-  // Notifications
-  notifications: {
-    en: 'Notifications',
-    ar: 'الإشعارات'
-  },
-  streams: {
-    en: 'Streams',
-    ar: 'التدفقات'
-  },
-  mentions: {
-    en: 'Mentions',
-    ar: 'الإشارات'
-  },
-  
   // Other pages
   howItWorks: {
     en: 'How It Works',
@@ -173,6 +128,14 @@ export const navigationTranslations = {
   verification: {
     en: 'Verification',
     ar: 'التوثيق'
+  },
+  notifications: {
+    en: 'Notifications',
+    ar: 'الإشعارات'
+  },
+  invoices: {
+    en: 'Invoices',
+    ar: 'الفواتير'
   },
   
   // Offers and ratings
