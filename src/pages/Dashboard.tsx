@@ -19,6 +19,8 @@ import { RecentActivities } from "@/components/dashboard/RecentActivities";
 import { ProjectsOverview } from "@/components/dashboard/ProjectsOverview";
 import { MCPAssistant } from "@/components/mcp/MCPAssistant";
 import { GatewaysOverview } from "@/components/gateways/GatewaysOverview";
+import { WorkflowNavigation } from "@/components/workflow/WorkflowNavigation";
+import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { getCommonDashboardItems, getRoleDashboardItems } from "@/components/dashboard/dashboardData";
 import { DashboardItemProps } from "@/components/dashboard/DashboardItem";
 
@@ -71,6 +73,9 @@ const Dashboard = () => {
         
         {/* KYC verification prompt */}
         <KYCPrompt kycStatus={kycStatus} />
+
+        {/* Workflow Navigation */}
+        <WorkflowNavigation />
         
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList>
@@ -82,6 +87,9 @@ const Dashboard = () => {
             </TabsTrigger>
             <TabsTrigger value="projects">
               {language === 'en' ? 'Project Management' : 'إدارة المشاريع'}
+            </TabsTrigger>
+            <TabsTrigger value="notifications">
+              {language === 'en' ? 'Notifications' : 'الإشعارات'}
             </TabsTrigger>
             <TabsTrigger value="cooperative">
               {language === 'en' ? 'Cooperative Buying' : 'الشراء التعاوني'}
@@ -108,6 +116,10 @@ const Dashboard = () => {
           
           <TabsContent value="projects">
             <ProjectsOverview />
+          </TabsContent>
+
+          <TabsContent value="notifications">
+            <NotificationCenter />
           </TabsContent>
           
           <TabsContent value="cooperative">
