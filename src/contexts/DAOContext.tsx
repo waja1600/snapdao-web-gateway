@@ -3,10 +3,12 @@ import React, { createContext, useContext } from 'react';
 import { Proposal, Project, protocolOptions, networkOptions, categoryOptions } from '../models/types';
 import { ProposalService } from '../services/proposal-service';
 import { ProjectService } from '../services/project-service';
-import { ProjectManagementService } from '../services/project-management-service';
-import { MCPService } from '../services/mcp-service';
 import { AgreementService } from '../services/agreement-service';
 import { ArbitrationService } from '../services/arbitration-service';
+import { loomioService } from '../services/loomio-service';
+import { snapshotService } from '../services/snapshot-service';
+import { projectManagementService } from '../services/project-management-service';
+import { mcpService } from '../services/mcp-service';
 
 interface DAOContextType {
   // Proposal methods
@@ -39,12 +41,6 @@ interface DAOContextType {
   ) => Promise<boolean>;
   updateProject: (id: string, data: Partial<Project>) => Promise<boolean>;
   
-  // Project Management methods
-  projectManagementService: ProjectManagementService;
-  
-  // MCP methods
-  mcpService: MCPService;
-  
   // Agreement methods
   signAgreement: (agreementId: string, password: string, otp: string) => Promise<boolean>;
   
@@ -55,6 +51,16 @@ interface DAOContextType {
   getDisputeById: (id: string) => any;
   createDispute: (disputeData: any) => any;
   updateDisputeStatus: (id: string, newStatus: string) => boolean;
+  
+  // Integrated voting and discussion services
+  loomioService: typeof loomioService;
+  snapshotService: typeof snapshotService;
+  
+  // Project Management Service
+  projectManagementService: typeof projectManagementService;
+  
+  // MCP Service
+  mcpService: typeof mcpService;
   
   // Filter options
   protocolOptions: string[];
@@ -67,8 +73,6 @@ const DAOContext = createContext<DAOContextType | undefined>(undefined);
 // Create instances of our services
 const proposalService = new ProposalService();
 const projectService = new ProjectService();
-const projectManagementService = new ProjectManagementService();
-const mcpService = new MCPService();
 const agreementService = new AgreementService();
 const arbitrationService = new ArbitrationService();
 
@@ -91,12 +95,6 @@ export const DAOProvider: React.FC<{children: React.ReactNode}> = ({ children })
       createProject: projectService.createProject.bind(projectService),
       updateProject: projectService.updateProject.bind(projectService),
       
-      // Project Management service
-      projectManagementService,
-      
-      // MCP service
-      mcpService,
-      
       // Agreement methods
       signAgreement: agreementService.signAgreement.bind(agreementService),
       
@@ -107,6 +105,12 @@ export const DAOProvider: React.FC<{children: React.ReactNode}> = ({ children })
       getDisputeById: arbitrationService.getDisputeById.bind(arbitrationService),
       createDispute: arbitrationService.createDispute.bind(arbitrationService),
       updateDisputeStatus: arbitrationService.updateDisputeStatus.bind(arbitrationService),
+      
+      // Integrated services
+      loomioService,
+      snapshotService,
+      projectManagementService,
+      mcpService,
       
       // Filter options
       protocolOptions,

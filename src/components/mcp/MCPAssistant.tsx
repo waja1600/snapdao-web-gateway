@@ -1,204 +1,284 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { mcpService, MCPSuggestion } from '@/services/mcp-service';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { MCPService, MCPQuery, MCPAction } from '@/services/mcp-service';
-import { MessageCircle, Send, Check, X, Bot, User } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Bot, Send, Loader, Check, X, Settings, Minimize2, Maximize2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-const mcpService = new MCPService();
+interface MCPAssistantProps {
+  position?: 'fixed' | 'relative';
+}
 
-export const MCPAssistant: React.FC = () => {
+export const MCPAssistant: React.FC<MCPAssistantProps> = ({ position = 'fixed' }) => {
   const { language } = useLanguage();
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const [queries, setQueries] = useState<MCPQuery[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [suggestions, setSuggestions] = useState<MCPSuggestion[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [queries]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmitQuery = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!query.trim() || isLoading) return;
+    if (!query.trim() || !user) return;
 
-    setIsLoading(true);
+    setIsProcessing(true);
     try {
-      const result = await mcpService.processQuery(query);
-      setQueries(prev => [...prev, result]);
+      const results = await mcpService.processUserQuery(query, user.id);
+      setSuggestions(results);
       setQuery('');
     } catch (error) {
-      console.error('Error processing query:', error);
-      toast.error('حدث خطأ في معالجة الاستعلام');
+      toast.error(language === 'en' ? 'Failed to process query' : 'فشل في معالجة الاستعلام');
     } finally {
-      setIsLoading(false);
+      setIsProcessing(false);
     }
   };
 
-  const handleAcceptAction = async (actionId: string) => {
-    try {
-      await mcpService.acceptAction(actionId);
-      await mcpService.executeAction(actionId);
-      
-      // تحديث الاستعلامات لعرض التغييرات
-      setQueries(prev => prev.map(q => ({
-        ...q,
-        suggestedActions: q.suggestedActions.map(action => 
-          action.id === actionId 
-            ? { ...action, userAccepted: true, executed: true, executedAt: new Date() }
-            : action
-        )
-      })));
-      
-      toast.success('تم تنفيذ الإجراء بنجاح');
-    } catch (error) {
-      console.error('Error executing action:', error);
-      toast.error('حدث خطأ في تنفيذ الإجراء');
+  const handleAcceptSuggestion = async (commandId: string, suggestionId: string) => {
+    const success = await mcpService.acceptSuggestion(commandId, suggestionId);
+    if (success) {
+      setSuggestions(prev => prev.filter(s => s.id !== suggestionId));
     }
   };
 
-  const ActionButton: React.FC<{ action: MCPAction }> = ({ action }) => {
-    if (action.executed) {
-      return (
-        <div className="flex items-center gap-2 text-green-600 text-sm">
-          <Check className="h-4 w-4" />
-          <span>تم التنفيذ</span>
-          {action.executedAt && (
-            <span className="text-gray-500">
-              ({action.executedAt.toLocaleTimeString()})
-            </span>
-          )}
-        </div>
-      );
-    }
+  const handleRejectSuggestion = async (suggestionId: string) => {
+    setSuggestions(prev => prev.filter(s => s.id !== suggestionId));
+  };
 
+  const getConfidenceColor = (confidence: number) => {
+    if (confidence >= 0.8) return 'bg-green-100 text-green-800';
+    if (confidence >= 0.6) return 'bg-yellow-100 text-yellow-800';
+    return 'bg-gray-100 text-gray-800';
+  };
+
+  const getConfidenceText = (confidence: number) => {
+    if (confidence >= 0.8) return language === 'en' ? 'High Confidence' : 'ثقة عالية';
+    if (confidence >= 0.6) return language === 'en' ? 'Medium Confidence' : 'ثقة متوسطة';
+    return language === 'en' ? 'Low Confidence' : 'ثقة منخفضة';
+  };
+
+  if (position === 'fixed') {
     return (
-      <div className="flex gap-2">
-        <Button 
-          size="sm" 
-          onClick={() => handleAcceptAction(action.id)}
-          className="bg-green-600 hover:bg-green-700"
+      <>
+        {/* Floating Assistant Button */}
+        <Button
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 right-6 z-50 rounded-full w-14 h-14 shadow-lg"
+          size="icon"
         >
-          <Check className="h-4 w-4 mr-1" />
-          قبول وتنفيذ
+          <Bot className="h-6 w-6" />
         </Button>
-        <Button 
-          size="sm" 
-          variant="outline"
-          onClick={() => toast.info('تم رفض الإجراء')}
-        >
-          <X className="h-4 w-4 mr-1" />
-          رفض
-        </Button>
-      </div>
-    );
-  };
 
-  if (!isOpen) {
-    return (
-      <Button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 h-12 w-12 rounded-full bg-blue-600 hover:bg-blue-700 shadow-lg z-50"
-      >
-        <MessageCircle className="h-6 w-6" />
-      </Button>
+        {/* Assistant Dialog */}
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Bot className="h-5 w-5" />
+                {language === 'en' ? 'GPO Assistant' : 'مساعد GPO'}
+              </DialogTitle>
+              <DialogDescription>
+                {language === 'en' 
+                  ? 'Ask me anything about managing your groups, projects, or using the platform'
+                  : 'اسألني عن أي شيء حول إدارة مجموعاتك أو مشاريعك أو استخدام المنصة'}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4">
+              {/* Query Input */}
+              <form onSubmit={handleSubmitQuery} className="flex gap-2">
+                <Input
+                  ref={inputRef}
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={language === 'en' 
+                    ? 'What would you like me to help you with?' 
+                    : 'بماذا يمكنني مساعدتك؟'}
+                  disabled={isProcessing}
+                />
+                <Button type="submit" disabled={isProcessing || !query.trim()}>
+                  {isProcessing ? <Loader className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                </Button>
+              </form>
+
+              {/* Suggestions */}
+              {suggestions.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="font-medium">
+                    {language === 'en' ? 'Suggestions' : 'الاقتراحات'}
+                  </h4>
+                  {suggestions.map((suggestion) => (
+                    <Card key={suggestion.id} className="border">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <CardTitle className="text-base">{suggestion.title}</CardTitle>
+                            <CardDescription className="mt-1">
+                              {suggestion.description}
+                            </CardDescription>
+                          </div>
+                          <Badge className={getConfidenceColor(suggestion.confidence)}>
+                            {getConfidenceText(suggestion.confidence)}
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            onClick={() => handleAcceptSuggestion('temp-command-id', suggestion.id)}
+                            className="flex-1"
+                          >
+                            <Check className="h-4 w-4 mr-1" />
+                            {language === 'en' ? 'Accept' : 'قبول'}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleRejectSuggestion(suggestion.id)}
+                          >
+                            <X className="h-4 w-4 mr-1" />
+                            {language === 'en' ? 'Reject' : 'رفض'}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              mcpService.switchToManual('temp-command-id');
+                              handleRejectSuggestion(suggestion.id);
+                            }}
+                          >
+                            <Settings className="h-4 w-4 mr-1" />
+                            {language === 'en' ? 'Manual' : 'يدوي'}
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+
+              {/* Quick Actions */}
+              <div className="border-t pt-4">
+                <h4 className="font-medium mb-2">
+                  {language === 'en' ? 'Quick Actions' : 'إجراءات سريعة'}
+                </h4>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setQuery(language === 'en' ? 'Create a new group' : 'إنشاء مجموعة جديدة')}
+                  >
+                    {language === 'en' ? 'Create Group' : 'إنشاء مجموعة'}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setQuery(language === 'en' ? 'Invite freelancers' : 'دعوة مستقلين')}
+                  >
+                    {language === 'en' ? 'Invite Freelancers' : 'دعوة مستقلين'}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setQuery(language === 'en' ? 'Create new proposal' : 'إنشاء اقتراح جديد')}
+                  >
+                    {language === 'en' ? 'New Proposal' : 'اقتراح جديد'}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setQuery(language === 'en' ? 'Manage projects' : 'إدارة المشاريع')}
+                  >
+                    {language === 'en' ? 'Manage Projects' : 'إدارة المشاريع'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </>
     );
   }
 
+  // Embedded version for pages
   return (
-    <Card className="fixed bottom-6 right-6 w-96 h-96 z-50 shadow-xl">
-      <div className="flex items-center justify-between p-4 border-b">
-        <div className="flex items-center gap-2">
-          <Bot className="h-5 w-5 text-blue-600" />
-          <h3 className="font-medium">
-            {language === 'en' ? 'AI Assistant' : 'المساعد الذكي'}
-          </h3>
-        </div>
-        <Button 
-          size="sm" 
-          variant="ghost" 
-          onClick={() => setIsOpen(false)}
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
-
-      <CardContent className="p-0 h-64 overflow-y-auto">
-        <div className="p-4 space-y-4">
-          {queries.length === 0 && (
-            <div className="text-center text-gray-500 mt-8">
-              <Bot className="h-8 w-8 mx-auto mb-2 text-blue-600" />
-              <p>
-                {language === 'en' 
-                  ? 'How can I help you today?' 
-                  : 'كيف يمكنني مساعدتك اليوم؟'}
-              </p>
-            </div>
-          )}
-
-          {queries.map((q) => (
-            <div key={q.id} className="space-y-3">
-              {/* User Query */}
-              <div className="flex gap-2">
-                <User className="h-5 w-5 text-gray-600 mt-1 flex-shrink-0" />
-                <div className="bg-gray-100 rounded-lg p-3 flex-1">
-                  <p className="text-sm">{q.userQuery}</p>
-                  <span className="text-xs text-gray-500">
-                    {q.createdAt.toLocaleTimeString()}
-                  </span>
-                </div>
-              </div>
-
-              {/* AI Response */}
-              <div className="flex gap-2">
-                <Bot className="h-5 w-5 text-blue-600 mt-1 flex-shrink-0" />
-                <div className="bg-blue-50 rounded-lg p-3 flex-1">
-                  <p className="text-sm">{q.aiResponse}</p>
-                  
-                  {/* Suggested Actions */}
-                  {q.suggestedActions.length > 0 && (
-                    <div className="mt-3 space-y-2">
-                      <p className="text-xs font-medium text-gray-700">
-                        الإجراءات المقترحة:
-                      </p>
-                      {q.suggestedActions.map((action) => (
-                        <div key={action.id} className="bg-white rounded p-2 text-sm">
-                          <p className="font-medium mb-1">{action.description}</p>
-                          <ActionButton action={action} />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-      </CardContent>
-
-      <form onSubmit={handleSubmit} className="p-4 border-t">
-        <div className="flex gap-2">
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={language === 'en' ? 'Ask me anything...' : 'اسأل عن أي شيء...'}
-            disabled={isLoading}
-            className="flex-1"
-          />
-          <Button type="submit" disabled={isLoading || !query.trim()}>
-            <Send className="h-4 w-4" />
+    <Card className="w-full">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Bot className="h-5 w-5" />
+            <CardTitle className="text-lg">
+              {language === 'en' ? 'GPO Assistant' : 'مساعد GPO'}
+            </CardTitle>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsMinimized(!isMinimized)}
+          >
+            {isMinimized ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
           </Button>
         </div>
-      </form>
+      </CardHeader>
+      
+      {!isMinimized && (
+        <CardContent>
+          <form onSubmit={handleSubmitQuery} className="flex gap-2 mb-4">
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={language === 'en' 
+                ? 'How can I help you?' 
+                : 'كيف يمكنني مساعدتك؟'}
+              disabled={isProcessing}
+            />
+            <Button type="submit" disabled={isProcessing || !query.trim()}>
+              {isProcessing ? <Loader className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            </Button>
+          </form>
+
+          {suggestions.length > 0 && (
+            <div className="space-y-2">
+              {suggestions.map((suggestion) => (
+                <div key={suggestion.id} className="border rounded-lg p-3">
+                  <div className="flex items-start justify-between mb-2">
+                    <h5 className="font-medium text-sm">{suggestion.title}</h5>
+                    <Badge variant="outline" className="text-xs">
+                      {Math.round(suggestion.confidence * 100)}%
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-2">{suggestion.description}</p>
+                  <div className="flex gap-1">
+                    <Button
+                      size="sm"
+                      className="h-7 text-xs"
+                      onClick={() => handleAcceptSuggestion('temp-command-id', suggestion.id)}
+                    >
+                      {language === 'en' ? 'Accept' : 'قبول'}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7 text-xs"
+                      onClick={() => handleRejectSuggestion(suggestion.id)}
+                    >
+                      {language === 'en' ? 'Reject' : 'رفض'}
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      )}
     </Card>
   );
 };

@@ -1,185 +1,218 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { ProjectManagementService } from '@/services/project-management-service';
-import { Calendar, User, AlertCircle, CheckCircle, Clock } from 'lucide-react';
-
-const projectManagementService = new ProjectManagementService();
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { 
+  FolderPlus, 
+  Calendar, 
+  Users, 
+  CheckCircle, 
+  Clock, 
+  AlertTriangle,
+  ArrowRight
+} from 'lucide-react';
 
 export const ProjectsOverview: React.FC = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
-  
-  const tasks = projectManagementService.getAllTasks();
-  const proposals = projectManagementService.getAllProposals();
-  const freelancers = projectManagementService.getAllExternalFreelancers();
 
-  const pendingTasks = tasks.filter(task => task.status === 'pending').length;
-  const inProgressTasks = tasks.filter(task => task.status === 'in_progress').length;
-  const completedTasks = tasks.filter(task => task.status === 'completed').length;
-  const pendingProposals = proposals.filter(proposal => proposal.status === 'pending').length;
+  // Mock project data
+  const recentProjects = [
+    {
+      id: '1',
+      name: 'تطوير منصة التجارة الإلكترونية',
+      progress: 75,
+      status: 'in_progress',
+      dueDate: '2024-02-15',
+      teamSize: 5,
+      priority: 'high'
+    },
+    {
+      id: '2',
+      name: 'تصميم هوية بصرية',
+      progress: 90,
+      status: 'nearly_complete',
+      dueDate: '2024-01-30',
+      teamSize: 3,
+      priority: 'medium'
+    },
+    {
+      id: '3',
+      name: 'تطوير تطبيق الجوال',
+      progress: 30,
+      status: 'early_stage',
+      dueDate: '2024-03-20',
+      teamSize: 7,
+      priority: 'high'
+    }
+  ];
 
-  const recentTasks = tasks.slice(0, 3);
-
-  const getStatusIcon = (status: string) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return <CheckCircle className="h-4 w-4 text-green-600" />;
-      case 'in_progress': return <Clock className="h-4 w-4 text-blue-600" />;
-      case 'pending': return <AlertCircle className="h-4 w-4 text-yellow-600" />;
-      default: return <AlertCircle className="h-4 w-4 text-gray-600" />;
+      case 'in_progress': return 'bg-blue-100 text-blue-800';
+      case 'nearly_complete': return 'bg-green-100 text-green-800';
+      case 'early_stage': return 'bg-yellow-100 text-yellow-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'completed': return language === 'en' ? 'Completed' : 'مكتملة';
       case 'in_progress': return language === 'en' ? 'In Progress' : 'قيد التنفيذ';
-      case 'pending': return language === 'en' ? 'Pending' : 'قيد الانتظار';
+      case 'nearly_complete': return language === 'en' ? 'Nearly Complete' : 'على وشك الانتهاء';
+      case 'early_stage': return language === 'en' ? 'Early Stage' : 'مرحلة مبكرة';
       default: return status;
+    }
+  };
+
+  const getPriorityIcon = (priority: string) => {
+    switch (priority) {
+      case 'high': return <AlertTriangle className="h-4 w-4 text-red-500" />;
+      case 'medium': return <Clock className="h-4 w-4 text-yellow-500" />;
+      case 'low': return <CheckCircle className="h-4 w-4 text-green-500" />;
+      default: return null;
     }
   };
 
   return (
     <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-semibold">
+            {language === 'en' ? 'Projects Overview' : 'نظرة عامة على المشاريع'}
+          </h2>
+          <p className="text-sm text-gray-600">
+            {language === 'en' 
+              ? 'Track your active projects and their progress'
+              : 'تتبع مشاريعك النشطة وتقدمها'}
+          </p>
+        </div>
+        <Button onClick={() => navigate('/project-management')}>
+          <FolderPlus className="h-4 w-4 mr-2" />
+          {language === 'en' ? 'Manage Projects' : 'إدارة المشاريع'}
+        </Button>
+      </div>
+
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">
-                  {language === 'en' ? 'Pending Tasks' : 'المهام المعلقة'}
-                </p>
-                <p className="text-2xl font-bold">{pendingTasks}</p>
+          <CardContent className="flex items-center p-4">
+            <div className="flex items-center space-x-4">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <FolderPlus className="h-6 w-6 text-blue-600" />
               </div>
-              <AlertCircle className="h-8 w-8 text-yellow-600" />
+              <div>
+                <p className="text-2xl font-bold">8</p>
+                <p className="text-xs text-muted-foreground">
+                  {language === 'en' ? 'Active Projects' : 'مشاريع نشطة'}
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>
-
+        
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">
-                  {language === 'en' ? 'In Progress' : 'قيد التنفيذ'}
-                </p>
-                <p className="text-2xl font-bold">{inProgressTasks}</p>
+          <CardContent className="flex items-center p-4">
+            <div className="flex items-center space-x-4">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <CheckCircle className="h-6 w-6 text-green-600" />
               </div>
-              <Clock className="h-8 w-8 text-blue-600" />
+              <div>
+                <p className="text-2xl font-bold">24</p>
+                <p className="text-xs text-muted-foreground">
+                  {language === 'en' ? 'Completed Tasks' : 'مهام مكتملة'}
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>
-
+        
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">
-                  {language === 'en' ? 'Completed' : 'مكتملة'}
-                </p>
-                <p className="text-2xl font-bold">{completedTasks}</p>
+          <CardContent className="flex items-center p-4">
+            <div className="flex items-center space-x-4">
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <Users className="h-6 w-6 text-purple-600" />
               </div>
-              <CheckCircle className="h-8 w-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
-                  {language === 'en' ? 'External Freelancers' : 'المستقلون الخارجيون'}
+                <p className="text-2xl font-bold">12</p>
+                <p className="text-xs text-muted-foreground">
+                  {language === 'en' ? 'Team Members' : 'أعضاء الفريق'}
                 </p>
-                <p className="text-2xl font-bold">{freelancers.length}</p>
               </div>
-              <User className="h-8 w-8 text-purple-600" />
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Recent Tasks */}
+      {/* Recent Projects */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg">
-              {language === 'en' ? 'Recent Tasks' : 'المهام الحديثة'}
-            </CardTitle>
+            <div>
+              <CardTitle>
+                {language === 'en' ? 'Recent Projects' : 'المشاريع الحديثة'}
+              </CardTitle>
+              <CardDescription>
+                {language === 'en' 
+                  ? 'Your most recent project activities'
+                  : 'أحدث أنشطة مشاريعك'}
+              </CardDescription>
+            </div>
             <Button 
-              variant="outline" 
+              variant="ghost" 
               size="sm"
               onClick={() => navigate('/project-management')}
             >
               {language === 'en' ? 'View All' : 'عرض الكل'}
+              <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {recentTasks.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">
-                {language === 'en' ? 'No tasks found' : 'لا توجد مهام'}
-              </p>
-            ) : (
-              recentTasks.map((task) => (
-                <div key={task.id} className="flex items-center justify-between p-3 border rounded-lg">
+            {recentProjects.map((project) => (
+              <div key={project.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
-                    <h4 className="font-medium">{task.title}</h4>
-                    <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
-                      {task.assigneeName && (
-                        <div className="flex items-center gap-1">
-                          <User className="h-3 w-3" />
-                          <span>{task.assigneeName}</span>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-medium">{project.name}</h4>
+                      {getPriorityIcon(project.priority)}
+                    </div>
+                    <div className="flex items-center gap-4 text-sm text-gray-500">
+                      <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
-                        <span>{task.dueDate.toLocaleDateString()}</span>
-                      </div>
+                        {new Date(project.dueDate).toLocaleDateString(language === 'en' ? 'en-US' : 'ar-SA')}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Users className="h-3 w-3" />
+                        {project.teamSize} {language === 'en' ? 'members' : 'أعضاء'}
+                      </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {getStatusIcon(task.status)}
-                    <span className="text-sm">{getStatusText(task.status)}</span>
-                  </div>
+                  <Badge className={getStatusColor(project.status)}>
+                    {getStatusText(project.status)}
+                  </Badge>
                 </div>
-              ))
-            )}
+                
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600">
+                      {language === 'en' ? 'Progress' : 'التقدم'}
+                    </span>
+                    <span className="font-medium">{project.progress}%</span>
+                  </div>
+                  <Progress value={project.progress} className="h-2" />
+                </div>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
-
-      {/* Pending Proposals Alert */}
-      {pendingProposals > 0 && (
-        <Card className="border-yellow-200 bg-yellow-50">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <AlertCircle className="h-6 w-6 text-yellow-600" />
-                <div>
-                  <h3 className="font-medium">
-                    {language === 'en' ? 'Pending Proposals' : 'مقترحات معلقة'}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    {language === 'en' 
-                      ? `You have ${pendingProposals} proposal(s) awaiting review`
-                      : `لديك ${pendingProposals} مقترح(ات) في انتظار المراجعة`}
-                  </p>
-                </div>
-              </div>
-              <Button onClick={() => navigate('/project-management')}>
-                {language === 'en' ? 'Review' : 'مراجعة'}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 };

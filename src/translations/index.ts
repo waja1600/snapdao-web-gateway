@@ -14,6 +14,7 @@ import { arbitrationTranslations } from './arbitration';
 import { expensesTranslations } from './expenses';
 import { countriesTranslations } from './countries';
 import { uiTranslations } from './ui';
+import { votingTranslations } from './voting';
 
 // Combine all translation dictionaries
 const translations = {
@@ -32,6 +33,7 @@ const translations = {
   ...expensesTranslations,
   ...countriesTranslations,
   ...uiTranslations,
+  ...votingTranslations,
 };
 
 export type TranslationKey = keyof typeof translations;
