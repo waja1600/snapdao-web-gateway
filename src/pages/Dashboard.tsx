@@ -18,6 +18,9 @@ import { RoleSelector } from "@/components/dashboard/RoleSelector";
 import { RecentActivities } from "@/components/dashboard/RecentActivities";
 import { ProjectsOverview } from "@/components/dashboard/ProjectsOverview";
 import { MCPAssistant } from "@/components/mcp/MCPAssistant";
+import { GatewaysOverview } from "@/components/gateways/GatewaysOverview";
+import { WorkflowNavigation } from "@/components/workflow/WorkflowNavigation";
+import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { getCommonDashboardItems, getRoleDashboardItems } from "@/components/dashboard/dashboardData";
 import { DashboardItemProps } from "@/components/dashboard/DashboardItem";
 
@@ -70,44 +73,99 @@ const Dashboard = () => {
         
         {/* KYC verification prompt */}
         <KYCPrompt kycStatus={kycStatus} />
+
+        {/* Workflow Navigation */}
+        <WorkflowNavigation />
         
-        <Tabs defaultValue="all" className="space-y-6">
+        <Tabs defaultValue="overview" className="space-y-6">
           <TabsList>
-            <TabsTrigger value="all">
-              {language === 'en' ? 'All Services' : 'كل الخدمات'}
+            <TabsTrigger value="overview">
+              {language === 'en' ? 'Overview' : 'نظرة عامة'}
+            </TabsTrigger>
+            <TabsTrigger value="gateways">
+              {language === 'en' ? 'Gateways' : 'البوابات'}
             </TabsTrigger>
             <TabsTrigger value="projects">
               {language === 'en' ? 'Project Management' : 'إدارة المشاريع'}
             </TabsTrigger>
-            <TabsTrigger value="cooperative">
-              {language === 'en' ? 'Cooperative Buying' : 'الشراء التعاوني'}
+            <TabsTrigger value="notifications">
+              {language === 'en' ? 'Notifications' : 'الإشعارات'}
+            </TabsTrigger>
+            <TabsTrigger value="invoices">
+              {language === 'en' ? 'Invoices' : 'الفواتير'}
             </TabsTrigger>
             <TabsTrigger value="freelancers">
-              {language === 'en' ? 'Freelancers' : 'المستقلين'}
+              {language === 'en' ? 'Freelancer Management' : 'إدارة المستقلين'}
+            </TabsTrigger>
+            <TabsTrigger value="cooperative">
+              {language === 'en' ? 'Cooperative Buying' : 'الشراء التعاوني'}
             </TabsTrigger>
             <TabsTrigger value="suppliers">
               {language === 'en' ? 'Suppliers' : 'الموردين'}
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="all" className="space-y-6">
+          <TabsContent value="overview" className="space-y-6">
             {/* Display dashboard items */}
             <DashboardItems items={dashboardItems} />
+            
+            {/* Gateways overview on main dashboard */}
+            <GatewaysOverview />
             
             {/* Recent activities section */}
             <RecentActivities />
           </TabsContent>
           
+          <TabsContent value="gateways">
+            <GatewaysOverview />
+          </TabsContent>
+          
           <TabsContent value="projects">
             <ProjectsOverview />
+          </TabsContent>
+
+          <TabsContent value="notifications">
+            <NotificationCenter />
+          </TabsContent>
+
+          <TabsContent value="invoices">
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">
+                {language === 'en' ? 'Invoice Management' : 'إدارة الفواتير'}
+              </h3>
+              <p className="text-gray-600">
+                {language === 'en' 
+                  ? 'Manage your invoices, payment plans, and billing information.'
+                  : 'إدارة فواتيرك وخطط الدفع ومعلومات الفوترة.'}
+              </p>
+              <iframe 
+                src="/invoices" 
+                className="w-full h-96 border rounded-lg"
+                title={language === 'en' ? 'Invoice Management' : 'إدارة الفواتير'}
+              />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="freelancers">
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">
+                {language === 'en' ? 'Freelancer Management' : 'إدارة المستقلين'}
+              </h3>
+              <p className="text-gray-600">
+                {language === 'en' 
+                  ? 'Manage freelancer projects, payments, and contracts.'
+                  : 'إدارة مشاريع المستقلين والمدفوعات والعقود.'}
+              </p>
+              <iframe 
+                src="/freelancer-management" 
+                className="w-full h-96 border rounded-lg"
+                title={language === 'en' ? 'Freelancer Management' : 'إدارة المستقلين'}
+              />
+            </div>
           </TabsContent>
           
           <TabsContent value="cooperative">
             {roleTabContent.company}
-          </TabsContent>
-          
-          <TabsContent value="freelancers">
-            {roleTabContent.freelancer}
           </TabsContent>
           
           <TabsContent value="suppliers">
