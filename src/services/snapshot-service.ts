@@ -33,7 +33,7 @@ interface SnapshotVote {
 }
 
 export class SnapshotService {
-  private hub: string;
+  private hub: any;
   private client: any;
 
   constructor() {
@@ -154,48 +154,21 @@ export class SnapshotService {
 
   async getProposals(space: string): Promise<SnapshotProposal[]> {
     try {
-      // Using GraphQL query to fetch proposals
-      const query = `
-        query Proposals($space: String!) {
-          proposals(
-            first: 20,
-            skip: 0,
-            where: { space: $space },
-            orderBy: "created",
-            orderDirection: desc
-          ) {
-            id
-            title
-            body
-            choices
-            start
-            end
-            snapshot
-            state
-            author
-            space {
-              id
-              name
-            }
-          }
+      const proposals = await snapshot.utils.getProposals(
+        this.client,
+        space,
+        {
+          first: 20,
+          skip: 0,
+          where: {
+            space_in: [space]
+          },
+          orderBy: 'created',
+          orderDirection: 'desc'
         }
-      `;
+      );
 
-      const variables = { space };
-      
-      const response = await fetch('https://hub.snapshot.org/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query,
-          variables,
-        }),
-      });
-
-      const data = await response.json();
-      return data.data?.proposals || [];
+      return proposals || [];
     } catch (error) {
       console.error('Error fetching proposals:', error);
       return [];
@@ -204,38 +177,16 @@ export class SnapshotService {
 
   async getVotes(proposalId: string): Promise<SnapshotVote[]> {
     try {
-      // Using GraphQL query to fetch votes
-      const query = `
-        query Votes($proposal: String!) {
-          votes(
-            first: 1000,
-            skip: 0,
-            where: { proposal: $proposal }
-          ) {
-            id
-            voter
-            choice
-            proposal
-            space
-          }
+      const votes = await snapshot.utils.getVotes(
+        this.client,
+        proposalId,
+        {
+          first: 1000,
+          skip: 0
         }
-      `;
+      );
 
-      const variables = { proposal: proposalId };
-      
-      const response = await fetch('https://hub.snapshot.org/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query,
-          variables,
-        }),
-      });
-
-      const data = await response.json();
-      return data.data?.votes || [];
+      return votes || [];
     } catch (error) {
       console.error('Error fetching votes:', error);
       return [];

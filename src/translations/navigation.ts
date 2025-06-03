@@ -1,32 +1,16 @@
 
 export const navigationTranslations = {
-  home: {
-    en: 'Home',
-    ar: 'الرئيسية'
-  },
   dashboard: {
     en: 'Dashboard',
     ar: 'لوحة التحكم'
-  },
-  myGroups: {
-    en: 'My Groups',
-    ar: 'مجموعاتي'
-  },
-  createGroup: {
-    en: 'Create Group',
-    ar: 'إنشاء مجموعة'
   },
   projects: {
     en: 'Projects',
     ar: 'المشاريع'
   },
-  projectManagement: {
-    en: 'Project Management',
-    ar: 'إدارة المشاريع'
-  },
   proposals: {
     en: 'Proposals',
-    ar: 'الاقتراحات'
+    ar: 'المقترحات'
   },
   voting: {
     en: 'Voting',
@@ -36,148 +20,171 @@ export const navigationTranslations = {
     en: 'Members',
     ar: 'الأعضاء'
   },
-  settings: {
-    en: 'Settings',
-    ar: 'الإعدادات'
+  expenses: {
+    en: 'Expenses',
+    ar: 'التكاليف'
   },
-  logout: {
-    en: 'Logout',
-    ar: 'تسجيل الخروج'
-  },
-  login: {
-    en: 'Login',
-    ar: 'تسجيل الدخول'
-  },
-  register: {
-    en: 'Register',
-    ar: 'التسجيل'
+  workflow: {
+    en: 'Project Workflow',
+    ar: 'مخطط سير العمل'
   },
   about: {
-    en: 'About',
-    ar: 'حول'
+    en: 'About Us',
+    ar: 'من نحن'
   },
-  contact: {
-    en: 'Contact',
-    ar: 'اتصل بنا'
+  mission: {
+    en: 'Our Mission',
+    ar: 'رسالتنا'
   },
-  help: {
-    en: 'Help',
-    ar: 'المساعدة'
+  howItWorks: {
+    en: 'How It Works',
+    ar: 'كيف تعمل المنصة'
   },
-  profile: {
-    en: 'Profile',
-    ar: 'الملف الشخصي'
+  invoices: {
+    en: 'Invoices',
+    ar: 'الفواتير'
+  },
+  verification: {
+    en: 'Verification',
+    ar: 'التوثيق'
   },
   notifications: {
     en: 'Notifications',
     ar: 'الإشعارات'
   },
-  search: {
-    en: 'Search',
-    ar: 'البحث'
+  arbitration: {
+    en: 'Arbitration',
+    ar: 'التحكيم وفض المنازعات'
   },
-  explore: {
-    en: 'Explore',
-    ar: 'استكشف'
-  },
-  marketplace: {
-    en: 'Marketplace',
-    ar: 'السوق'
-  },
-  services: {
-    en: 'Services',
-    ar: 'الخدمات'
+  myGroups: {
+    en: 'My Groups',
+    ar: 'مجموعاتي'
   },
   cooperativeBuying: {
     en: 'Cooperative Buying',
     ar: 'الشراء التعاوني'
   },
-  cooperativeMarketing: {
-    en: 'Cooperative Marketing',
-    ar: 'التسويق التعاوني'
-  },
   freelancers: {
     en: 'Freelancers',
-    ar: 'المستقلون'
+    ar: 'المستقلين'
   },
   suppliers: {
     en: 'Suppliers',
-    ar: 'الموردون'
+    ar: 'الموردين'
+  },
+  // User role translations
+  roles: {
+    en: 'Roles',
+    ar: 'الأدوار'
+  },
+  roleCompany: {
+    en: 'Company/Group',
+    ar: 'شركة / مجموعة'
+  },
+  roleFreelancer: {
+    en: 'Freelancer',
+    ar: 'مستقل'
+  },
+  roleSupplier: {
+    en: 'Supplier',
+    ar: 'مورّد'
+  },
+  roleSupervisor: {
+    en: 'Internal Supervisor',
+    ar: 'المشرف الداخلي'
   },
   contracts: {
     en: 'Contracts',
     ar: 'العقود'
   },
-  arbitration: {
-    en: 'Arbitration',
-    ar: 'التحكيم'
+  offers: {
+    en: 'Offers',
+    ar: 'العروض'
   },
-  expenses: {
-    en: 'Expenses',
-    ar: 'المصروفات'
+  tasks: {
+    en: 'Tasks',
+    ar: 'المهام'
   },
-  reports: {
-    en: 'Reports',
-    ar: 'التقارير'
+  ratings: {
+    en: 'Ratings',
+    ar: 'التقييمات'
   },
-  analytics: {
-    en: 'Analytics',
-    ar: 'التحليلات'
+  products: {
+    en: 'Products & Services',
+    ar: 'المنتجات والخدمات'
   },
-  integrations: {
-    en: 'Integrations',
-    ar: 'التكاملات'
-  },
-  apiKeys: {
-    en: 'API Keys',
-    ar: 'مفاتيح API'
-  },
-  billing: {
-    en: 'Billing',
-    ar: 'الفواتير'
-  },
-  subscription: {
-    en: 'Subscription',
-    ar: 'الاشتراك'
-  },
-  security: {
-    en: 'Security',
-    ar: 'الأمان'
-  },
-  privacy: {
-    en: 'Privacy',
-    ar: 'الخصوصية'
-  },
-  terms: {
-    en: 'Terms of Service',
-    ar: 'شروط الخدمة'
-  },
+  // New translations for additional pages
   faq: {
     en: 'FAQ',
     ar: 'الأسئلة الشائعة'
   },
-  support: {
-    en: 'Support',
-    ar: 'الدعم'
+  contactUs: {
+    en: 'Contact Us',
+    ar: 'اتصل بنا'
   },
-  documentation: {
-    en: 'Documentation',
-    ar: 'التوثيق'
+  termsOfService: {
+    en: 'Terms of Service',
+    ar: 'شروط الخدمة'
   },
-  community: {
-    en: 'Community',
-    ar: 'المجتمع'
+  privacyPolicy: {
+    en: 'Privacy Policy',
+    ar: 'سياسة الخصوصية'
   },
-  blog: {
-    en: 'Blog',
-    ar: 'المدونة'
+  explore: {
+    en: 'Explore',
+    ar: 'استكشاف'
   },
-  news: {
-    en: 'News',
-    ar: 'الأخبار'
+  platformBenefits: {
+    en: 'Platform Benefits',
+    ar: 'مزايا المنصة'
   },
-  updates: {
-    en: 'Updates',
-    ar: 'التحديثات'
+  ourValues: {
+    en: 'Our Values',
+    ar: 'قيمنا'
+  },
+  ourStory: {
+    en: 'Our Story',
+    ar: 'قصتنا'
+  },
+  ourVision: {
+    en: 'Our Vision',
+    ar: 'رؤيتنا'
+  },
+  // New translations for active deals pages
+  activeDeals: {
+    en: 'Active Deals',
+    ar: 'الصفقات النشطة'
+  },
+  networkRequests: {
+    en: 'Network Requests',
+    ar: 'طلبات الشبكات'
+  },
+  submitOffer: {
+    en: 'Submit Offer',
+    ar: 'تقديم عرض'
+  },
+  joinFunding: {
+    en: 'Join Funding',
+    ar: 'انضم للتمويل'
+  },
+  supplyOffer: {
+    en: 'Supply Offer',
+    ar: 'عرض توريد'
+  },
+  dealDetails: {
+    en: 'Deal Details',
+    ar: 'تفاصيل الصفقة'
+  },
+  requirements: {
+    en: 'Requirements',
+    ar: 'المتطلبات'
+  },
+  licensing: {
+    en: 'Licensing & Documentation',
+    ar: 'الترخيص والوثائق'
+  },
+  groupMembers: {
+    en: 'Group Members',
+    ar: 'أعضاء المجموعة'
   }
 };
