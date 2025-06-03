@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -9,13 +10,12 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Users, Calendar, MapPin, Tag, Vote, FileText, UserCheck, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
-import { CommentThread } from "@/components/comments/CommentThread";
-import { IntegratedVoting } from "@/components/voting/IntegratedVoting";
 
 const GroupRoom = () => {
   const { id } = useParams();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
+  const [votingChoice, setVotingChoice] = useState<string>('');
 
   // Mock group data
   const groupData = {
@@ -64,6 +64,15 @@ const GroupRoom = () => {
       status: 'مقبول'
     }
   ];
+
+  const handleVote = (choice: string) => {
+    setVotingChoice(choice);
+    toast.success(
+      language === 'en' 
+        ? 'Your vote has been recorded successfully' 
+        : 'تم تسجيل تصويتك بنجاح'
+    );
+  };
 
   const handleLeaveGroup = () => {
     toast.info(
@@ -127,15 +136,12 @@ const GroupRoom = () => {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">
               {language === 'en' ? 'Overview' : 'نظرة عامة'}
             </TabsTrigger>
             <TabsTrigger value="members">
               {language === 'en' ? 'Members' : 'الأعضاء'}
-            </TabsTrigger>
-            <TabsTrigger value="discussion">
-              {language === 'en' ? 'Discussion' : 'النقاش'}
             </TabsTrigger>
             <TabsTrigger value="voting">
               {language === 'en' ? 'Voting' : 'التصويت'}
@@ -191,18 +197,47 @@ const GroupRoom = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="discussion" className="space-y-4">
-            <CommentThread 
-              groupId={id || ''}
-              discussionId="discussion-1"
-              title={language === 'en' ? 'Group Discussion' : 'نقاش المجموعة'}
-            />
-          </TabsContent>
-
           <TabsContent value="voting" className="space-y-4">
-            <IntegratedVoting 
-              groupId={id || ''}
-            />
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Vote className="w-5 h-5" />
+                  {groupData.currentVoting.title}
+                </CardTitle>
+                <CardDescription>
+                  {groupData.currentVoting.description}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span>{language === 'en' ? 'Voting Progress' : 'تقدم التصويت'}</span>
+                    <span>{groupData.currentVoting.progress}%</span>
+                  </div>
+                  <Progress value={groupData.currentVoting.progress} className="h-2" />
+                </div>
+                
+                <div className="space-y-2">
+                  <h4 className="font-medium">{language === 'en' ? 'Vote Options:' : 'خيارات التصويت:'}</h4>
+                  {groupData.currentVoting.options.map((option, index) => (
+                    <Button
+                      key={index}
+                      variant={votingChoice === option ? "default" : "outline"}
+                      className="w-full justify-start"
+                      onClick={() => handleVote(option)}
+                      disabled={!!votingChoice}
+                    >
+                      <Vote className="w-4 h-4 mr-2" />
+                      {option}
+                    </Button>
+                  ))}
+                </div>
+                
+                <div className="text-sm text-gray-600">
+                  {language === 'en' ? 'Voting ends on:' : 'ينتهي التصويت في:'} {groupData.currentVoting.endDate}
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="offers" className="space-y-4">
