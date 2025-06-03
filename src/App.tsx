@@ -23,6 +23,10 @@ import Arbitration from "./pages/Arbitration";
 import ClientExpenses from "./pages/ClientExpenses";
 import ProjectWorkflow from "./pages/ProjectWorkflow";
 import NotFound from "./pages/NotFound";
+import HowItWorks from "./pages/HowItWorks";
+import AboutUs from "./pages/AboutUs";
+import ContactUs from "./pages/ContactUs";
+import FAQ from "./pages/FAQ";
 
 // New paths for ForGPO
 const newRoutes = [
@@ -33,6 +37,10 @@ const newRoutes = [
   { path: "/cooperative-buying", element: <Projects /> }, // Temporarily reusing Projects for cooperative buying
   { path: "/freelancers", element: <Explore /> }, // Temporarily reusing Explore for freelancers
   { path: "/suppliers", element: <Explore /> }, // Temporarily reusing Explore for suppliers
+  { path: "/how-it-works", element: <HowItWorks /> }, // New How It Works page
+  { path: "/about", element: <AboutUs /> }, // New About Us page
+  { path: "/contact", element: <ContactUs /> }, // New Contact Us page
+  { path: "/faq", element: <FAQ /> }, // New FAQ page
 ];
 
 const queryClient = new QueryClient();
