@@ -33,12 +33,6 @@ import ProjectWorkflow from "@/pages/ProjectWorkflow";
 import CollectiveAgreement from "@/pages/CollectiveAgreement";
 import ContractPage from "@/pages/ContractPage";
 
-// New Gateway Pages
-import GroupBuying from "@/pages/GroupBuying";
-import CooperativeMarketing from "@/pages/CooperativeMarketing";
-import CompanyIncorporation from "@/pages/CompanyIncorporation";
-import SuppliersFreelancers from "@/pages/SuppliersFreelancers";
-
 function App() {
   return (
     <LanguageProvider>
@@ -73,13 +67,6 @@ function App() {
               <Route path="/project-workflow" element={<ProjectWorkflow />} />
               <Route path="/collective-agreement" element={<CollectiveAgreement />} />
               <Route path="/contract/:id" element={<ContractPage />} />
-              
-              {/* Gateway Routes */}
-              <Route path="/group-buying" element={<GroupBuying />} />
-              <Route path="/cooperative-marketing" element={<CooperativeMarketing />} />
-              <Route path="/company-incorporation" element={<CompanyIncorporation />} />
-              <Route path="/suppliers-freelancers" element={<SuppliersFreelancers />} />
-              
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Router>
