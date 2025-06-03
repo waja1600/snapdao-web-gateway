@@ -18,6 +18,7 @@ import { RoleSelector } from "@/components/dashboard/RoleSelector";
 import { RecentActivities } from "@/components/dashboard/RecentActivities";
 import { ProjectsOverview } from "@/components/dashboard/ProjectsOverview";
 import { MCPAssistant } from "@/components/mcp/MCPAssistant";
+import { GatewaysOverview } from "@/components/gateways/GatewaysOverview";
 import { getCommonDashboardItems, getRoleDashboardItems } from "@/components/dashboard/dashboardData";
 import { DashboardItemProps } from "@/components/dashboard/DashboardItem";
 
@@ -71,10 +72,13 @@ const Dashboard = () => {
         {/* KYC verification prompt */}
         <KYCPrompt kycStatus={kycStatus} />
         
-        <Tabs defaultValue="all" className="space-y-6">
+        <Tabs defaultValue="overview" className="space-y-6">
           <TabsList>
-            <TabsTrigger value="all">
-              {language === 'en' ? 'All Services' : 'كل الخدمات'}
+            <TabsTrigger value="overview">
+              {language === 'en' ? 'Overview' : 'نظرة عامة'}
+            </TabsTrigger>
+            <TabsTrigger value="gateways">
+              {language === 'en' ? 'Gateways' : 'البوابات'}
             </TabsTrigger>
             <TabsTrigger value="projects">
               {language === 'en' ? 'Project Management' : 'إدارة المشاريع'}
@@ -90,12 +94,16 @@ const Dashboard = () => {
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="all" className="space-y-6">
+          <TabsContent value="overview" className="space-y-6">
             {/* Display dashboard items */}
             <DashboardItems items={dashboardItems} />
             
             {/* Recent activities section */}
             <RecentActivities />
+          </TabsContent>
+          
+          <TabsContent value="gateways">
+            <GatewaysOverview />
           </TabsContent>
           
           <TabsContent value="projects">

@@ -1,3 +1,4 @@
+
 export const navigationTranslations = {
   // Main navigation
   dashboard: {
@@ -53,6 +54,24 @@ export const navigationTranslations = {
   groupRoom: {
     en: 'Group Room',
     ar: 'غرفة المجموعة'
+  },
+  
+  // Gateway navigation
+  groupBuying: {
+    en: 'Group Buying',
+    ar: 'الشراء الجماعي'
+  },
+  cooperativeMarketing: {
+    en: 'Cooperative Marketing',
+    ar: 'التسويق التعاوني'
+  },
+  companyIncorporation: {
+    en: 'Company Incorporation',
+    ar: 'تأسيس الشركات'
+  },
+  suppliersFreelancers: {
+    en: 'Suppliers & Freelancers',
+    ar: 'الموردون والمستقلون'
   },
   
   // Service navigation
@@ -131,5 +150,29 @@ export const navigationTranslations = {
   products: {
     en: 'Products',
     ar: 'المنتجات'
+  },
+  
+  // Role names
+  roleCompany: {
+    en: 'Company/Group',
+    ar: 'شركة / مجموعة'
+  },
+  roleFreelancer: {
+    en: 'Freelancer',
+    ar: 'مستقل'
+  },
+  roleSupplier: {
+    en: 'Supplier',
+    ar: 'مورّد'
+  },
+  roleSupervisor: {
+    en: 'Supervisor',
+    ar: 'مشرف'
+  },
+  
+  // Common actions
+  logout: {
+    en: 'Logout',
+    ar: 'تسجيل الخروج'
   }
 };
