@@ -1,22 +1,19 @@
 
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Layout } from "@/components/Layout";
-import { ArrowRight, Users, Building, UserCheck, CheckCircle, Globe } from "lucide-react";
+import { ArrowRight, Users, Building, UserCheck, CheckCircle, Clock, Globe } from "lucide-react";
 
 const ServiceLanding = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const { service } = useParams();
   const { language } = useLanguage();
   const { user } = useAuth();
-  
-  // Extract service from pathname
-  const service = location.pathname.replace('/', '') as keyof typeof serviceConfig;
+  const navigate = useNavigate();
   
   const [selectedType, setSelectedType] = useState<'group' | 'solo' | null>(null);
 
@@ -111,31 +108,11 @@ const ServiceLanding = () => {
     }
   };
 
-  const currentService = serviceConfig[service];
+  const currentService = serviceConfig[service as keyof typeof serviceConfig];
 
   if (!currentService) {
-    console.log('Service not found:', service);
-    return (
-      <Layout sidebar={false}>
-        <div className="min-h-screen flex items-center justify-center">
-          <Card>
-            <CardContent className="p-6 text-center">
-              <h2 className="text-2xl font-bold mb-4">
-                {language === 'en' ? 'Service Not Found' : 'الخدمة غير موجودة'}
-              </h2>
-              <p className="text-gray-600 mb-4">
-                {language === 'en' 
-                  ? 'The requested service could not be found.' 
-                  : 'لم يتم العثور على الخدمة المطلوبة.'}
-              </p>
-              <Button onClick={() => navigate('/')}>
-                {language === 'en' ? 'Go Home' : 'الذهاب للرئيسية'}
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </Layout>
-    );
+    navigate('/');
+    return null;
   }
 
   const handleStart = () => {

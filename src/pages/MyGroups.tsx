@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Layout } from "@/components/Layout";
-import { MCPAssistant } from "@/components/mcp/MCPAssistant";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -194,9 +193,6 @@ const MyGroups = () => {
             {language === 'en' ? 'Create Group' : 'إنشاء مجموعة'}
           </Button>
         </div>
-
-        {/* MCP Assistant */}
-        <MCPAssistant position="relative" />
 
         <Tabs defaultValue="created" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2">
