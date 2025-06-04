@@ -1,6 +1,7 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
-import Index from "@/pages/Index";
+import EnhancedIndex from "@/pages/EnhancedIndex";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Dashboard from "@/pages/Dashboard";
@@ -33,13 +34,13 @@ import CollectiveAgreement from "@/pages/CollectiveAgreement";
 import ContractPage from "@/pages/ContractPage";
 import GPOPlatform from "@/pages/GPOPlatform";
 
-// New Gateway Pages
+// Gateway Pages
 import GroupBuying from "@/pages/GroupBuying";
 import CooperativeMarketing from "@/pages/CooperativeMarketing";
 import CompanyIncorporation from "@/pages/CompanyIncorporation";
 import SuppliersFreelancers from "@/pages/SuppliersFreelancers";
 
-// New Management Pages
+// Management Pages
 import Invoices from "@/pages/Invoices";
 import FreelancerManagement from "@/pages/FreelancerManagement";
 
@@ -50,7 +51,7 @@ function App() {
         <DAOProvider>
           <Router>
             <Routes>
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={<EnhancedIndex />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/dashboard" element={<Dashboard />} />
@@ -78,15 +79,16 @@ function App() {
               <Route path="/collective-agreement" element={<CollectiveAgreement />} />
               <Route path="/contract/:id" element={<ContractPage />} />
               
-              {/* Gateway Routes */}
-              <Route path="/group-buying" element={<GroupBuying />} />
+              {/* Enhanced Gateway Routes */}
+              <Route path="/cooperative-buying" element={<GroupBuying />} />
               <Route path="/cooperative-marketing" element={<CooperativeMarketing />} />
-              <Route path="/company-incorporation" element={<CompanyIncorporation />} />
-              <Route path="/suppliers-freelancers" element={<SuppliersFreelancers />} />
+              <Route path="/company-formation" element={<CompanyIncorporation />} />
+              <Route path="/supplier-sourcing" element={<SuppliersFreelancers />} />
+              <Route path="/freelancer-management" element={<FreelancerManagement />} />
+              <Route path="/arbitration-ipfs" element={<Arbitration />} />
               
               {/* Management Routes */}
               <Route path="/invoices" element={<Invoices />} />
-              <Route path="/freelancer-management" element={<FreelancerManagement />} />
               
               {/* GPO Platform - Main Hub */}
               <Route path="/gpo-platform" element={<GPOPlatform />} />
