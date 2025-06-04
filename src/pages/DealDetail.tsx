@@ -1,151 +1,118 @@
 
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { Layout } from "@/components/Layout";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/components/ui/use-toast";
-import { Users, CircleDollarSign, FileText, CircleCheck, Tag, CalendarIcon } from "lucide-react";
-
-// Dummy deal data - in a real app, this would come from an API or context
-const deals = [
-  {
-    id: "1",
-    title: "توريد أثاث مكتبي",
-    description: "مطلوب توريد 100 كرسي و50 مكتب لخمس شركات ضمن مجموعة الشراء الجماعي للأثاث المكتبي. يجب أن تكون المنتجات ذات جودة عالية وتتوافق مع معايير الأمان والجودة.",
-    network: "مجموعات الشراء الجماعي",
-    members: 5,
-    budget: "50,000 ريال",
-    votes: { yes: 4, no: 0, abstain: 1 },
-    category: "أثاث",
-    deadline: "2025-06-15",
-    status: "active",
-    requirements: [
-      "سجل تجاري ساري المفعول",
-      "شهادة ضريبة القيمة المضافة",
-      "خبرة لا تقل عن 3 سنوات في توريد الأثاث المكتبي",
-      "القدرة على التوريد خلال 30 يوم من تاريخ الموافقة على العرض",
-      "تقديم عينات للمنتجات قبل التوريد النهائي",
-      "ضمان لا يقل عن سنة على المنتجات"
-    ],
-    licenseConditions: [
-      "الالتزام بمعايير الجودة السعودية",
-      "شهادة مطابقة المنتجات للمواصفات القياسية",
-      "التسجيل في منصة اعتماد للمشتريات الحكومية (إذا كان مطبقاً)",
-      "وثيقة التأمينات الاجتماعية"
-    ],
-    specifications: {
-      chairs: "كراسي مكتبية دوارة مريحة، مقاومة للاهتراء، قابلة للتعديل، ذات مساند للذراعين",
-      desks: "مكاتب عمل بمقاس 120×80 سم، مقاومة للخدش، مع أدراج قابلة للقفل وممرات للكابلات"
-    },
-    groupMembers: [
-      "شركة التقنية المتطورة",
-      "مؤسسة التميز للأعمال",
-      "شركة الخليج للاستشارات",
-      "مجموعة الأفق للتطوير",
-      "شركة المستقبل للتكنولوجيا"
-    ]
-  },
-  {
-    id: "2",
-    title: "خدمات تطوير مواقع",
-    description: "تطوير موقع إلكتروني متكامل مع نظام إدارة محتوى لثلاث شركات ضمن مبادرة التحول الرقمي المشترك.",
-    network: "بوابة التوظيف",
-    members: 3,
-    budget: "25,000 ريال",
-    votes: { yes: 3, no: 0, abstain: 0 },
-    category: "تكنولوجيا",
-    deadline: "2025-06-30",
-    status: "active",
-    requirements: [
-      "خبرة موثقة في تطوير المواقع الإلكترونية",
-      "محفظة أعمال سابقة",
-      "القدرة على تقديم الدعم الفني لمدة 6 أشهر بعد الإطلاق",
-      "تسليم المشروع خلال 45 يوم"
-    ],
-    licenseConditions: [
-      "رخصة مزاولة نشاط تقنية المعلومات",
-      "عضوية الهيئة السعودية للمبرمجين (إن وجدت)",
-      "شهادات في مجال التطوير من جهات معترف بها"
-    ],
-    specifications: {
-      technology: "React.js أو Vue.js للواجهة الأمامية، Node.js للخادم الخلفي",
-      features: "نظام إدارة محتوى، منصة دفع إلكتروني، دعم اللغة العربية والإنجليزية، تصميم متجاوب"
-    },
-    groupMembers: [
-      "شركة الاتصالات المتكاملة",
-      "مؤسسة البيانات الذكية",
-      "شركة التقنية الحديثة"
-    ]
-  }
-];
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Layout } from '@/components/Layout';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabaseService } from '@/services/supabase-service';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, Users, Calendar, DollarSign } from 'lucide-react';
 
 const DealDetail = () => {
   const { id } = useParams();
   const { language } = useLanguage();
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const [group, setGroup] = useState<any>(null);
+  const [members, setMembers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Find the deal based on the ID from the URL
-  const deal = deals.find(d => d.id === id);
-
-  const [activeTab, setActiveTab] = useState("details");
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [proposal, setProposal] = useState({
-    price: "",
-    description: "",
-    deliveryTime: "",
-    warranty: ""
-  });
-
-  const handleSubmitProposal = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!acceptedTerms) {
-      toast({
-        variant: "destructive",
-        title: language === 'en' ? "Terms not accepted" : "لم يتم قبول الشروط",
-        description: language === 'en' 
-          ? "You must accept the terms and conditions to submit a proposal" 
-          : "يجب عليك قبول الشروط والأحكام لتقديم العرض"
-      });
-      return;
+  useEffect(() => {
+    if (id && user) {
+      fetchDealDetails();
     }
+  }, [id, user]);
 
-    // Here you would submit the proposal to your backend
-    toast({
-      title: language === 'en' ? "Proposal submitted" : "تم تقديم العرض",
-      description: language === 'en' 
-        ? "Your proposal has been submitted successfully" 
-        : "تم تقديم عرضك بنجاح"
-    });
+  const fetchDealDetails = async () => {
+    setLoading(true);
+    try {
+      // For now, create mock data since we need to implement the full group system
+      const mockGroup = {
+        id: id,
+        name: language === 'en' ? 'Medical Equipment Group Purchase' : 'مجموعة شراء المعدات الطبية',
+        description: language === 'en' 
+          ? 'Collaborative purchase of medical equipment for healthcare facilities'
+          : 'شراء تعاوني للمعدات الطبية للمرافق الصحية',
+        type: 'group_contract',
+        service_gateway: 'cooperative_buying',
+        business_objective: 'Aggregated Procurement',
+        legal_framework: 'Framework Agreements',
+        jurisdiction: 'EG',
+        status: 'active',
+        target_amount: 50000,
+        current_amount: 35000,
+        target_members: 15,
+        current_members: 8,
+        deadline: '2024-02-15',
+        created_at: '2024-01-15'
+      };
 
-    // Navigate back to the deals page
-    navigate("/active-deals");
+      setGroup(mockGroup);
+
+      const mockMembers = [
+        { id: '1', name: 'أحمد محمد', role: 'creator', joined_at: '2024-01-15' },
+        { id: '2', name: 'فاطمة أحمد', role: 'member', joined_at: '2024-01-16' },
+        { id: '3', name: 'محمد علي', role: 'member', joined_at: '2024-01-17' }
+      ];
+
+      setMembers(mockMembers);
+    } catch (error) {
+      console.error('Error fetching deal details:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // If deal not found
-  if (!deal) {
+  const handleJoinGroup = async () => {
+    if (!user || !group) return;
+
+    try {
+      // Check if user is already a member
+      const isAlreadyMember = members.some(member => member.user_id === user.id);
+      
+      if (isAlreadyMember) {
+        alert(language === 'en' ? 'You are already a member of this group' : 'أنت عضو بالفعل في هذه المجموعة');
+        return;
+      }
+
+      // In a real implementation, this would call the API
+      const newMember = {
+        id: Date.now().toString(),
+        name: user.email,
+        role: 'member',
+        joined_at: new Date().toISOString()
+      };
+
+      setMembers([...members, newMember]);
+      alert(language === 'en' ? 'Successfully joined the group!' : 'تم الانضمام للمجموعة بنجاح!');
+    } catch (error) {
+      console.error('Error joining group:', error);
+    }
+  };
+
+  if (loading) {
     return (
       <Layout>
-        <div className="flex flex-col items-center justify-center h-[60vh]">
-          <h1 className="text-2xl font-bold mb-4">
-            {language === 'en' ? 'Deal not found' : 'لم يتم العثور على الصفقة'}
-          </h1>
-          <p className="text-gray-500 mb-6">
-            {language === 'en' 
-              ? 'The deal you are looking for does not exist or has been removed.' 
-              : 'الصفقة التي تبحث عنها غير موجودة أو تمت إزالتها.'}
-          </p>
-          <Button onClick={() => navigate('/active-deals')}>
-            {language === 'en' ? 'Back to Deals' : 'العودة إلى الصفقات'}
+        <div className="flex items-center justify-center h-64">
+          <div className="text-lg">
+            {language === 'en' ? 'Loading...' : 'جاري التحميل...'}
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!group) {
+    return (
+      <Layout>
+        <div className="text-center py-12">
+          <h2 className="text-xl font-semibold mb-4">
+            {language === 'en' ? 'Deal not found' : 'الصفقة غير موجودة'}
+          </h2>
+          <Button onClick={() => navigate('/deals')}>
+            {language === 'en' ? 'Back to Deals' : 'العودة للصفقات'}
           </Button>
         </div>
       </Layout>
@@ -155,254 +122,158 @@ const DealDetail = () => {
   return (
     <Layout>
       <div className="space-y-6">
-        {/* Back button */}
-        <div>
-          <Button 
-            variant="outline" 
-            onClick={() => navigate('/active-deals')}
-            className="mb-4"
-          >
-            {language === 'en' ? '← Back to Deals' : '← العودة إلى الصفقات'}
-          </Button>
-        </div>
-        
-        {/* Deal header section */}
-        <Card>
-          <CardHeader>
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <CardTitle className="text-2xl">{deal.title}</CardTitle>
-                <CardDescription className="mt-2 text-base">
-                  {deal.description}
-                </CardDescription>
-              </div>
-              <Badge className="self-start" variant="outline">{deal.network}</Badge>
-            </div>
-            
-            <div className="flex flex-wrap gap-3 mt-4">
-              <Badge variant="secondary">{deal.category}</Badge>
-              <Badge variant="outline" className="flex items-center gap-1">
-                <Users className="h-3 w-3" /> {deal.members} {language === 'en' ? 'members' : 'أعضاء'}
-              </Badge>
-              <Badge variant="outline" className="flex items-center gap-1">
-                <CircleDollarSign className="h-3 w-3" /> {deal.budget}
-              </Badge>
-              <Badge variant="outline" className="flex items-center gap-1">
-                <CalendarIcon className="h-3 w-3" /> {new Date(deal.deadline).toLocaleDateString(language === 'en' ? 'en-US' : 'ar-SA')}
-              </Badge>
-            </div>
-            
-            <div className="mt-4 flex items-center gap-4">
-              <div className="flex items-center">
-                <span className="mr-2 font-medium">{language === 'en' ? 'Status:' : 'الحالة:'}</span>
-                <Badge variant="default">
-                  {language === 'en' ? 'Active' : 'نشطة'}
-                </Badge>
-              </div>
-              
-              <div className="flex items-center">
-                <span className="mr-2 font-medium">{language === 'en' ? 'Votes:' : 'الأصوات:'}</span>
-                <span className="text-green-600 flex items-center">
-                  <CircleCheck className="h-4 w-4 mr-1" /> {deal.votes.yes}
-                </span>
-              </div>
-            </div>
-          </CardHeader>
-        </Card>
-        
-        {/* Tabs section */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-3 mb-6">
-            <TabsTrigger value="details">
-              {language === 'en' ? 'Details' : 'التفاصيل'}
-            </TabsTrigger>
-            <TabsTrigger value="requirements">
-              {language === 'en' ? 'Requirements' : 'المتطلبات'}
-            </TabsTrigger>
-            <TabsTrigger value="submit">
-              {language === 'en' ? 'Submit Offer' : 'تقديم عرض'}
-            </TabsTrigger>
-          </TabsList>
-          
-          {/* Details Tab */}
-          <TabsContent value="details" className="space-y-6">
+        <Button
+          variant="ghost"
+          onClick={() => navigate('/deals')}
+          className="mb-4"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          {language === 'en' ? 'Back to Deals' : 'العودة للصفقات'}
+        </Button>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>{language === 'en' ? 'Group Members' : 'أعضاء المجموعة'}</CardTitle>
-                <CardDescription>
-                  {language === 'en' 
-                    ? 'Organizations participating in this group deal' 
-                    : 'المؤسسات المشاركة في صفقة المجموعة هذه'}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  {deal.groupMembers.map((member, index) => (
-                    <li key={index} className="flex items-center">
-                      <Users className="h-4 w-4 mr-2 text-gray-500" />
-                      {member}
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>{language === 'en' ? 'Specifications' : 'المواصفات'}</CardTitle>
-                <CardDescription>
-                  {language === 'en' 
-                    ? 'Detailed specifications for this deal' 
-                    : 'المواصفات التفصيلية لهذه الصفقة'}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <dl className="space-y-4">
-                  {Object.entries(deal.specifications).map(([key, value]) => (
-                    <div key={key}>
-                      <dt className="font-medium">{key}:</dt>
-                      <dd className="mt-1 text-gray-600">{value}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          {/* Requirements Tab */}
-          <TabsContent value="requirements" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>{language === 'en' ? 'Supplier Requirements' : 'متطلبات المورد'}</CardTitle>
-                <CardDescription>
-                  {language === 'en' 
-                    ? 'Requirements that must be met by suppliers' 
-                    : 'المتطلبات التي يجب استيفاؤها من قبل الموردين'}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  {deal.requirements.map((requirement, index) => (
-                    <li key={index} className="flex items-start">
-                      <CircleCheck className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span>{requirement}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>{language === 'en' ? 'Licensing & Documentation' : 'الترخيص والوثائق'}</CardTitle>
-                <CardDescription>
-                  {language === 'en' 
-                    ? 'Required licenses and documentation' 
-                    : 'التراخيص والوثائق المطلوبة'}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  {deal.licenseConditions.map((condition, index) => (
-                    <li key={index} className="flex items-start">
-                      <FileText className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
-                      <span>{condition}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          {/* Submit Offer Tab */}
-          <TabsContent value="submit">
-            <Card>
-              <CardHeader>
-                <CardTitle>{language === 'en' ? 'Submit Your Offer' : 'تقديم عرضك'}</CardTitle>
-                <CardDescription>
-                  {language === 'en' 
-                    ? 'Complete the form below to submit your offer to the group' 
-                    : 'أكمل النموذج أدناه لتقديم عرضك إلى المجموعة'}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmitProposal} className="space-y-6">
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="price">{language === 'en' ? 'Price Offer' : 'عرض السعر'}</Label>
-                      <Input 
-                        id="price" 
-                        type="text"
-                        placeholder={language === 'en' ? 'Enter your price' : 'أدخل السعر'}
-                        value={proposal.price}
-                        onChange={e => setProposal({...proposal, price: e.target.value})}
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="description">{language === 'en' ? 'Proposal Description' : 'وصف العرض'}</Label>
-                      <Textarea 
-                        id="description" 
-                        placeholder={language === 'en' ? 'Describe your offer in detail' : 'صف عرضك بالتفصيل'}
-                        value={proposal.description}
-                        onChange={e => setProposal({...proposal, description: e.target.value})}
-                        rows={5}
-                        required
-                      />
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="deliveryTime">{language === 'en' ? 'Delivery Time (days)' : 'وقت التسليم (أيام)'}</Label>
-                        <Input 
-                          id="deliveryTime" 
-                          type="number"
-                          placeholder={language === 'en' ? 'Enter days' : 'أدخل عدد الأيام'}
-                          value={proposal.deliveryTime}
-                          onChange={e => setProposal({...proposal, deliveryTime: e.target.value})}
-                          required
-                        />
-                      </div>
-                      
-                      <div>
-                        <Label htmlFor="warranty">{language === 'en' ? 'Warranty Period (months)' : 'فترة الضمان (شهور)'}</Label>
-                        <Input 
-                          id="warranty" 
-                          type="number"
-                          placeholder={language === 'en' ? 'Enter months' : 'أدخل عدد الشهور'}
-                          value={proposal.warranty}
-                          onChange={e => setProposal({...proposal, warranty: e.target.value})}
-                          required
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start space-x-2 rtl:space-x-reverse">
-                      <Checkbox 
-                        id="terms" 
-                        checked={acceptedTerms}
-                        onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
-                      />
-                      <Label 
-                        htmlFor="terms" 
-                        className="text-sm leading-tight cursor-pointer"
-                      >
-                        {language === 'en' 
-                          ? 'I acknowledge that I meet all the requirements and have the necessary documentation mentioned in the requirements section, and my offer is binding upon acceptance.' 
-                          : 'أقر بأنني أستوفي جميع المتطلبات ولدي الوثائق اللازمة المذكورة في قسم المتطلبات، وعرضي ملزم عند القبول.'}
-                      </Label>
-                    </div>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="text-2xl">{group.name}</CardTitle>
+                    <p className="text-gray-600 mt-2">{group.description}</p>
                   </div>
-                  
-                  <Button type="submit" className="w-full">
-                    {language === 'en' ? 'Submit Proposal' : 'تقديم الاقتراح'}
-                  </Button>
-                </form>
+                  <Badge variant={group.status === 'active' ? 'default' : 'secondary'}>
+                    {group.status === 'active' 
+                      ? (language === 'en' ? 'Active' : 'نشط')
+                      : (language === 'en' ? 'Inactive' : 'غير نشط')
+                    }
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">
+                      {language === 'en' ? 'Business Objective' : 'الهدف التجاري'}
+                    </label>
+                    <p>{group.business_objective}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">
+                      {language === 'en' ? 'Legal Framework' : 'الإطار القانوني'}
+                    </label>
+                    <p>{group.legal_framework}</p>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex justify-between text-sm">
+                    <span>{language === 'en' ? 'Target Amount' : 'المبلغ المستهدف'}</span>
+                    <span>${group.current_amount?.toLocaleString()} / ${group.target_amount?.toLocaleString()}</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-blue-600 h-2 rounded-full" 
+                      style={{ width: `${((group.current_amount || 0) / (group.target_amount || 1)) * 100}%` }}
+                    ></div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex justify-between text-sm">
+                    <span>{language === 'en' ? 'Members' : 'الأعضاء'}</span>
+                    <span>{group.current_members} / {group.target_members}</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-green-600 h-2 rounded-full" 
+                      style={{ width: `${((group.current_members || 0) / (group.target_members || 1)) * 100}%` }}
+                    ></div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
+
+            {/* Members List */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Users className="w-5 h-5 mr-2" />
+                  {language === 'en' ? 'Group Members' : 'أعضاء المجموعة'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {members.map((member) => (
+                    <div key={member.id} className="flex justify-between items-center p-3 border rounded-lg">
+                      <div>
+                        <p className="font-medium">{member.name}</p>
+                        <p className="text-sm text-gray-600">
+                          {language === 'en' ? 'Joined' : 'انضم في'}: {new Date(member.joined_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <Badge variant={member.role === 'creator' ? 'default' : 'secondary'}>
+                        {member.role === 'creator' 
+                          ? (language === 'en' ? 'Creator' : 'المنشئ')
+                          : (language === 'en' ? 'Member' : 'عضو')
+                        }
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  {language === 'en' ? 'Deal Information' : 'معلومات الصفقة'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center">
+                  <Calendar className="w-4 h-4 mr-2 text-gray-500" />
+                  <div>
+                    <p className="text-sm text-gray-600">
+                      {language === 'en' ? 'Deadline' : 'الموعد النهائي'}
+                    </p>
+                    <p className="font-medium">
+                      {new Date(group.deadline).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center">
+                  <DollarSign className="w-4 h-4 mr-2 text-gray-500" />
+                  <div>
+                    <p className="text-sm text-gray-600">
+                      {language === 'en' ? 'Target Savings' : 'التوفير المستهدف'}
+                    </p>
+                    <p className="font-medium">25%</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center">
+                  <Users className="w-4 h-4 mr-2 text-gray-500" />
+                  <div>
+                    <p className="text-sm text-gray-600">
+                      {language === 'en' ? 'Spots Left' : 'المقاعد المتبقية'}
+                    </p>
+                    <p className="font-medium">
+                      {(group.target_members || 0) - (group.current_members || 0)}
+                    </p>
+                  </div>
+                </div>
+
+                <Button onClick={handleJoinGroup} className="w-full">
+                  {language === 'en' ? 'Join This Group' : 'انضم لهذه المجموعة'}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     </Layout>
   );
