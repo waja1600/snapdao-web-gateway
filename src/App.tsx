@@ -31,6 +31,7 @@ import DealDetail from "@/pages/DealDetail";
 import ProjectWorkflow from "@/pages/ProjectWorkflow";
 import CollectiveAgreement from "@/pages/CollectiveAgreement";
 import ContractPage from "@/pages/ContractPage";
+import GPOPlatform from "@/pages/GPOPlatform";
 
 // New Gateway Pages
 import GroupBuying from "@/pages/GroupBuying";
@@ -86,6 +87,9 @@ function App() {
               {/* Management Routes */}
               <Route path="/invoices" element={<Invoices />} />
               <Route path="/freelancer-management" element={<FreelancerManagement />} />
+              
+              {/* GPO Platform - Main Hub */}
+              <Route path="/gpo-platform" element={<GPOPlatform />} />
               
               <Route path="*" element={<NotFound />} />
             </Routes>
