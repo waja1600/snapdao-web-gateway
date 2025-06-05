@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -170,12 +169,31 @@ export const Sidebar = () => {
   // Helper to get the role display name
   const getRoleDisplayName = () => {
     switch(userRole) {
-      case 'company': return t('roleCompany');
-      case 'freelancer': return t('roleFreelancer');
-      case 'supplier': return t('roleSupplier');
-      case 'supervisor': return t('roleSupervisor');
+      case 'company': return t('roleCompany') || 'Company';
+      case 'freelancer': return t('roleFreelancer') || 'Freelancer';
+      case 'supplier': return t('roleSupplier') || 'Supplier';
+      case 'supervisor': return t('roleSupervisor') || 'Supervisor';
       default: return '';
     }
+  };
+
+  // Helper function to get user display name
+  const getUserDisplayName = () => {
+    if (!user) return '';
+    return user.user_metadata?.full_name || 
+           user.email?.split('@')[0] || 
+           'User';
+  };
+
+  // Helper function to get user initial
+  const getUserInitial = () => {
+    const displayName = getUserDisplayName();
+    return displayName.charAt(0).toUpperCase();
+  };
+
+  // Helper function to get user email
+  const getUserEmail = () => {
+    return user?.email || '';
   };
   
   return (
@@ -235,11 +253,11 @@ export const Sidebar = () => {
               <>
                 <div className="flex items-center gap-2 rounded-md bg-sidebar-accent/50 px-3 py-2">
                   <div className="h-8 w-8 rounded-full bg-sidebar-accent flex items-center justify-center">
-                    {user.name[0]}
+                    {getUserInitial()}
                   </div>
                   <div className="flex-1 truncate">
-                    <div className="font-medium truncate">{user.name}</div>
-                    <div className="text-xs opacity-70 truncate">{user.email}</div>
+                    <div className="font-medium truncate">{getUserDisplayName()}</div>
+                    <div className="text-xs opacity-70 truncate">{getUserEmail()}</div>
                   </div>
                 </div>
                 {getRoleDisplayName() && (
@@ -258,7 +276,7 @@ export const Sidebar = () => {
               onClick={() => logout()}
             >
               <LogOut className="h-4 w-4" />
-              {!isCollapsed && t('logout')}
+              {!isCollapsed && (t('logout') || 'Logout')}
             </Button>
           </div>
         )}

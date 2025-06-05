@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -168,6 +167,20 @@ export const Header = () => {
     }
   };
 
+  // Helper function to get user display name
+  const getUserDisplayName = () => {
+    if (!user) return '';
+    return user.user_metadata?.full_name || 
+           user.email?.split('@')[0] || 
+           'User';
+  };
+
+  // Helper function to get user initial
+  const getUserInitial = () => {
+    const displayName = getUserDisplayName();
+    return displayName.charAt(0).toUpperCase();
+  };
+
   return (
     <header className="bg-white border-b shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -273,9 +286,9 @@ export const Header = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className="flex items-center space-x-2">
                     <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
-                      {user.name?.[0]?.toUpperCase() || 'U'}
+                      {getUserInitial()}
                     </div>
-                    <span className="hidden md:inline">{user.name}</span>
+                    <span className="hidden md:inline">{getUserDisplayName()}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">

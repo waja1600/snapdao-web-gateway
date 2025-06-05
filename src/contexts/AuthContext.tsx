@@ -11,6 +11,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, fullName?: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
+  logout: () => Promise<void>; // إضافة هذه الخاصية
   updateProfile: (data: any) => Promise<{ error: any }>;
 }
 
@@ -94,6 +95,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // إضافة دالة logout كـ alias لـ signOut
+  const logout = signOut;
+
   const updateProfile = async (data: any) => {
     if (!user) return { error: 'No user found' };
 
@@ -121,6 +125,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signUp,
     signIn,
     signOut,
+    logout, // إضافة logout إلى القيم
     updateProfile
   };
 
