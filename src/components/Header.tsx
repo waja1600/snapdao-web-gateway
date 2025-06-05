@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -19,73 +20,30 @@ import { Bell, Globe, Clock, DollarSign, MapPin, User, Calendar } from 'lucide-r
 import { Badge } from '@/components/ui/badge';
 
 const currencies = [
-  { code: 'USD', symbol: '$', name: 'US Dollar' },
-  { code: 'EUR', symbol: '€', name: 'Euro' },
-  { code: 'GBP', symbol: '£', name: 'British Pound' },
-  { code: 'JPY', symbol: '¥', name: 'Japanese Yen' },
-  { code: 'CNY', symbol: '¥', name: 'Chinese Yuan' },
-  { code: 'SAR', symbol: 'ر.س', name: 'Saudi Riyal' },
-  { code: 'AED', symbol: 'د.إ', name: 'UAE Dirham' },
+  { code: 'USD', symbol: '$', name: 'US Dollar', nameAr: 'دولار أمريكي' },
+  { code: 'EUR', symbol: '€', name: 'Euro', nameAr: 'يورو' },
+  { code: 'GBP', symbol: '£', name: 'British Pound', nameAr: 'جنيه إسترليني' },
+  { code: 'JPY', symbol: '¥', name: 'Japanese Yen', nameAr: 'ين ياباني' },
+  { code: 'CNY', symbol: '¥', name: 'Chinese Yuan', nameAr: 'يوان صيني' },
+  { code: 'SAR', symbol: 'ر.س', name: 'Saudi Riyal', nameAr: 'ريال سعودي' },
+  { code: 'AED', symbol: 'د.إ', name: 'UAE Dirham', nameAr: 'درهم إماراتي' },
 ];
 
 const countries = [
-  { code: 'US', name: 'United States', flag: '🇺🇸', timezone: 'America/New_York', currency: 'USD' },
-  { code: 'UK', name: 'United Kingdom', flag: '🇬🇧', timezone: 'Europe/London', currency: 'GBP' },
-  { code: 'DE', name: 'Germany', flag: '🇩🇪', timezone: 'Europe/Berlin', currency: 'EUR' },
-  { code: 'FR', name: 'France', flag: '🇫🇷', timezone: 'Europe/Paris', currency: 'EUR' },
-  { code: 'CN', name: 'China', flag: '🇨🇳', timezone: 'Asia/Shanghai', currency: 'CNY' },
-  { code: 'JP', name: 'Japan', flag: '🇯🇵', timezone: 'Asia/Tokyo', currency: 'JPY' },
-  { code: 'KR', name: 'South Korea', flag: '🇰🇷', timezone: 'Asia/Seoul', currency: 'KRW' },
-  { code: 'SA', name: 'Saudi Arabia', flag: '🇸🇦', timezone: 'Asia/Riyadh', currency: 'SAR' },
-  { code: 'AE', name: 'UAE', flag: '🇦🇪', timezone: 'Asia/Dubai', currency: 'AED' },
+  { code: 'US', name: 'United States', nameAr: 'الولايات المتحدة', flag: '🇺🇸', timezone: 'America/New_York', currency: 'USD' },
+  { code: 'UK', name: 'United Kingdom', nameAr: 'المملكة المتحدة', flag: '🇬🇧', timezone: 'Europe/London', currency: 'GBP' },
+  { code: 'DE', name: 'Germany', nameAr: 'ألمانيا', flag: '🇩🇪', timezone: 'Europe/Berlin', currency: 'EUR' },
+  { code: 'FR', name: 'France', nameAr: 'فرنسا', flag: '🇫🇷', timezone: 'Europe/Paris', currency: 'EUR' },
+  { code: 'CN', name: 'China', nameAr: 'الصين', flag: '🇨🇳', timezone: 'Asia/Shanghai', currency: 'CNY' },
+  { code: 'JP', name: 'Japan', nameAr: 'اليابان', flag: '🇯🇵', timezone: 'Asia/Tokyo', currency: 'JPY' },
+  { code: 'SA', name: 'Saudi Arabia', nameAr: 'السعودية', flag: '🇸🇦', timezone: 'Asia/Riyadh', currency: 'SAR' },
+  { code: 'AE', name: 'UAE', nameAr: 'الإمارات', flag: '🇦🇪', timezone: 'Asia/Dubai', currency: 'AED' },
 ];
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇺🇸', nativeName: 'English' },
   { code: 'ar', name: 'العربية', flag: '🇸🇦', nativeName: 'العربية' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷', nativeName: 'Français' },
-  { code: 'cn', name: '中文', flag: '🇨🇳', nativeName: '中文' },
-  { code: 'es', name: 'Español', flag: '🇪🇸', nativeName: 'Español' },
-  { code: 'hi', name: 'हिंदी', flag: '🇮🇳', nativeName: 'हिंदी' },
-  { code: 'ko', name: '한국어', flag: '🇰🇷', nativeName: '한국어' },
-  { code: 'jp', name: '日本語', flag: '🇯🇵', nativeName: '日本語' },
 ];
-
-// Auto-detect user's location and preferences
-const detectUserLocation = async () => {
-  try {
-    // Try to get user's timezone
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    
-    // Try to get user's locale
-    const locale = navigator.language || 'en-US';
-    const [langCode, countryCode] = locale.split('-');
-    
-    // Find matching country
-    const country = countries.find(c => 
-      c.code === countryCode?.toUpperCase() || 
-      c.timezone === timezone
-    ) || countries[0]; // fallback to US
-    
-    // Find matching language
-    const language = languages.find(l => l.code === langCode) || languages[0];
-    
-    return {
-      country: country.code,
-      timezone,
-      currency: country.currency,
-      language: language.code
-    };
-  } catch (error) {
-    console.error('Error detecting user location:', error);
-    return {
-      country: 'US',
-      timezone: 'America/New_York',
-      currency: 'USD',
-      language: 'en'
-    };
-  }
-};
 
 export const Header = () => {
   const { language, setLanguage } = useLanguage();
@@ -100,17 +58,26 @@ export const Header = () => {
   // Auto-detect user preferences on mount
   useEffect(() => {
     const detectAndSetPreferences = async () => {
-      const detected = await detectUserLocation();
-      setSelectedCountry(detected.country);
-      setSelectedCurrency(detected.currency);
-      setUserTimezone(detected.timezone);
-      if (detected.language !== language) {
-        setLanguage(detected.language as 'en' | 'ar');
+      try {
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const locale = navigator.language || 'en-US';
+        const [langCode, countryCode] = locale.split('-');
+        
+        const country = countries.find(c => 
+          c.code === countryCode?.toUpperCase() || 
+          c.timezone === timezone
+        ) || countries[0];
+        
+        setSelectedCountry(country.code);
+        setSelectedCurrency(country.currency);
+        setUserTimezone(country.timezone);
+      } catch (error) {
+        console.error('Error detecting user location:', error);
       }
     };
     
     detectAndSetPreferences();
-  }, [language, setLanguage]);
+  }, []);
 
   // Update time and date based on user's timezone
   useEffect(() => {
@@ -118,7 +85,6 @@ export const Header = () => {
       const now = new Date();
       
       try {
-        // Format time based on user's timezone
         const timeOptions: Intl.DateTimeFormatOptions = {
           timeZone: userTimezone,
           hour: '2-digit',
@@ -127,7 +93,6 @@ export const Header = () => {
           hour12: true
         };
         
-        // Format date based on user's timezone and language
         const dateOptions: Intl.DateTimeFormatOptions = {
           timeZone: userTimezone,
           weekday: 'short',
@@ -136,14 +101,11 @@ export const Header = () => {
           day: 'numeric'
         };
         
-        const locale = language === 'ar' ? 'ar-SA' : 
-                      language === 'en' ? 'en-US' :
-                      `${language}-${selectedCountry}`;
+        const locale = language === 'ar' ? 'ar-SA' : 'en-US';
         
         setCurrentTime(now.toLocaleTimeString(locale, timeOptions));
         setCurrentDate(now.toLocaleDateString(locale, dateOptions));
       } catch (error) {
-        // Fallback to simple formatting
         setCurrentTime(now.toLocaleTimeString());
         setCurrentDate(now.toLocaleDateString());
       }
@@ -152,7 +114,7 @@ export const Header = () => {
     updateDateTime();
     const timer = setInterval(updateDateTime, 1000);
     return () => clearInterval(timer);
-  }, [userTimezone, language, selectedCountry]);
+  }, [userTimezone, language]);
 
   const selectedCurrencyData = currencies.find(c => c.code === selectedCurrency);
   const selectedCountryData = countries.find(c => c.code === selectedCountry);
@@ -172,7 +134,7 @@ export const Header = () => {
     if (!user) return '';
     return user.user_metadata?.full_name || 
            user.email?.split('@')[0] || 
-           'User';
+           (language === 'ar' ? 'مستخدم' : 'User');
   };
 
   // Helper function to get user initial
@@ -182,45 +144,48 @@ export const Header = () => {
   };
 
   return (
-    <header className="bg-white border-b shadow-sm sticky top-0 z-50">
+    <header className="bg-white border-b shadow-sm sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-blue-600">GPO Smart Platform</h1>
+              <h1 className="text-2xl font-bold text-blue-600">
+                {language === 'ar' ? 'منصة GPO الذكية' : 'GPO Smart Platform'}
+              </h1>
             </div>
           </div>
 
           {/* Central Controls */}
           <div className="hidden md:flex items-center space-x-4">
             {/* Current Date and Time */}
-            <div className="flex items-center space-x-3 text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
-              <div className="flex items-center space-x-1">
-                <Calendar className="h-4 w-4" />
+            <div className="flex items-center space-x-3 text-sm text-gray-700 bg-gray-50 px-4 py-2 rounded-lg border">
+              <div className="flex items-center space-x-2">
+                <Calendar className="h-4 w-4 text-blue-600" />
                 <span className="font-medium">{currentDate}</span>
               </div>
-              <div className="flex items-center space-x-1">
-                <Clock className="h-4 w-4" />
-                <span className="font-mono">{currentTime}</span>
+              <div className="flex items-center space-x-2">
+                <Clock className="h-4 w-4 text-green-600" />
+                <span className="font-mono font-medium">{currentTime}</span>
               </div>
             </div>
 
             {/* Country Selector */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="h-8">
+                <Button variant="outline" size="sm" className="h-9 font-medium">
                   <MapPin className="h-4 w-4 mr-1" />
                   {selectedCountryData?.flag} {selectedCountryData?.code}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="max-h-64 overflow-y-auto">
+              <DropdownMenuContent align="end" className="max-h-64 overflow-y-auto bg-white">
                 {countries.map((country) => (
                   <DropdownMenuItem
                     key={country.code}
                     onClick={() => handleCountryChange(country.code)}
+                    className="font-medium"
                   >
-                    {country.flag} {country.name}
+                    {country.flag} {language === 'ar' ? country.nameAr : country.name}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
@@ -229,18 +194,19 @@ export const Header = () => {
             {/* Currency Selector */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="h-8">
+                <Button variant="outline" size="sm" className="h-9 font-medium">
                   <DollarSign className="h-4 w-4 mr-1" />
                   {selectedCurrencyData?.symbol} {selectedCurrency}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="max-h-64 overflow-y-auto">
+              <DropdownMenuContent align="end" className="max-h-64 overflow-y-auto bg-white">
                 {currencies.map((currency) => (
                   <DropdownMenuItem
                     key={currency.code}
                     onClick={() => setSelectedCurrency(currency.code)}
+                    className="font-medium"
                   >
-                    {currency.symbol} {currency.code} - {currency.name}
+                    {currency.symbol} {currency.code} - {language === 'ar' ? currency.nameAr : currency.name}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
@@ -249,16 +215,17 @@ export const Header = () => {
             {/* Language Selector */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="h-8">
+                <Button variant="outline" size="sm" className="h-9 font-medium">
                   <Globe className="h-4 w-4 mr-1" />
                   {selectedLanguageData?.flag} {selectedLanguageData?.nativeName}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="bg-white">
                 {languages.map((lang) => (
                   <DropdownMenuItem
                     key={lang.code}
                     onClick={() => setLanguage(lang.code as 'en' | 'ar')}
+                    className="font-medium"
                   >
                     {lang.flag} {lang.nativeName}
                   </DropdownMenuItem>
@@ -270,10 +237,10 @@ export const Header = () => {
           {/* Right Section */}
           <div className="flex items-center space-x-4">
             {/* Notifications */}
-            <Button variant="ghost" size="sm" className="relative">
+            <Button variant="ghost" size="sm" className="relative h-10 w-10">
               <Bell className="h-5 w-5" />
               <Badge 
-                className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-red-500"
                 variant="destructive"
               >
                 3
@@ -284,27 +251,31 @@ export const Header = () => {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="flex items-center space-x-2">
-                    <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
+                  <Button variant="ghost" size="sm" className="flex items-center space-x-2 h-10">
+                    <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-medium">
                       {getUserInitial()}
                     </div>
-                    <span className="hidden md:inline">{getUserDisplayName()}</span>
+                    <span className="hidden md:inline font-medium">{getUserDisplayName()}</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
+                <DropdownMenuContent align="end" className="bg-white">
+                  <DropdownMenuItem className="font-medium">
                     <User className="h-4 w-4 mr-2" />
-                    Profile
+                    {language === 'ar' ? 'الملف الشخصي' : 'Profile'}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={logout}>
-                    Logout
+                  <DropdownMenuItem onClick={logout} className="font-medium">
+                    {language === 'ar' ? 'تسجيل الخروج' : 'Logout'}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <div className="flex space-x-2">
-                <Button variant="ghost" size="sm">Login</Button>
-                <Button size="sm">Sign Up</Button>
+                <Button variant="ghost" size="sm" className="font-medium">
+                  {language === 'ar' ? 'تسجيل الدخول' : 'Login'}
+                </Button>
+                <Button size="sm" className="font-medium bg-blue-600 hover:bg-blue-700">
+                  {language === 'ar' ? 'إنشاء حساب' : 'Sign Up'}
+                </Button>
               </div>
             )}
           </div>

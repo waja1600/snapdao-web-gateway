@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { MCPService, MCPQuery, MCPAction } from '@/services/mcp-service';
-import { MessageCircle, Send, Check, X, Bot, User } from 'lucide-react';
+import { MessageCircle, Send, Check, X, Bot, User, Minimize2, Maximize2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from 'sonner';
 
@@ -13,6 +13,7 @@ const mcpService = new MCPService();
 export const MCPAssistant: React.FC = () => {
   const { language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
   const [query, setQuery] = useState('');
   const [queries, setQueries] = useState<MCPQuery[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +38,7 @@ export const MCPAssistant: React.FC = () => {
       setQuery('');
     } catch (error) {
       console.error('Error processing query:', error);
-      toast.error('حدث خطأ في معالجة الاستعلام');
+      toast.error(language === 'ar' ? 'حدث خطأ في معالجة الاستعلام' : 'Error processing query');
     } finally {
       setIsLoading(false);
     }
@@ -58,21 +59,21 @@ export const MCPAssistant: React.FC = () => {
         )
       })));
       
-      toast.success('تم تنفيذ الإجراء بنجاح');
+      toast.success(language === 'ar' ? 'تم تنفيذ الإجراء بنجاح' : 'Action executed successfully');
     } catch (error) {
       console.error('Error executing action:', error);
-      toast.error('حدث خطأ في تنفيذ الإجراء');
+      toast.error(language === 'ar' ? 'حدث خطأ في تنفيذ الإجراء' : 'Error executing action');
     }
   };
 
   const ActionButton: React.FC<{ action: MCPAction }> = ({ action }) => {
     if (action.executed) {
       return (
-        <div className="flex items-center gap-2 text-green-600 text-sm">
+        <div className="flex items-center gap-2 text-green-600 text-sm font-medium">
           <Check className="h-4 w-4" />
-          <span>تم التنفيذ</span>
+          <span>{language === 'ar' ? 'تم التنفيذ' : 'Executed'}</span>
           {action.executedAt && (
-            <span className="text-gray-500">
+            <span className="text-gray-500 text-xs">
               ({action.executedAt.toLocaleTimeString()})
             </span>
           )}
@@ -85,18 +86,19 @@ export const MCPAssistant: React.FC = () => {
         <Button 
           size="sm" 
           onClick={() => handleAcceptAction(action.id)}
-          className="bg-green-600 hover:bg-green-700"
+          className="bg-green-600 hover:bg-green-700 font-medium"
         >
           <Check className="h-4 w-4 mr-1" />
-          قبول وتنفيذ
+          {language === 'ar' ? 'قبول وتنفيذ' : 'Accept & Execute'}
         </Button>
         <Button 
           size="sm" 
           variant="outline"
-          onClick={() => toast.info('تم رفض الإجراء')}
+          onClick={() => toast.info(language === 'ar' ? 'تم رفض الإجراء' : 'Action rejected')}
+          className="font-medium"
         >
           <X className="h-4 w-4 mr-1" />
-          رفض
+          {language === 'ar' ? 'رفض' : 'Reject'}
         </Button>
       </div>
     );
@@ -106,7 +108,7 @@ export const MCPAssistant: React.FC = () => {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 h-12 w-12 rounded-full bg-blue-600 hover:bg-blue-700 shadow-lg z-50"
+        className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-blue-600 hover:bg-blue-700 shadow-lg z-50 font-medium"
       >
         <MessageCircle className="h-6 w-6" />
       </Button>
@@ -114,91 +116,112 @@ export const MCPAssistant: React.FC = () => {
   }
 
   return (
-    <Card className="fixed bottom-6 right-6 w-96 h-96 z-50 shadow-xl">
-      <div className="flex items-center justify-between p-4 border-b">
+    <Card className={`fixed bottom-6 right-6 z-50 shadow-xl transition-all duration-300 ${
+      isMinimized ? 'w-80 h-16' : 'w-96 h-[500px]'
+    }`}>
+      <div className="flex items-center justify-between p-4 border-b bg-blue-50">
         <div className="flex items-center gap-2">
           <Bot className="h-5 w-5 text-blue-600" />
-          <h3 className="font-medium">
-            {language === 'en' ? 'AI Assistant' : 'المساعد الذكي'}
+          <h3 className="font-semibold text-lg">
+            {language === 'ar' ? 'المساعد الذكي' : 'AI Assistant'}
           </h3>
         </div>
-        <Button 
-          size="sm" 
-          variant="ghost" 
-          onClick={() => setIsOpen(false)}
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
-
-      <CardContent className="p-0 h-64 overflow-y-auto">
-        <div className="p-4 space-y-4">
-          {queries.length === 0 && (
-            <div className="text-center text-gray-500 mt-8">
-              <Bot className="h-8 w-8 mx-auto mb-2 text-blue-600" />
-              <p>
-                {language === 'en' 
-                  ? 'How can I help you today?' 
-                  : 'كيف يمكنني مساعدتك اليوم؟'}
-              </p>
-            </div>
-          )}
-
-          {queries.map((q) => (
-            <div key={q.id} className="space-y-3">
-              {/* User Query */}
-              <div className="flex gap-2">
-                <User className="h-5 w-5 text-gray-600 mt-1 flex-shrink-0" />
-                <div className="bg-gray-100 rounded-lg p-3 flex-1">
-                  <p className="text-sm">{q.userQuery}</p>
-                  <span className="text-xs text-gray-500">
-                    {q.createdAt.toLocaleTimeString()}
-                  </span>
-                </div>
-              </div>
-
-              {/* AI Response */}
-              <div className="flex gap-2">
-                <Bot className="h-5 w-5 text-blue-600 mt-1 flex-shrink-0" />
-                <div className="bg-blue-50 rounded-lg p-3 flex-1">
-                  <p className="text-sm">{q.aiResponse}</p>
-                  
-                  {/* Suggested Actions */}
-                  {q.suggestedActions.length > 0 && (
-                    <div className="mt-3 space-y-2">
-                      <p className="text-xs font-medium text-gray-700">
-                        الإجراءات المقترحة:
-                      </p>
-                      {q.suggestedActions.map((action) => (
-                        <div key={action.id} className="bg-white rounded p-2 text-sm">
-                          <p className="font-medium mb-1">{action.description}</p>
-                          <ActionButton action={action} />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-      </CardContent>
-
-      <form onSubmit={handleSubmit} className="p-4 border-t">
-        <div className="flex gap-2">
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={language === 'en' ? 'Ask me anything...' : 'اسأل عن أي شيء...'}
-            disabled={isLoading}
-            className="flex-1"
-          />
-          <Button type="submit" disabled={isLoading || !query.trim()}>
-            <Send className="h-4 w-4" />
+        <div className="flex gap-1">
+          <Button 
+            size="sm" 
+            variant="ghost" 
+            onClick={() => setIsMinimized(!isMinimized)}
+            className="h-8 w-8 p-0"
+          >
+            {isMinimized ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
+          </Button>
+          <Button 
+            size="sm" 
+            variant="ghost" 
+            onClick={() => setIsOpen(false)}
+            className="h-8 w-8 p-0"
+          >
+            <X className="h-4 w-4" />
           </Button>
         </div>
-      </form>
+      </div>
+
+      {!isMinimized && (
+        <>
+          <CardContent className="p-0 h-80 overflow-y-auto">
+            <div className="p-4 space-y-4">
+              {queries.length === 0 && (
+                <div className="text-center text-gray-500 mt-12">
+                  <Bot className="h-12 w-12 mx-auto mb-3 text-blue-600" />
+                  <p className="font-medium text-lg">
+                    {language === 'ar' 
+                      ? 'كيف يمكنني مساعدتك اليوم؟' 
+                      : 'How can I help you today?'}
+                  </p>
+                </div>
+              )}
+
+              {queries.map((q) => (
+                <div key={q.id} className="space-y-3">
+                  {/* User Query */}
+                  <div className="flex gap-2">
+                    <User className="h-5 w-5 text-gray-600 mt-1 flex-shrink-0" />
+                    <div className="bg-gray-100 rounded-lg p-3 flex-1 border">
+                      <p className="text-sm font-medium">{q.userQuery}</p>
+                      <span className="text-xs text-gray-500">
+                        {q.createdAt.toLocaleTimeString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* AI Response */}
+                  <div className="flex gap-2">
+                    <Bot className="h-5 w-5 text-blue-600 mt-1 flex-shrink-0" />
+                    <div className="bg-blue-50 rounded-lg p-3 flex-1 border border-blue-200">
+                      <p className="text-sm font-medium">{q.aiResponse}</p>
+                      
+                      {/* Suggested Actions */}
+                      {q.suggestedActions.length > 0 && (
+                        <div className="mt-3 space-y-2">
+                          <p className="text-xs font-semibold text-gray-700">
+                            {language === 'ar' ? 'الإجراءات المقترحة:' : 'Suggested Actions:'}
+                          </p>
+                          {q.suggestedActions.map((action) => (
+                            <div key={action.id} className="bg-white rounded-lg p-3 text-sm border">
+                              <p className="font-medium mb-2">{action.description}</p>
+                              <ActionButton action={action} />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+          </CardContent>
+
+          <form onSubmit={handleSubmit} className="p-4 border-t bg-gray-50">
+            <div className="flex gap-2">
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={language === 'ar' ? 'اسأل عن أي شيء...' : 'Ask me anything...'}
+                disabled={isLoading}
+                className="flex-1 font-medium"
+              />
+              <Button 
+                type="submit" 
+                disabled={isLoading || !query.trim()}
+                className="bg-blue-600 hover:bg-blue-700 font-medium"
+              >
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
+          </form>
+        </>
+      )}
     </Card>
   );
 };

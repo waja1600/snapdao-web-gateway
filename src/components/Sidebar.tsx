@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -22,24 +23,48 @@ import {
   FileSignature,
   ClipboardList,
   Star,
-  Package
+  Package,
+  Clock,
+  Calendar
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export const Sidebar = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { user, logout } = useAuth();
   const location = useLocation();
   const isMobile = useIsMobile();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [currentTime, setCurrentTime] = useState('');
+  const [currentDate, setCurrentDate] = useState('');
   
   // Mock user role - in a real app, this would come from the auth context
-  // Possible roles: 'company', 'freelancer', 'supplier', 'supervisor'
   const [userRole, setUserRole] = useState<string>('company');
   
   useEffect(() => {
-    // For demo purposes, randomly assign roles when navigating
-    // In a real app, the role would come from user profile data
+    // Update time and date every second
+    const updateDateTime = () => {
+      const now = new Date();
+      setCurrentTime(now.toLocaleTimeString(language === 'ar' ? 'ar-SA' : 'en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }));
+      setCurrentDate(now.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      }));
+    };
+
+    updateDateTime();
+    const timer = setInterval(updateDateTime, 1000);
+    return () => clearInterval(timer);
+  }, [language]);
+  
+  useEffect(() => {
+    // For demo purposes, detect role from path
     const rolePaths = {
       '/freelancers': 'freelancer',
       '/suppliers': 'supplier',
@@ -58,32 +83,32 @@ export const Sidebar = () => {
   // Common navigation items for all roles
   const commonNavigation = [
     {
-      name: t('dashboard'),
+      name: language === 'ar' ? 'لوحة التحكم' : 'Dashboard',
       href: "/dashboard",
       icon: Home,
     },
     {
-      name: "استكشاف",
+      name: language === 'ar' ? 'استكشاف' : 'Explore',
       href: "/explore",
       icon: Search,
     },
     {
-      name: t('verification'),
+      name: language === 'ar' ? 'التحقق' : 'Verification',
       href: "/verification",
       icon: Shield,
     },
     {
-      name: t('notifications'),
+      name: language === 'ar' ? 'الإشعارات' : 'Notifications',
       href: "/notifications",
       icon: Bell,
     },
     {
-      name: t('invoices'),
+      name: language === 'ar' ? 'الفواتير' : 'Invoices',
       href: "/invoices",
       icon: FileText,
     },
     {
-      name: t('arbitration'),
+      name: language === 'ar' ? 'التحكيم' : 'Arbitration',
       href: "/arbitration",
       icon: Gavel,
     },
@@ -93,63 +118,63 @@ export const Sidebar = () => {
   const roleSpecificNavigation = {
     company: [
       {
-        name: t('contracts'),
+        name: language === 'ar' ? 'العقود' : 'Contracts',
         href: "/contracts",
         icon: FileSignature,
       },
       {
-        name: t('myGroups'),
+        name: language === 'ar' ? 'مجموعاتي' : 'My Groups',
         href: "/groups",
         icon: Users,
       },
       {
-        name: t('voting'),
+        name: language === 'ar' ? 'التصويت' : 'Voting',
         href: "/voting",
         icon: Vote,
       },
       {
-        name: t('cooperativeBuying'),
+        name: language === 'ar' ? 'الشراء التعاوني' : 'Cooperative Buying',
         href: "/cooperative-buying",
         icon: ShoppingCart,
       },
     ],
     freelancer: [
       {
-        name: t('offers'),
+        name: language === 'ar' ? 'العروض' : 'Offers',
         href: "/offers",
         icon: ClipboardList,
       },
       {
-        name: t('tasks'),
+        name: language === 'ar' ? 'المهام' : 'Tasks',
         href: "/tasks",
         icon: ClipboardList,
       },
       {
-        name: t('ratings'),
+        name: language === 'ar' ? 'التقييمات' : 'Ratings',
         href: "/ratings",
         icon: Star,
       },
     ],
     supplier: [
       {
-        name: t('products'),
+        name: language === 'ar' ? 'المنتجات' : 'Products',
         href: "/products",
         icon: Package,
       },
       {
-        name: t('offers'),
+        name: language === 'ar' ? 'العروض' : 'Offers',
         href: "/supplier-offers",
         icon: ClipboardList,
       },
     ],
     supervisor: [
       {
-        name: t('contracts'),
+        name: language === 'ar' ? 'العقود' : 'Contracts',
         href: "/monitor-contracts",
         icon: FileSignature,
       },
       {
-        name: t('myGroups'),
+        name: language === 'ar' ? 'المجموعات المشرف عليها' : 'Supervised Groups',
         href: "/supervised-groups",
         icon: Users,
       },
@@ -169,10 +194,10 @@ export const Sidebar = () => {
   // Helper to get the role display name
   const getRoleDisplayName = () => {
     switch(userRole) {
-      case 'company': return t('roleCompany') || 'Company';
-      case 'freelancer': return t('roleFreelancer') || 'Freelancer';
-      case 'supplier': return t('roleSupplier') || 'Supplier';
-      case 'supervisor': return t('roleSupervisor') || 'Supervisor';
+      case 'company': return language === 'ar' ? 'شركة' : 'Company';
+      case 'freelancer': return language === 'ar' ? 'مستقل' : 'Freelancer';
+      case 'supplier': return language === 'ar' ? 'مورد' : 'Supplier';
+      case 'supervisor': return language === 'ar' ? 'مشرف' : 'Supervisor';
       default: return '';
     }
   };
@@ -182,7 +207,7 @@ export const Sidebar = () => {
     if (!user) return '';
     return user.user_metadata?.full_name || 
            user.email?.split('@')[0] || 
-           'User';
+           (language === 'ar' ? 'مستخدم' : 'User');
   };
 
   // Helper function to get user initial
@@ -198,14 +223,15 @@ export const Sidebar = () => {
   
   return (
     <aside className={cn(
-      "bg-sidebar fixed inset-y-0 right-0 z-30 flex flex-col border-l border-sidebar-border bg-sidebar text-sidebar-foreground md:right-auto md:left-0 md:z-0 md:border-r transition-all duration-300",
-      isCollapsed ? "w-16" : "w-72 lg:w-80",
+      "bg-sidebar fixed inset-y-0 z-30 flex flex-col border-l border-sidebar-border bg-sidebar text-sidebar-foreground md:z-0 md:border-r transition-all duration-300",
+      language === 'ar' ? "left-0 md:right-auto md:left-0" : "right-0 md:right-auto md:left-0",
+      isCollapsed ? "w-20" : "w-80",
       isMobile && "hidden"
     )}>
-      <div className="flex items-center justify-between h-14 border-b border-sidebar-border px-4 py-2">
+      <div className="flex items-center justify-between h-16 border-b border-sidebar-border px-4 py-2">
         <Link
           to="/"
-          className={cn("flex items-center gap-2 font-bold tracking-tight", 
+          className={cn("flex items-center gap-2 font-bold text-xl tracking-tight", 
             isCollapsed && "justify-center"
           )}
         >
@@ -220,6 +246,22 @@ export const Sidebar = () => {
           <SlidersHorizontal className="h-4 w-4" />
         </Button>
       </div>
+
+      {/* Date and Time Display */}
+      {!isCollapsed && (
+        <div className="px-4 py-3 border-b border-sidebar-border bg-sidebar-accent/30">
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-2 text-sidebar-foreground/80">
+              <Calendar className="h-4 w-4" />
+              <span className="font-medium">{currentDate}</span>
+            </div>
+            <div className="flex items-center gap-2 text-sidebar-foreground/80">
+              <Clock className="h-4 w-4" />
+              <span className="font-mono">{currentTime}</span>
+            </div>
+          </div>
+        </div>
+      )}
       
       <div className="flex-1 overflow-auto py-2">
         <nav className="grid items-start px-2 text-sm font-medium">
@@ -231,37 +273,37 @@ export const Sidebar = () => {
                 key={item.name}
                 to={item.href}
                 className={cn(
-                  "flex items-center gap-3 rounded-md px-3 py-2 text-sidebar-foreground transition-all hover:text-sidebar-foreground",
+                  "flex items-center gap-3 rounded-lg px-3 py-3 text-sidebar-foreground transition-all hover:text-sidebar-foreground font-medium",
                   isActive
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
                     : "hover:bg-sidebar-accent/50",
                   isCollapsed && "justify-center px-0"
                 )}
               >
-                <item.icon className="h-4 w-4" />
-                {!isCollapsed && <span>{item.name}</span>}
+                <item.icon className="h-5 w-5" />
+                {!isCollapsed && <span className="text-base">{item.name}</span>}
               </Link>
             );
           })}
         </nav>
       </div>
       
-      <div className="mt-auto p-4">
+      <div className="mt-auto p-4 border-t border-sidebar-border">
         {user && (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             {!isCollapsed && (
               <>
-                <div className="flex items-center gap-2 rounded-md bg-sidebar-accent/50 px-3 py-2">
-                  <div className="h-8 w-8 rounded-full bg-sidebar-accent flex items-center justify-center">
+                <div className="flex items-center gap-3 rounded-lg bg-sidebar-accent/50 px-3 py-3">
+                  <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center text-white text-lg font-medium">
                     {getUserInitial()}
                   </div>
                   <div className="flex-1 truncate">
-                    <div className="font-medium truncate">{getUserDisplayName()}</div>
-                    <div className="text-xs opacity-70 truncate">{getUserEmail()}</div>
+                    <div className="font-medium text-base truncate">{getUserDisplayName()}</div>
+                    <div className="text-sm opacity-70 truncate">{getUserEmail()}</div>
                   </div>
                 </div>
                 {getRoleDisplayName() && (
-                  <div className="px-3 py-1 text-xs font-medium">
+                  <div className="px-3 py-2 text-sm font-medium bg-blue-50 text-blue-700 rounded-lg text-center">
                     {getRoleDisplayName()}
                   </div>
                 )}
@@ -270,13 +312,13 @@ export const Sidebar = () => {
             <Button
               variant="outline"
               className={cn(
-                "w-full gap-2",
+                "w-full gap-2 h-10 font-medium text-base",
                 isCollapsed ? "justify-center" : "justify-start"
               )}
               onClick={() => logout()}
             >
-              <LogOut className="h-4 w-4" />
-              {!isCollapsed && (t('logout') || 'Logout')}
+              <LogOut className="h-5 w-5" />
+              {!isCollapsed && (language === 'ar' ? 'تسجيل الخروج' : 'Logout')}
             </Button>
           </div>
         )}
