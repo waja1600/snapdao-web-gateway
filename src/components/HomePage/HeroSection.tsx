@@ -3,6 +3,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { AIPromptBox } from "@/components/ai/AIPromptBox";
 
 export const HeroSection = () => {
   const { t, language } = useLanguage();
@@ -19,13 +20,8 @@ export const HeroSection = () => {
 
   return (
     <section className="relative py-20 px-4 text-center">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <div className="w-full h-64 bg-gradient-to-r from-blue-100 to-green-100 rounded-lg flex items-center justify-center mb-8">
-            <div className="text-6xl">🤝</div>
-          </div>
-        </div>
-        
+      <div className="max-w-6xl mx-auto">
+        {/* Title */}
         <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gray-800">
           {language === 'en' 
             ? 'Smart Contracting Platform Between Buyers, Suppliers & Freelancers'
@@ -33,12 +29,17 @@ export const HeroSection = () => {
           }
         </h1>
         
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+        <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
           {language === 'en'
             ? 'Join groups, negotiate better deals, and connect with trusted suppliers and skilled freelancers in a secure environment.'
             : 'انضم إلى المجموعات، تفاوض على صفقات أفضل، وتواصل مع موردين موثوقين ومستقلين ماهرين في بيئة آمنة.'
           }
         </p>
+        
+        {/* AI Prompt Box */}
+        <div className="mb-8">
+          <AIPromptBox />
+        </div>
         
         <Button 
           size="lg" 
