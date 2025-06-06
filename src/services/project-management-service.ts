@@ -1,4 +1,3 @@
-
 export interface Task {
   id: string;
   title: string;
@@ -16,6 +15,9 @@ export interface Task {
   estimatedHours?: number;
   actualHours?: number;
 }
+
+// Add alias for backward compatibility
+export type ProjectTask = Task;
 
 export interface Proposal {
   id: string;
@@ -36,6 +38,9 @@ export interface Proposal {
   attachments: string[];
 }
 
+// Add alias for backward compatibility
+export type ProjectProposal = Proposal;
+
 export interface ExternalFreelancer {
   id: string;
   name: string;
@@ -49,6 +54,8 @@ export interface ExternalFreelancer {
   portfolio: string[];
   languages: string[];
   timezone: string;
+  canPropose?: boolean;
+  canVote?: boolean;
 }
 
 export class ProjectManagementService {
@@ -146,7 +153,9 @@ export class ProjectManagementService {
       joinedAt: new Date('2023-06-15'),
       portfolio: ['project1.com', 'project2.com'],
       languages: ['Arabic', 'English'],
-      timezone: 'UTC+3'
+      timezone: 'UTC+3',
+      canPropose: true,
+      canVote: true
     },
     {
       id: 'freelancer-2',
@@ -160,7 +169,9 @@ export class ProjectManagementService {
       joinedAt: new Date('2023-08-20'),
       portfolio: ['design1.com', 'design2.com'],
       languages: ['Arabic', 'English', 'French'],
-      timezone: 'UTC+2'
+      timezone: 'UTC+2',
+      canPropose: true,
+      canVote: false
     },
     {
       id: 'freelancer-3',
@@ -174,7 +185,9 @@ export class ProjectManagementService {
       joinedAt: new Date('2023-09-10'),
       portfolio: ['backend1.com', 'api2.com'],
       languages: ['Arabic', 'English'],
-      timezone: 'UTC+3'
+      timezone: 'UTC+3',
+      canPropose: false,
+      canVote: true
     }
   ];
 
@@ -203,6 +216,10 @@ export class ProjectManagementService {
 
     this.tasks[taskIndex] = { ...this.tasks[taskIndex], ...updates };
     return this.tasks[taskIndex];
+  }
+
+  updateTaskStatus(id: string, status: Task['status']): Task | null {
+    return this.updateTask(id, { status });
   }
 
   deleteTask(id: string): boolean {
@@ -247,6 +264,10 @@ export class ProjectManagementService {
 
     this.proposals[proposalIndex] = { ...this.proposals[proposalIndex], ...updates };
     return this.proposals[proposalIndex];
+  }
+
+  updateProposalStatus(id: string, status: Proposal['status']): Proposal | null {
+    return this.updateProposal(id, { status });
   }
 
   voteOnProposal(id: string, voteType: 'approve' | 'reject' | 'abstain'): boolean {
