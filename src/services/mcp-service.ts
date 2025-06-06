@@ -1,4 +1,3 @@
-
 export interface MCPAction {
   id: string;
   type: 'create_proposal' | 'join_group' | 'create_task' | 'update_status' | 'send_message' | 'create_workflow' | 'assign_task';
@@ -24,8 +23,8 @@ export class MCPService {
   private actions: MCPAction[] = [];
 
   async processQuery(userQuery: string): Promise<MCPQuery> {
-    // محاكاة معالجة الذكي الاصطناعي للاستعلام
-    const aiResponse = this.generateAIResponse(userQuery);
+    // محاكاة معالجة الذكي الاصطناعي للاستعلام مع استجابات أكثر ذكاءً
+    const aiResponse = this.generateSmartAIResponse(userQuery);
     const suggestedActions = this.generateSuggestedActions(userQuery);
 
     const query: MCPQuery = {
@@ -42,38 +41,119 @@ export class MCPService {
     return query;
   }
 
-  private generateAIResponse(userQuery: string): string {
+  private generateSmartAIResponse(userQuery: string): string {
     const lowerQuery = userQuery.toLowerCase();
     
+    // استجابات ذكية ومفصلة أكثر
     if (lowerQuery.includes('سير عمل') || lowerQuery.includes('workflow')) {
-      return 'يمكنني مساعدتك في إنشاء وإدارة سير العمل. يمكنني إنشاء قوالب مخصصة أو استخدام القوالب الجاهزة لتنظيم مهامك.';
+      return `🚀 ممتاز! يمكنني مساعدتك في إنشاء وإدارة سير العمل بطريقة احترافية. 
+
+      📋 يمكنني:
+      • إنشاء قوالب سير عمل مخصصة حسب نوع مشروعك
+      • تنظيم المهام والمراحل بشكل منطقي
+      • تعيين المسؤوليات وتحديد المواعيد النهائية
+      • إعداد نظام متابعة تلقائي للتقدم
+      • إنشاء تقارير أداء مفصلة
+      
+      هل تريد البدء بإنشاء سير عمل جديد؟`;
+    }
+    
+    if (lowerQuery.includes('تحكيم') || lowerQuery.includes('arbitration')) {
+      return `⚖️ سأساعدك في إدارة عملية التحكيم بكفاءة عالية.
+
+      🎯 خدمات التحكيم المتاحة:
+      • تسجيل النزاعات الجديدة
+      • تعيين محكمين مؤهلين
+      • إدارة الجلسات والمواعيد
+      • تتبع المستندات والأدلة
+      • إصدار القرارات النهائية
+      • أرشفة القضايا المحلولة
+      
+      هل تريد بدء عملية تحكيم جديدة أم متابعة قضية موجودة؟`;
     }
     
     if (lowerQuery.includes('مجموعة') || lowerQuery.includes('group')) {
-      return 'يمكنني مساعدتك في إنشاء مجموعة جديدة أو الانضمام إلى مجموعة موجودة. هل تريد المتابعة؟';
+      return `👥 رائع! إنشاء المجموعات التعاونية هو أساس النجاح في المشاريع.
+
+      🌟 سأساعدك في:
+      • تشكيل مجموعة عمل متخصصة
+      • تحديد الأدوار والمسؤوليات
+      • إعداد قنوات التواصل الفعال
+      • وضع قواعد العمل الجماعي
+      • تنظيم الاجتماعات والمتابعة
+      • قياس أداء الفريق
+      
+      ما نوع المجموعة التي تريد إنشاؤها؟`;
     }
     
     if (lowerQuery.includes('مشروع') || lowerQuery.includes('project')) {
-      return 'يمكنني مساعدتك في إنشاء مشروع جديد أو إدارة المشاريع الحالية. يمكنني إعداد سير عمل كامل للمشروع.';
+      return `🎯 ممتاز! إدارة المشاريع هي تخصصي الأساسي.
+
+      📊 خدمات إدارة المشاريع:
+      • تخطيط المشروع من البداية للنهاية
+      • تحليل المخاطر ووضع الحلول
+      • تخصيص الموارد والميزانيات
+      • جدولة المهام والمعالم المهمة
+      • مراقبة التقدم والجودة
+      • إعداد التقارير التنفيذية
+      
+      هل تريد إنشاء مشروع جديد أم تحسين مشروع قائم؟`;
     }
     
     if (lowerQuery.includes('مقترح') || lowerQuery.includes('proposal')) {
-      return 'يمكنني مساعدتك في إنشاء مقترح جديد للتصويت. هل تريد المتابعة؟';
+      return `📝 سأساعدك في إعداد مقترح احترافي ومقنع.
+
+      ✨ عناصر المقترح الناجح:
+      • تحديد الأهداف والنتائج المتوقعة
+      • وضع خطة زمنية واقعية
+      • تقدير التكاليف والموارد
+      • تحليل الفوائد والمخاطر
+      • تصميم آلية التنفيذ والمتابعة
+      • إعداد نظام التصويت والموافقة
+      
+      على أي موضوع تريد إعداد المقترح؟`;
     }
+
+    if (lowerQuery.includes('تقدم') || lowerQuery.includes('progress') || lowerQuery.includes('تقرير') || lowerQuery.includes('report')) {
+      return `📈 ممتاز! التقارير والمتابعة أساسية لنجاح أي مشروع.
+
+      📊 تقارير شاملة متاحة:
+      • تقرير تقدم المشاريع والمهام
+      • تحليل أداء الفرق والأفراد
+      • إحصائيات الإنجاز والتأخير
+      • تقييم استخدام الموارد
+      • مؤشرات الجودة والرضا
+      • توقعات الإنجاز المستقبلي
+      
+      أي نوع من التقارير تحتاج؟`;
+    }
+
+    if (lowerQuery.includes('تصويت') || lowerQuery.includes('voting')) {
+      return `🗳️ نظام التصويت الديمقراطي هو قلب منصتنا!
+
+      🎯 خيارات التصويت المتقدمة:
+      • تصويت بسيط (نعم/لا)
+      • تصويت متعدد الخيارات
+      • تصويت مرجح حسب الخبرة
+      • تصويت سري أو علني
+      • تصويت محدود بوقت
+      • تصويت تراكمي للأولويات
+      
+      ما موضوع التصويت الذي تريد إنشاؤه؟`;
+    }
+
+    // استجابة افتراضية ذكية
+    return `🤖 أفهم طلبك تماماً! كمساعد ذكي متخصص في إدارة المشاريع والتعاون الجماعي، يمكنني مساعدتك في:
+
+    🎯 المجالات الأساسية:
+    • إدارة المشاريع وسير العمل
+    • تنسيق الفرق والمجموعات
+    • نظام التصويت والمقترحات
+    • التحكيم وحل النزاعات
+    • إعداد التقارير والتحليلات
+    • أتمتة المهام الروتينية
     
-    if (lowerQuery.includes('مهمة') || lowerQuery.includes('task')) {
-      return 'يمكنني مساعدتك في إنشاء مهمة جديدة أو تحديث حالة المهام الموجودة. يمكنني أيضاً تعيين المهام للأعضاء.';
-    }
-
-    if (lowerQuery.includes('تقدم') || lowerQuery.includes('progress')) {
-      return 'يمكنني عرض تقرير شامل عن تقدم المشاريع والمهام. هل تريد رؤية التقدم الحالي؟';
-    }
-
-    if (lowerQuery.includes('تقرير') || lowerQuery.includes('report')) {
-      return 'يمكنني إنشاء تقارير مفصلة عن الأداء والتقدم والإحصائيات. أي نوع من التقارير تحتاج؟';
-    }
-
-    return 'فهمت طلبك. يمكنني مساعدتك في تنفيذ هذا الإجراء بكفاءة من خلال أتمتة سير العمل المناسب.';
+    اختر المجال الذي تريد التركيز عليه وسأقدم لك حلولاً مخصصة! 🚀`;
   }
 
   private generateSuggestedActions(userQuery: string): MCPAction[] {
@@ -82,13 +162,43 @@ export class MCPService {
 
     if (lowerQuery.includes('سير عمل') || lowerQuery.includes('workflow')) {
       actions.push({
-        id: Date.now().toString() + '_workflow',
+        id: Date.now().toString() + '_workflow_template',
+        type: 'create_workflow',
+        description: 'إنشاء سير عمل من قالب جاهز',
+        parameters: { 
+          templateType: 'project_management',
+          includeAutomation: true,
+          enableNotifications: true
+        },
+        executed: false,
+        userAccepted: false,
+        createdAt: new Date()
+      });
+
+      actions.push({
+        id: Date.now().toString() + '_workflow_custom',
         type: 'create_workflow',
         description: 'إنشاء سير عمل مخصص',
         parameters: { 
           workflowType: 'custom',
-          name: 'سير عمل جديد',
-          category: 'general'
+          steps: [],
+          enableTracking: true
+        },
+        executed: false,
+        userAccepted: false,
+        createdAt: new Date()
+      });
+    }
+
+    if (lowerQuery.includes('تحكيم') || lowerQuery.includes('arbitration')) {
+      actions.push({
+        id: Date.now().toString() + '_new_dispute',
+        type: 'create_task',
+        description: 'إنشاء قضية تحكيم جديدة',
+        parameters: { 
+          disputeType: 'commercial',
+          autoAssignMediator: true,
+          enableIPFS: true
         },
         executed: false,
         userAccepted: false,
@@ -98,13 +208,14 @@ export class MCPService {
 
     if (lowerQuery.includes('مجموعة') || lowerQuery.includes('group')) {
       actions.push({
-        id: Date.now().toString() + '_group',
+        id: Date.now().toString() + '_create_group',
         type: 'join_group',
-        description: 'إنشاء مجموعة عمل جديدة',
+        description: 'إنشاء مجموعة عمل متقدمة',
         parameters: { 
-          name: 'مجموعة جديدة', 
-          description: 'وصف المجموعة',
-          workflowTemplate: 'collaboration'
+          groupType: 'collaborative',
+          enableVoting: true,
+          setupWorkflow: true,
+          inviteMembers: true
         },
         executed: false,
         userAccepted: false,
@@ -114,13 +225,14 @@ export class MCPService {
 
     if (lowerQuery.includes('مشروع') || lowerQuery.includes('project')) {
       actions.push({
-        id: Date.now().toString() + '_project',
+        id: Date.now().toString() + '_project_wizard',
         type: 'create_task',
-        description: 'إعداد مشروع جديد مع سير عمل كامل',
+        description: 'تشغيل معالج إنشاء المشروع',
         parameters: { 
-          title: 'مشروع جديد', 
-          description: 'وصف المشروع',
-          workflowTemplate: 'project-setup'
+          useWizard: true,
+          includeTemplates: true,
+          setupTeam: true,
+          createTimeline: true
         },
         executed: false,
         userAccepted: false,
@@ -128,62 +240,16 @@ export class MCPService {
       });
     }
 
-    if (lowerQuery.includes('مقترح') || lowerQuery.includes('proposal')) {
+    if (lowerQuery.includes('تقدم') || lowerQuery.includes('progress') || lowerQuery.includes('تقرير') || lowerQuery.includes('report')) {
       actions.push({
-        id: Date.now().toString() + '_proposal',
-        type: 'create_proposal',
-        description: 'إنشاء مقترح جديد للتصويت',
-        parameters: { 
-          title: 'مقترح جديد', 
-          description: 'وصف المقترح',
-          votingDeadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-        },
-        executed: false,
-        userAccepted: false,
-        createdAt: new Date()
-      });
-    }
-
-    if (lowerQuery.includes('مهمة') || lowerQuery.includes('task')) {
-      actions.push({
-        id: Date.now().toString() + '_task',
-        type: 'create_task',
-        description: 'إنشاء مهمة جديدة',
-        parameters: { 
-          title: 'مهمة جديدة', 
-          description: 'وصف المهمة',
-          priority: 'medium',
-          dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-        },
-        executed: false,
-        userAccepted: false,
-        createdAt: new Date()
-      });
-
-      actions.push({
-        id: Date.now().toString() + '_assign',
-        type: 'assign_task',
-        description: 'تعيين مهمة لعضو في الفريق',
-        parameters: { 
-          taskId: 'new',
-          assigneeId: 'auto',
-          notifyAssignee: true
-        },
-        executed: false,
-        userAccepted: false,
-        createdAt: new Date()
-      });
-    }
-
-    if (lowerQuery.includes('تقدم') || lowerQuery.includes('progress')) {
-      actions.push({
-        id: Date.now().toString() + '_progress',
+        id: Date.now().toString() + '_analytics_dashboard',
         type: 'update_status',
-        description: 'عرض تقرير التقدم الشامل',
+        description: 'فتح لوحة التحليلات الشاملة',
         parameters: { 
-          reportType: 'progress',
+          reportType: 'comprehensive',
           includeCharts: true,
-          includeMetrics: true
+          enableExport: true,
+          realTimeData: true
         },
         executed: false,
         userAccepted: false,

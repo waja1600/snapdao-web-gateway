@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Bot, X, Minimize2, Maximize2 } from 'lucide-react';
+import { Minimize2, X, Bot } from 'lucide-react';
 
 interface MCPHeaderProps {
   language: string;
@@ -17,27 +17,27 @@ export const MCPHeader: React.FC<MCPHeaderProps> = ({
   onClose
 }) => {
   return (
-    <div className="flex items-center justify-between p-4 border-b bg-blue-50">
+    <div className="flex items-center justify-between p-3 border-b bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-lg">
       <div className="flex items-center gap-2">
-        <Bot className="h-5 w-5 text-blue-600" />
-        <h3 className="font-semibold text-lg">
-          {language === 'ar' ? 'المساعد الذكي' : 'AI Assistant'}
-        </h3>
+        <Bot className="h-5 w-5" />
+        <span className="font-semibold">
+          {language === 'ar' ? 'مساعد MCP الذكي' : 'MCP AI Assistant'}
+        </span>
       </div>
-      <div className="flex gap-1">
-        <Button 
-          size="sm" 
-          variant="ghost" 
+      <div className="flex items-center gap-1">
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onToggleMinimize}
-          className="h-8 w-8 p-0"
+          className="h-8 w-8 p-0 text-white hover:bg-blue-500"
         >
-          {isMinimized ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
+          <Minimize2 className="h-4 w-4" />
         </Button>
-        <Button 
-          size="sm" 
-          variant="ghost" 
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onClose}
-          className="h-8 w-8 p-0"
+          className="h-8 w-8 p-0 text-white hover:bg-blue-500"
         >
           <X className="h-4 w-4" />
         </Button>
