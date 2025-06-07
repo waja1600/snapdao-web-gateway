@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   Home, Users, FileText, MessageSquare, Settings,
   PanelLeftClose, PanelLeftOpen, Briefcase, 
-  TrendingUp, Shield, Vote, Gavel
+  TrendingUp, Shield, Vote, Gavel, Workflow, GitBranch
 } from 'lucide-react';
 
 interface WorkspaceSidebarProps {
@@ -31,6 +31,13 @@ export const WorkspaceSidebar: React.FC<WorkspaceSidebarProps> = ({
       label: language === 'ar' ? 'لوحة التحكم' : 'Dashboard',
       icon: Home,
       path: '/dashboard',
+      badge: null
+    },
+    {
+      id: 'workflow',
+      label: language === 'ar' ? 'سير العمل' : 'Workflow',
+      icon: GitBranch,
+      path: '/workflow-management',
       badge: null
     },
     {
