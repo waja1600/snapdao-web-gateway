@@ -1,69 +1,48 @@
 
 {
-  "name": "GPO Platform - منصة GPO",
+  "name": "منصة GPO الذكية",
   "short_name": "GPO Platform",
-  "description": "Advanced collaborative workspace for group procurement and project management",
+  "description": "منصة ذكية للشراء الجماعي والتعاون التجاري",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#3b82f6",
+  "theme_color": "#3B82F6",
   "orientation": "portrait-primary",
-  "scope": "/",
   "icons": [
     {
-      "src": "/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
     },
     {
-      "src": "/icon-512x512.png",
+      "src": "/placeholder.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/placeholder.svg",
+      "type": "image/svg+xml",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ],
   "categories": ["business", "productivity", "collaboration"],
   "lang": "ar",
   "dir": "rtl",
+  "scope": "/",
   "screenshots": [
     {
-      "src": "/screenshot-wide.png",
+      "src": "/placeholder.svg",
+      "type": "image/svg+xml",
       "sizes": "1280x720",
-      "type": "image/png",
       "form_factor": "wide"
     },
     {
-      "src": "/screenshot-narrow.png", 
+      "src": "/placeholder.svg", 
+      "type": "image/svg+xml",
       "sizes": "750x1334",
-      "type": "image/png",
       "form_factor": "narrow"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Dashboard",
-      "short_name": "Dashboard",
-      "description": "Access your main dashboard",
-      "url": "/dashboard",
-      "icons": [
-        {
-          "src": "/icon-192x192.png",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
-      "name": "Workflow Management",
-      "short_name": "Workflows",
-      "description": "Manage your workflows",
-      "url": "/workflow-management",
-      "icons": [
-        {
-          "src": "/icon-192x192.png",
-          "sizes": "192x192"
-        }
-      ]
     }
   ]
 }
