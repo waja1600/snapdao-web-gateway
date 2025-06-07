@@ -1,12 +1,12 @@
 
 export interface ProjectTask {
   id: string;
+  projectId: string;
   title: string;
   description: string;
+  status: 'pending' | 'in_progress' | 'completed';
   assigneeId?: string;
   assigneeName?: string;
-  status: 'pending' | 'in_progress' | 'completed';
-  priority: 'low' | 'medium' | 'high';
   dueDate: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -17,101 +17,79 @@ export interface ExternalFreelancer {
   name: string;
   email: string;
   skills: string[];
-  hourlyRate: number;
-  rating: number;
-  completedProjects: number;
   canPropose: boolean;
   canVote: boolean;
-  createdAt: Date;
+  joinedAt: Date;
 }
 
 export interface ProjectProposal {
   id: string;
-  title: string;
-  description: string;
+  projectId: string;
   proposerId: string;
   proposerName: string;
+  title: string;
+  description: string;
   status: 'pending' | 'approved' | 'rejected';
   createdAt: Date;
-  reviewedAt?: Date;
-  reviewedBy?: string;
 }
 
 export class ProjectManagementService {
   private tasks: ProjectTask[] = [
     {
       id: '1',
-      title: 'تصميم واجهة المستخدم',
-      description: 'تصميم واجهات المستخدم للمشروع الجديد',
-      assigneeId: 'user1',
-      assigneeName: 'أحمد محمد',
+      projectId: '1',
+      title: 'تصميم الواجهة الرئيسية',
+      description: 'إنشاء تصميم الصفحة الرئيسية للموقع',
       status: 'in_progress',
-      priority: 'high',
-      dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date()
+      assigneeId: 'freelancer-1',
+      assigneeName: 'أحمد محمد',
+      dueDate: new Date(2024, 2, 15),
+      createdAt: new Date(2024, 1, 1),
+      updatedAt: new Date(2024, 1, 10)
     },
     {
       id: '2',
+      projectId: '1',
       title: 'تطوير API الخلفي',
-      description: 'تطوير واجهات برمجة التطبيقات للنظام',
-      assigneeId: 'user2',
-      assigneeName: 'سارة أحمد',
+      description: 'بناء واجهات برمجة التطبيقات الخلفية',
       status: 'pending',
-      priority: 'medium',
-      dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
-      createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date()
+      dueDate: new Date(2024, 2, 20),
+      createdAt: new Date(2024, 1, 5),
+      updatedAt: new Date(2024, 1, 5)
     }
   ];
 
   private externalFreelancers: ExternalFreelancer[] = [
     {
-      id: '1',
-      name: 'محمد علي',
-      email: 'mohamed@example.com',
-      skills: ['React', 'Node.js', 'MongoDB'],
-      hourlyRate: 25,
-      rating: 4.8,
-      completedProjects: 15,
+      id: 'freelancer-1',
+      name: 'أحمد محمد',
+      email: 'ahmed@example.com',
+      skills: ['React', 'TypeScript', 'UI/UX'],
       canPropose: true,
       canVote: false,
-      createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+      joinedAt: new Date(2024, 0, 15)
     },
     {
-      id: '2',
-      name: 'فاطمة حسن',
-      email: 'fatima@example.com',
-      skills: ['UI/UX Design', 'Figma', 'Adobe XD'],
-      hourlyRate: 30,
-      rating: 4.9,
-      completedProjects: 22,
+      id: 'freelancer-2',
+      name: 'سارة أحمد',
+      email: 'sara@example.com',
+      skills: ['Node.js', 'Database', 'API'],
       canPropose: true,
-      canVote: true,
-      createdAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000)
+      canVote: false,
+      joinedAt: new Date(2024, 0, 20)
     }
   ];
 
   private proposals: ProjectProposal[] = [
     {
       id: '1',
-      title: 'اقتراح تحسين الأداء',
-      description: 'اقتراح لتحسين أداء التطبيق وتسريع التحميل',
-      proposerId: '1',
-      proposerName: 'محمد علي',
+      projectId: '1',
+      proposerId: 'freelancer-1',
+      proposerName: 'أحمد محمد',
+      title: 'إضافة ميزة الدردشة المباشرة',
+      description: 'اقتراح إضافة نظام دردشة مباشر للتواصل بين أعضاء المجموعة',
       status: 'pending',
-      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
-    },
-    {
-      id: '2',
-      title: 'تطوير ميزة جديدة',
-      description: 'اقتراح لإضافة ميزة التنبيهات الفورية',
-      proposerId: '2',
-      proposerName: 'فاطمة حسن',
-      status: 'approved',
-      createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-      reviewedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-      reviewedBy: 'admin'
+      createdAt: new Date(2024, 1, 10)
     }
   ];
 
@@ -119,38 +97,13 @@ export class ProjectManagementService {
     return this.tasks;
   }
 
-  getAllExternalFreelancers(): ExternalFreelancer[] {
-    return this.externalFreelancers;
+  getTasksByProject(projectId: string): ProjectTask[] {
+    return this.tasks.filter(task => task.projectId === projectId);
   }
 
-  getAllProposals(): ProjectProposal[] {
-    return this.proposals;
-  }
-
-  updateTaskStatus(taskId: string, status: ProjectTask['status']): boolean {
-    const task = this.tasks.find(t => t.id === taskId);
-    if (task) {
-      task.status = status;
-      task.updatedAt = new Date();
-      return true;
-    }
-    return false;
-  }
-
-  updateProposalStatus(proposalId: string, status: ProjectProposal['status']): boolean {
-    const proposal = this.proposals.find(p => p.id === proposalId);
-    if (proposal) {
-      proposal.status = status;
-      proposal.reviewedAt = new Date();
-      proposal.reviewedBy = 'current_user';
-      return true;
-    }
-    return false;
-  }
-
-  addTask(task: Omit<ProjectTask, 'id' | 'createdAt' | 'updatedAt'>): ProjectTask {
+  createTask(taskData: Omit<ProjectTask, 'id' | 'createdAt' | 'updatedAt'>): ProjectTask {
     const newTask: ProjectTask = {
-      ...task,
+      ...taskData,
       id: Date.now().toString(),
       createdAt: new Date(),
       updatedAt: new Date()
@@ -159,23 +112,54 @@ export class ProjectManagementService {
     return newTask;
   }
 
-  addFreelancer(freelancer: Omit<ExternalFreelancer, 'id' | 'createdAt'>): ExternalFreelancer {
+  updateTaskStatus(taskId: string, status: ProjectTask['status']): boolean {
+    const taskIndex = this.tasks.findIndex(task => task.id === taskId);
+    if (taskIndex !== -1) {
+      this.tasks[taskIndex].status = status;
+      this.tasks[taskIndex].updatedAt = new Date();
+      return true;
+    }
+    return false;
+  }
+
+  getAllExternalFreelancers(): ExternalFreelancer[] {
+    return this.externalFreelancers;
+  }
+
+  addExternalFreelancer(freelancerData: Omit<ExternalFreelancer, 'id' | 'joinedAt'>): ExternalFreelancer {
     const newFreelancer: ExternalFreelancer = {
-      ...freelancer,
+      ...freelancerData,
       id: Date.now().toString(),
-      createdAt: new Date()
+      joinedAt: new Date()
     };
     this.externalFreelancers.push(newFreelancer);
     return newFreelancer;
   }
 
-  addProposal(proposal: Omit<ProjectProposal, 'id' | 'createdAt'>): ProjectProposal {
+  getAllProposals(): ProjectProposal[] {
+    return this.proposals;
+  }
+
+  getProposalsByProject(projectId: string): ProjectProposal[] {
+    return this.proposals.filter(proposal => proposal.projectId === projectId);
+  }
+
+  createProposal(proposalData: Omit<ProjectProposal, 'id' | 'createdAt'>): ProjectProposal {
     const newProposal: ProjectProposal = {
-      ...proposal,
+      ...proposalData,
       id: Date.now().toString(),
       createdAt: new Date()
     };
     this.proposals.push(newProposal);
     return newProposal;
+  }
+
+  updateProposalStatus(proposalId: string, status: ProjectProposal['status']): boolean {
+    const proposalIndex = this.proposals.findIndex(proposal => proposal.id === proposalId);
+    if (proposalIndex !== -1) {
+      this.proposals[proposalIndex].status = status;
+      return true;
+    }
+    return false;
   }
 }

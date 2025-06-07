@@ -5,55 +5,18 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Calendar, User, AlertCircle, CheckCircle, Clock, FileText } from 'lucide-react';
+import { ProjectManagementService } from '@/services/project-management-service';
+import { Calendar, User, AlertCircle, CheckCircle, Clock } from 'lucide-react';
+
+const projectManagementService = new ProjectManagementService();
 
 export const ProjectsOverview: React.FC = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
   
-  // Mock data for demonstration
-  const tasks = [
-    {
-      id: '1',
-      title: language === 'en' ? 'Website Development' : 'تطوير الموقع الإلكتروني',
-      status: 'in_progress',
-      assigneeName: language === 'en' ? 'Ahmed Ali' : 'أحمد علي',
-      dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    },
-    {
-      id: '2',
-      title: language === 'en' ? 'Mobile App Design' : 'تصميم تطبيق الهاتف',
-      status: 'pending',
-      assigneeName: language === 'en' ? 'Sara Mohammed' : 'سارة محمد',
-      dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
-    },
-    {
-      id: '3',
-      title: language === 'en' ? 'Database Setup' : 'إعداد قاعدة البيانات',
-      status: 'completed',
-      assigneeName: language === 'en' ? 'Omar Hassan' : 'عمر حسن',
-      dueDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
-    }
-  ];
-
-  const proposals = [
-    {
-      id: '1',
-      status: 'pending',
-      title: language === 'en' ? 'New Feature Proposal' : 'مقترح ميزة جديدة'
-    },
-    {
-      id: '2',
-      status: 'approved',
-      title: language === 'en' ? 'Budget Increase' : 'زيادة الميزانية'
-    }
-  ];
-
-  const freelancers = [
-    { id: '1', name: language === 'en' ? 'John Doe' : 'جون دو' },
-    { id: '2', name: language === 'en' ? 'Jane Smith' : 'جين سميث' },
-    { id: '3', name: language === 'en' ? 'Ali Ahmed' : 'علي أحمد' }
-  ];
+  const tasks = projectManagementService.getAllTasks();
+  const proposals = projectManagementService.getAllProposals();
+  const freelancers = projectManagementService.getAllExternalFreelancers();
 
   const pendingTasks = tasks.filter(task => task.status === 'pending').length;
   const inProgressTasks = tasks.filter(task => task.status === 'in_progress').length;
