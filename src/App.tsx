@@ -1,7 +1,8 @@
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { DAOProvider } from "@/contexts/DAOContext";
@@ -31,9 +32,6 @@ import SupplierOffer from "@/pages/SupplierOffer";
 import FreelancerOffer from "@/pages/FreelancerOffer";
 import ProjectManagement from "@/pages/ProjectManagement";
 import WorkflowManagement from "@/pages/WorkflowManagement";
-import { LanguageProvider } from "@/contexts/LanguageContext";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { DAOProvider } from "@/contexts/DAOContext";
 import DealDetail from "@/pages/DealDetail";
 import ProjectWorkflow from "@/pages/ProjectWorkflow";
 import CollectiveAgreement from "@/pages/CollectiveAgreement";
@@ -64,6 +62,8 @@ function App() {
               <BrowserRouter>
                 <Routes>
                   <Route path="/" element={<Index />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
                   
                   {/* Protected Routes */}
                   <Route path="/dashboard" element={
@@ -214,7 +214,11 @@ function App() {
                   } />
                   
                   {/* Workflow Management */}
-                  <Route path="/workflow-management" element={<WorkflowManagement />} />
+                  <Route path="/workflow-management" element={
+                    <ProtectedRoute>
+                      <WorkflowManagement />
+                    </ProtectedRoute>
+                  } />
                   
                   {/* Public Pages */}
                   <Route path="/how-it-works" element={<HowItWorks />} />
