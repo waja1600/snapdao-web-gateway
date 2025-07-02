@@ -2,7 +2,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 
 export const useSidebarUser = (userRole: string, language: string) => {
-  const { user, logout } = useAuth();
+  const { user, signOut } = useAuth();
 
   // Helper to get the role display name
   const getRoleDisplayName = () => {
@@ -36,7 +36,7 @@ export const useSidebarUser = (userRole: string, language: string) => {
 
   return {
     user,
-    logout,
+    logout: signOut, // Provide logout as an alias for signOut for backward compatibility
     getRoleDisplayName,
     getUserDisplayName,
     getUserInitial,

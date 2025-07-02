@@ -15,7 +15,7 @@ interface UserMenuProps {
 }
 
 export const UserMenu: React.FC<UserMenuProps> = ({ language }) => {
-  const { user, logout } = useAuth();
+  const { user, signOut } = useAuth();
 
   // Helper function to get user display name
   const getUserDisplayName = () => {
@@ -59,7 +59,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ language }) => {
           <User className="h-4 w-4 mr-2" />
           {language === 'ar' ? 'الملف الشخصي' : 'Profile'}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={logout} className="font-medium">
+        <DropdownMenuItem onClick={signOut} className="font-medium">
           {language === 'ar' ? 'تسجيل الخروج' : 'Logout'}
         </DropdownMenuItem>
       </DropdownMenuContent>
