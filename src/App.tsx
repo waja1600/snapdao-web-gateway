@@ -33,6 +33,7 @@ import CollectiveAgreement from "@/pages/CollectiveAgreement";
 import ContractPage from "@/pages/ContractPage";
 import GPOPlatform from "@/pages/GPOPlatform";
 import { ProtectedRoute } from "@/components/navigation/ProtectedRoute";
+import InvestmentGateway from "@/pages/InvestmentGateway";
 
 // Gateway Pages
 import GroupBuying from "@/pages/GroupBuying";
@@ -202,7 +203,14 @@ function App() {
                   <GPOPlatform />
                 </ProtectedRoute>
               } />
-
+              
+              {/* Investment Gateway Route - New addition */}
+              <Route path="/investment-gateway" element={
+                <ProtectedRoute>
+                  <InvestmentGateway />
+                </ProtectedRoute>
+              } />
+              
               {/* Public Pages */}
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/about" element={<AboutUs />} />
