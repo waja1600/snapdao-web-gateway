@@ -96,7 +96,7 @@ export const InvestmentCreationWizard: React.FC<InvestmentCreationProps> = ({ on
   const validateStep = (stepNumber: number): boolean => {
     switch (stepNumber) {
       case 1:
-        return formData.name.trim() !== '' && formData.type !== '';
+        return formData.name.trim() !== '';
       case 2:
         return formData.description.trim() !== '' && formData.sector !== '' && formData.targetAmount > 0;
       case 3:
