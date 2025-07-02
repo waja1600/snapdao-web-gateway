@@ -43,6 +43,30 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* GPO Brand Colors */
+    --primary-gpo: 220 91% 48%;
+    --primary-gpo-light: 220 91% 65%;
+    --primary-gpo-dark: 220 91% 35%;
+    --secondary-gpo: 280 65% 55%;
+    --accent-gpo: 32 95% 55%;
+    --success-gpo: 142 76% 36%;
+    --warning-gpo: 45 93% 47%;
+    --error-gpo: 0 84% 60%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary-gpo)), hsl(var(--primary-gpo-light)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary-gpo)), hsl(var(--accent-gpo)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary-gpo)) 0%, hsl(var(--secondary-gpo)) 100%);
+    
+    /* Shadows */
+    --shadow-gpo: 0 4px 20px -2px hsl(var(--primary-gpo) / 0.3);
+    --shadow-card: 0 2px 10px -2px hsl(var(--primary-gpo) / 0.1);
+    --shadow-elevated: 0 8px 30px -4px hsl(var(--primary-gpo) / 0.25);
+    
+    /* Safe area for mobile */
+    --safe-area-inset-top: env(safe-area-inset-top);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom);
   }
 
   .dark {
@@ -81,6 +105,11 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Dark mode GPO colors */
+    --primary-gpo: 220 91% 65%;
+    --primary-gpo-light: 220 91% 75%;
+    --primary-gpo-dark: 220 91% 50%;
   }
 }
 
@@ -95,6 +124,8 @@
     font-size: 16px;
     font-weight: 400;
     line-height: 1.6;
+    padding-top: var(--safe-area-inset-top);
+    padding-bottom: var(--safe-area-inset-bottom);
   }
 
   /* Arabic font support */
@@ -108,22 +139,22 @@
     line-height: 1.4;
   }
 
-  h1 { @apply text-3xl; }
-  h2 { @apply text-2xl; }
-  h3 { @apply text-xl; }
-  h4 { @apply text-lg; }
-  h5 { @apply text-base; }
-  h6 { @apply text-sm; }
+  h1 { @apply text-2xl sm:text-3xl lg:text-4xl; }
+  h2 { @apply text-xl sm:text-2xl lg:text-3xl; }
+  h3 { @apply text-lg sm:text-xl lg:text-2xl; }
+  h4 { @apply text-base sm:text-lg; }
+  h5 { @apply text-sm sm:text-base; }
+  h6 { @apply text-xs sm:text-sm; }
 
   /* Button improvements */
   button {
-    @apply font-medium;
+    @apply font-medium min-h-[44px] touch-manipulation;
     font-size: 15px;
   }
 
   /* Input improvements */
   input, textarea, select {
-    @apply font-medium;
+    @apply font-medium min-h-[44px];
     font-size: 15px;
   }
 
@@ -134,7 +165,7 @@
 
   /* Card and component improvements */
   .card {
-    @apply border border-gray-200 shadow-sm;
+    @apply border border-border shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-elevated)] transition-all duration-300;
   }
 
   /* Better scrollbar */
@@ -143,15 +174,15 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-gray-100;
+    @apply bg-muted;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 rounded-full;
+    @apply bg-[hsl(var(--primary-gpo))] rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-400;
+    @apply bg-[hsl(var(--primary-gpo-dark))];
   }
 
   /* RTL support */
@@ -168,7 +199,7 @@
   input:focus-visible,
   select:focus-visible,
   textarea:focus-visible {
-    @apply ring-2 ring-blue-500 ring-offset-2 outline-none;
+    @apply ring-2 ring-[hsl(var(--primary-gpo))] ring-offset-2 outline-none;
   }
 
   /* Loading states */
@@ -178,6 +209,88 @@
 
   /* Improved shadows */
   .shadow-custom {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-gpo);
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* PWA Install Button */
+  .pwa-install-btn {
+    @apply fixed bottom-4 right-4 z-50 bg-gradient-to-r from-[hsl(var(--primary-gpo))] to-[hsl(var(--primary-gpo-light))] text-white p-4 rounded-full shadow-[var(--shadow-elevated)] hover:scale-105 transition-all duration-300 min-h-[56px] min-w-[56px] flex items-center justify-center;
+  }
+  
+  /* Quick Navigation Floating Button */
+  .quick-nav-btn {
+    @apply fixed bottom-4 left-4 z-50 bg-[hsl(var(--secondary-gpo))] text-white p-3 rounded-full shadow-[var(--shadow-elevated)] hover:scale-105 transition-all duration-300 min-h-[56px] min-w-[56px] flex items-center justify-center;
+  }
+  
+  /* Responsive Grid System */
+  .grid-responsive {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6;
+  }
+  
+  /* Navigation improvements */
+  .nav-item {
+    @apply px-4 py-3 rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200 min-h-[44px] flex items-center;
+  }
+  
+  /* Improved spacing system */
+  .section-spacing {
+    @apply py-8 md:py-12 lg:py-16 xl:py-20;
+  }
+  
+  .container-responsive {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl;
+  }
+  
+  /* Role Selector Component */
+  .role-selector {
+    @apply flex items-center gap-2 p-3 rounded-lg border border-border hover:bg-accent transition-colors duration-200 min-h-[44px];
+  }
+  
+  /* Enhanced dropdowns for mobile */
+  .dropdown-mobile {
+    @apply z-50 bg-popover border border-border rounded-md shadow-lg min-w-[200px] backdrop-blur-sm;
+  }
+  
+  /* Mobile-optimized spacing */
+  .mobile-spacing {
+    @apply p-4 sm:p-6 lg:p-8;
+  }
+}
+
+/* PWA specific styles */
+@media (display-mode: standalone) {
+  .pwa-install-btn {
+    @apply hidden;
+  }
+  
+  body {
+    @apply select-none;
+  }
+  
+  .pwa-header {
+    @apply sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border;
+  }
+}
+
+/* Enhanced mobile touch targets */
+@media (pointer: coarse) {
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+}
+
+/* Animation improvements */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
 }

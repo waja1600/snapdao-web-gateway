@@ -8,6 +8,8 @@ import NotFound from "@/pages/NotFound";
 import Proposals from "@/pages/Proposals";
 import ProposalDetail from "@/pages/ProposalDetail";
 import Projects from "@/pages/Projects";
+import PWAInstaller from "@/components/pwa/PWAInstaller";
+import QuickNavigation from "@/components/navigation/QuickNavigation";
 import ActiveDeals from "@/pages/ActiveDeals";
 import Members from "@/pages/Members";
 import Explore from "@/pages/Explore";
@@ -221,6 +223,12 @@ function App() {
             </Routes>
           </Router>
           <Toaster />
+          
+          {/* PWA Install Button */}
+          <PWAInstaller />
+          
+          {/* Quick Navigation */}
+          <QuickNavigation />
         </DAOProvider>
       </AuthProvider>
     </LanguageProvider>
