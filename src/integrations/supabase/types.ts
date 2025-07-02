@@ -9,726 +9,1729 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      arbitration_cases: {
+      abouts: {
         Row: {
-          arbitrator_assigned: string | null
-          contract_id: string | null
           created_at: string | null
+          created_by_id: number | null
+          id: number
+          title: string | null
+          updated_at: string | null
+          updated_by_id: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by_id?: number | null
+          id?: number
+          title?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by_id?: number | null
+          id?: number
+          title?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "abouts_created_by_id_fk"
+            columns: ["created_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "abouts_updated_by_id_fk"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      abouts_components: {
+        Row: {
+          component_id: number | null
+          component_type: string | null
+          entity_id: number | null
+          field: string | null
+          id: number
+          order: number | null
+        }
+        Insert: {
+          component_id?: number | null
+          component_type?: string | null
+          entity_id?: number | null
+          field?: string | null
+          id?: number
+          order?: number | null
+        }
+        Update: {
+          component_id?: number | null
+          component_type?: string | null
+          entity_id?: number | null
+          field?: string | null
+          id?: number
+          order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "abouts_entity_fk"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "abouts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_permissions: {
+        Row: {
+          action: string | null
+          action_parameters: Json | null
+          conditions: Json | null
+          created_at: string | null
+          created_by_id: number | null
+          id: number
+          properties: Json | null
+          subject: string | null
+          updated_at: string | null
+          updated_by_id: number | null
+        }
+        Insert: {
+          action?: string | null
+          action_parameters?: Json | null
+          conditions?: Json | null
+          created_at?: string | null
+          created_by_id?: number | null
+          id?: number
+          properties?: Json | null
+          subject?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Update: {
+          action?: string | null
+          action_parameters?: Json | null
+          conditions?: Json | null
+          created_at?: string | null
+          created_by_id?: number | null
+          id?: number
+          properties?: Json | null
+          subject?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_permissions_created_by_id_fk"
+            columns: ["created_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_permissions_updated_by_id_fk"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_permissions_role_links: {
+        Row: {
+          id: number
+          permission_id: number | null
+          permission_order: number | null
+          role_id: number | null
+        }
+        Insert: {
+          id?: number
+          permission_id?: number | null
+          permission_order?: number | null
+          role_id?: number | null
+        }
+        Update: {
+          id?: number
+          permission_id?: number | null
+          permission_order?: number | null
+          role_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_permissions_role_links_fk"
+            columns: ["permission_id"]
+            isOneToOne: false
+            referencedRelation: "admin_permissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_permissions_role_links_inv_fk"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "admin_roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_roles: {
+        Row: {
+          code: string | null
+          created_at: string | null
+          created_by_id: number | null
           description: string | null
-          dispute_amount: number | null
-          evidence_ipfs: string | null
-          filed_by: string | null
-          group_id: string | null
-          id: string
-          ipfs_evidence_hash: string | null
-          resolution_deadline: string | null
-          resolution_details: Json | null
-          status: string | null
-          title: string
-          type: string
+          id: number
+          name: string | null
+          updated_at: string | null
+          updated_by_id: number | null
         }
         Insert: {
-          arbitrator_assigned?: string | null
-          contract_id?: string | null
+          code?: string | null
           created_at?: string | null
+          created_by_id?: number | null
           description?: string | null
-          dispute_amount?: number | null
-          evidence_ipfs?: string | null
-          filed_by?: string | null
-          group_id?: string | null
-          id?: string
-          ipfs_evidence_hash?: string | null
-          resolution_deadline?: string | null
-          resolution_details?: Json | null
-          status?: string | null
-          title: string
-          type: string
+          id?: number
+          name?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
         }
         Update: {
-          arbitrator_assigned?: string | null
-          contract_id?: string | null
+          code?: string | null
           created_at?: string | null
+          created_by_id?: number | null
           description?: string | null
-          dispute_amount?: number | null
-          evidence_ipfs?: string | null
-          filed_by?: string | null
-          group_id?: string | null
-          id?: string
-          ipfs_evidence_hash?: string | null
-          resolution_deadline?: string | null
-          resolution_details?: Json | null
-          status?: string | null
-          title?: string
-          type?: string
+          id?: number
+          name?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "arbitration_cases_contract_id_fkey"
-            columns: ["contract_id"]
+            foreignKeyName: "admin_roles_created_by_id_fk"
+            columns: ["created_by_id"]
             isOneToOne: false
-            referencedRelation: "contracts"
+            referencedRelation: "admin_users"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "arbitration_cases_group_id_fkey"
-            columns: ["group_id"]
+            foreignKeyName: "admin_roles_updated_by_id_fk"
+            columns: ["updated_by_id"]
             isOneToOne: false
-            referencedRelation: "groups"
+            referencedRelation: "admin_users"
             referencedColumns: ["id"]
           },
         ]
       }
-      company_formations: {
+      admin_users: {
         Row: {
-          business_type: string
-          company_name: string
+          blocked: boolean | null
           created_at: string | null
-          group_id: string | null
-          id: string
-          incorporation_country: string
-          legal_documents: Json | null
-          share_capital: number | null
-          shareholders: Json | null
-          status: string | null
+          created_by_id: number | null
+          email: string | null
+          firstname: string | null
+          id: number
+          is_active: boolean | null
+          lastname: string | null
+          password: string | null
+          prefered_language: string | null
+          registration_token: string | null
+          reset_password_token: string | null
           updated_at: string | null
+          updated_by_id: number | null
+          username: string | null
         }
         Insert: {
-          business_type: string
-          company_name: string
+          blocked?: boolean | null
           created_at?: string | null
-          group_id?: string | null
-          id?: string
-          incorporation_country: string
-          legal_documents?: Json | null
-          share_capital?: number | null
-          shareholders?: Json | null
-          status?: string | null
+          created_by_id?: number | null
+          email?: string | null
+          firstname?: string | null
+          id?: number
+          is_active?: boolean | null
+          lastname?: string | null
+          password?: string | null
+          prefered_language?: string | null
+          registration_token?: string | null
+          reset_password_token?: string | null
           updated_at?: string | null
+          updated_by_id?: number | null
+          username?: string | null
         }
         Update: {
-          business_type?: string
-          company_name?: string
+          blocked?: boolean | null
           created_at?: string | null
-          group_id?: string | null
-          id?: string
-          incorporation_country?: string
-          legal_documents?: Json | null
-          share_capital?: number | null
-          shareholders?: Json | null
-          status?: string | null
+          created_by_id?: number | null
+          email?: string | null
+          firstname?: string | null
+          id?: number
+          is_active?: boolean | null
+          lastname?: string | null
+          password?: string | null
+          prefered_language?: string | null
+          registration_token?: string | null
+          reset_password_token?: string | null
           updated_at?: string | null
+          updated_by_id?: number | null
+          username?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "company_formations_group_id_fkey"
-            columns: ["group_id"]
+            foreignKeyName: "admin_users_created_by_id_fk"
+            columns: ["created_by_id"]
             isOneToOne: false
-            referencedRelation: "groups"
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_users_updated_by_id_fk"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
             referencedColumns: ["id"]
           },
         ]
       }
-      contracts: {
+      admin_users_roles_links: {
         Row: {
-          content: Json | null
-          contract_type: string | null
-          created_at: string | null
-          created_by: string | null
-          group_id: string | null
-          id: string
-          ipfs_hash: string | null
-          ipfs_versions: Json | null
-          negotiation_history: Json | null
-          parties: Json | null
-          signing_deadline: string | null
-          status: string | null
-          terms: Json | null
-          title: string
-          updated_at: string | null
-          version: number | null
+          id: number
+          role_id: number | null
+          role_order: number | null
+          user_id: number | null
+          user_order: number | null
         }
         Insert: {
-          content?: Json | null
-          contract_type?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          group_id?: string | null
-          id?: string
-          ipfs_hash?: string | null
-          ipfs_versions?: Json | null
-          negotiation_history?: Json | null
-          parties?: Json | null
-          signing_deadline?: string | null
-          status?: string | null
-          terms?: Json | null
-          title: string
-          updated_at?: string | null
-          version?: number | null
+          id?: number
+          role_id?: number | null
+          role_order?: number | null
+          user_id?: number | null
+          user_order?: number | null
         }
         Update: {
-          content?: Json | null
-          contract_type?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          group_id?: string | null
-          id?: string
-          ipfs_hash?: string | null
-          ipfs_versions?: Json | null
-          negotiation_history?: Json | null
-          parties?: Json | null
-          signing_deadline?: string | null
-          status?: string | null
-          terms?: Json | null
-          title?: string
-          updated_at?: string | null
-          version?: number | null
+          id?: number
+          role_id?: number | null
+          role_order?: number | null
+          user_id?: number | null
+          user_order?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "contracts_group_id_fkey"
-            columns: ["group_id"]
+            foreignKeyName: "admin_users_roles_links_fk"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "groups"
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_users_roles_links_inv_fk"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "admin_roles"
             referencedColumns: ["id"]
           },
         ]
       }
-      countries: {
+      articles: {
         Row: {
-          active: boolean | null
-          code: string
           created_at: string | null
-          currency_code: string
-          flag_emoji: string | null
-          id: string
-          name_ar: string
-          name_en: string
-          timezone: string
-        }
-        Insert: {
-          active?: boolean | null
-          code: string
-          created_at?: string | null
-          currency_code: string
-          flag_emoji?: string | null
-          id?: string
-          name_ar: string
-          name_en: string
-          timezone: string
-        }
-        Update: {
-          active?: boolean | null
-          code?: string
-          created_at?: string | null
-          currency_code?: string
-          flag_emoji?: string | null
-          id?: string
-          name_ar?: string
-          name_en?: string
-          timezone?: string
-        }
-        Relationships: []
-      }
-      currencies: {
-        Row: {
-          code: string
-          exchange_rate: number | null
-          id: string
-          name_ar: string
-          name_en: string
-          symbol: string
-          updated_at: string | null
-        }
-        Insert: {
-          code: string
-          exchange_rate?: number | null
-          id?: string
-          name_ar: string
-          name_en: string
-          symbol: string
-          updated_at?: string | null
-        }
-        Update: {
-          code?: string
-          exchange_rate?: number | null
-          id?: string
-          name_ar?: string
-          name_en?: string
-          symbol?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      freelancer_proposals: {
-        Row: {
-          attachments: Json | null
-          deliverables: Json | null
+          created_by_id: number | null
           description: string | null
-          estimated_duration: string | null
-          freelancer_id: string | null
-          group_id: string | null
-          id: string
-          proposed_rate: number | null
-          reviewed_at: string | null
-          reviewed_by: string | null
-          status: string | null
-          submitted_at: string | null
-          title: string
+          id: number
+          published_at: string | null
+          slug: string | null
+          title: string | null
+          updated_at: string | null
+          updated_by_id: number | null
         }
         Insert: {
-          attachments?: Json | null
-          deliverables?: Json | null
+          created_at?: string | null
+          created_by_id?: number | null
           description?: string | null
-          estimated_duration?: string | null
-          freelancer_id?: string | null
-          group_id?: string | null
-          id?: string
-          proposed_rate?: number | null
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          status?: string | null
-          submitted_at?: string | null
-          title: string
+          id?: number
+          published_at?: string | null
+          slug?: string | null
+          title?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
         }
         Update: {
-          attachments?: Json | null
-          deliverables?: Json | null
+          created_at?: string | null
+          created_by_id?: number | null
           description?: string | null
-          estimated_duration?: string | null
-          freelancer_id?: string | null
-          group_id?: string | null
-          id?: string
-          proposed_rate?: number | null
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          status?: string | null
-          submitted_at?: string | null
-          title?: string
+          id?: number
+          published_at?: string | null
+          slug?: string | null
+          title?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "freelancer_proposals_freelancer_id_fkey"
-            columns: ["freelancer_id"]
+            foreignKeyName: "articles_created_by_id_fk"
+            columns: ["created_by_id"]
             isOneToOne: false
-            referencedRelation: "freelancers"
+            referencedRelation: "admin_users"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "freelancer_proposals_group_id_fkey"
-            columns: ["group_id"]
+            foreignKeyName: "articles_updated_by_id_fk"
+            columns: ["updated_by_id"]
             isOneToOne: false
-            referencedRelation: "groups"
+            referencedRelation: "admin_users"
             referencedColumns: ["id"]
           },
         ]
       }
-      freelancers: {
+      articles_author_links: {
         Row: {
-          assessment_score: number | null
-          availability_status: string | null
-          available: boolean | null
-          average_rating: number | null
-          certification_documents: Json | null
-          completed_projects: number | null
-          created_at: string | null
-          experience_years: number | null
-          hourly_rate: number | null
-          id: string
-          mcp_assessment_score: number | null
-          portfolio_url: string | null
-          skills: string[] | null
-          specializations: string[] | null
-          user_id: string | null
-          verified: boolean | null
-        }
-        Insert: {
-          assessment_score?: number | null
-          availability_status?: string | null
-          available?: boolean | null
-          average_rating?: number | null
-          certification_documents?: Json | null
-          completed_projects?: number | null
-          created_at?: string | null
-          experience_years?: number | null
-          hourly_rate?: number | null
-          id?: string
-          mcp_assessment_score?: number | null
-          portfolio_url?: string | null
-          skills?: string[] | null
-          specializations?: string[] | null
-          user_id?: string | null
-          verified?: boolean | null
-        }
-        Update: {
-          assessment_score?: number | null
-          availability_status?: string | null
-          available?: boolean | null
-          average_rating?: number | null
-          certification_documents?: Json | null
-          completed_projects?: number | null
-          created_at?: string | null
-          experience_years?: number | null
-          hourly_rate?: number | null
-          id?: string
-          mcp_assessment_score?: number | null
-          portfolio_url?: string | null
-          skills?: string[] | null
-          specializations?: string[] | null
-          user_id?: string | null
-          verified?: boolean | null
-        }
-        Relationships: []
-      }
-      gpo: {
-        Row: {
-          created_at: string
+          article_id: number | null
+          article_order: number | null
+          author_id: number | null
           id: number
         }
         Insert: {
-          created_at?: string
+          article_id?: number | null
+          article_order?: number | null
+          author_id?: number | null
           id?: number
         }
         Update: {
-          created_at?: string
+          article_id?: number | null
+          article_order?: number | null
+          author_id?: number | null
+          id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "articles_author_links_fk"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "articles_author_links_inv_fk"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "authors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      articles_category_links: {
+        Row: {
+          article_id: number | null
+          article_order: number | null
+          category_id: number | null
+          id: number
+        }
+        Insert: {
+          article_id?: number | null
+          article_order?: number | null
+          category_id?: number | null
+          id?: number
+        }
+        Update: {
+          article_id?: number | null
+          article_order?: number | null
+          category_id?: number | null
+          id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "articles_category_links_fk"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "articles_category_links_inv_fk"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      articles_components: {
+        Row: {
+          component_id: number | null
+          component_type: string | null
+          entity_id: number | null
+          field: string | null
+          id: number
+          order: number | null
+        }
+        Insert: {
+          component_id?: number | null
+          component_type?: string | null
+          entity_id?: number | null
+          field?: string | null
+          id?: number
+          order?: number | null
+        }
+        Update: {
+          component_id?: number | null
+          component_type?: string | null
+          entity_id?: number | null
+          field?: string | null
+          id?: number
+          order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "articles_entity_fk"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      authors: {
+        Row: {
+          created_at: string | null
+          created_by_id: number | null
+          email: string | null
+          id: number
+          name: string | null
+          updated_at: string | null
+          updated_by_id: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by_id?: number | null
+          email?: string | null
+          id?: number
+          name?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by_id?: number | null
+          email?: string | null
+          id?: number
+          name?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "authors_created_by_id_fk"
+            columns: ["created_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "authors_updated_by_id_fk"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      categories: {
+        Row: {
+          created_at: string | null
+          created_by_id: number | null
+          description: string | null
+          id: number
+          name: string | null
+          slug: string | null
+          updated_at: string | null
+          updated_by_id: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by_id?: number | null
+          description?: string | null
+          id?: number
+          name?: string | null
+          slug?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by_id?: number | null
+          description?: string | null
+          id?: number
+          name?: string | null
+          slug?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categories_created_by_id_fk"
+            columns: ["created_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "categories_updated_by_id_fk"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      components_shared_media: {
+        Row: {
+          id: number
+        }
+        Insert: {
+          id?: number
+        }
+        Update: {
           id?: number
         }
         Relationships: []
       }
-      group_members: {
+      components_shared_quotes: {
         Row: {
-          group_id: string | null
-          id: string
-          joined_at: string | null
-          role: string | null
-          user_id: string | null
-          voting_weight: number | null
+          body: string | null
+          id: number
+          title: string | null
         }
         Insert: {
-          group_id?: string | null
-          id?: string
-          joined_at?: string | null
-          role?: string | null
-          user_id?: string | null
-          voting_weight?: number | null
+          body?: string | null
+          id?: number
+          title?: string | null
         }
         Update: {
-          group_id?: string | null
-          id?: string
-          joined_at?: string | null
-          role?: string | null
-          user_id?: string | null
-          voting_weight?: number | null
+          body?: string | null
+          id?: number
+          title?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "group_members_group_id_fkey"
-            columns: ["group_id"]
-            isOneToOne: false
-            referencedRelation: "groups"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
-      groups: {
+      components_shared_rich_texts: {
         Row: {
-          business_model: string | null
-          business_objective: string | null
+          body: string | null
+          id: number
+        }
+        Insert: {
+          body?: string | null
+          id?: number
+        }
+        Update: {
+          body?: string | null
+          id?: number
+        }
+        Relationships: []
+      }
+      components_shared_seos: {
+        Row: {
+          id: number
+          meta_description: string | null
+          meta_title: string | null
+        }
+        Insert: {
+          id?: number
+          meta_description?: string | null
+          meta_title?: string | null
+        }
+        Update: {
+          id?: number
+          meta_description?: string | null
+          meta_title?: string | null
+        }
+        Relationships: []
+      }
+      components_shared_sliders: {
+        Row: {
+          id: number
+        }
+        Insert: {
+          id?: number
+        }
+        Update: {
+          id?: number
+        }
+        Relationships: []
+      }
+      files: {
+        Row: {
+          alternative_text: string | null
+          caption: string | null
           created_at: string | null
-          creator_id: string
-          description: string | null
-          gateway_type: string | null
-          id: string
-          incorporation_country: string | null
-          jurisdiction: string | null
-          legal_framework: string | null
-          legal_framework_type: string | null
-          maximum_members: number | null
-          minimum_members: number | null
-          name: string
-          service_gateway: string
-          status: string | null
-          type: string
+          created_by_id: number | null
+          ext: string | null
+          folder_path: string | null
+          formats: Json | null
+          hash: string | null
+          height: number | null
+          id: number
+          mime: string | null
+          name: string | null
+          preview_url: string | null
+          provider: string | null
+          provider_metadata: Json | null
+          size: number | null
           updated_at: string | null
+          updated_by_id: number | null
+          url: string | null
+          width: number | null
         }
         Insert: {
-          business_model?: string | null
-          business_objective?: string | null
+          alternative_text?: string | null
+          caption?: string | null
           created_at?: string | null
-          creator_id: string
-          description?: string | null
-          gateway_type?: string | null
-          id?: string
-          incorporation_country?: string | null
-          jurisdiction?: string | null
-          legal_framework?: string | null
-          legal_framework_type?: string | null
-          maximum_members?: number | null
-          minimum_members?: number | null
-          name: string
-          service_gateway: string
-          status?: string | null
-          type: string
+          created_by_id?: number | null
+          ext?: string | null
+          folder_path?: string | null
+          formats?: Json | null
+          hash?: string | null
+          height?: number | null
+          id?: number
+          mime?: string | null
+          name?: string | null
+          preview_url?: string | null
+          provider?: string | null
+          provider_metadata?: Json | null
+          size?: number | null
           updated_at?: string | null
+          updated_by_id?: number | null
+          url?: string | null
+          width?: number | null
         }
         Update: {
-          business_model?: string | null
-          business_objective?: string | null
+          alternative_text?: string | null
+          caption?: string | null
           created_at?: string | null
-          creator_id?: string
-          description?: string | null
-          gateway_type?: string | null
-          id?: string
-          incorporation_country?: string | null
-          jurisdiction?: string | null
-          legal_framework?: string | null
-          legal_framework_type?: string | null
-          maximum_members?: number | null
-          minimum_members?: number | null
-          name?: string
-          service_gateway?: string
-          status?: string | null
-          type?: string
+          created_by_id?: number | null
+          ext?: string | null
+          folder_path?: string | null
+          formats?: Json | null
+          hash?: string | null
+          height?: number | null
+          id?: number
+          mime?: string | null
+          name?: string | null
+          preview_url?: string | null
+          provider?: string | null
+          provider_metadata?: Json | null
+          size?: number | null
           updated_at?: string | null
+          updated_by_id?: number | null
+          url?: string | null
+          width?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "files_created_by_id_fk"
+            columns: ["created_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "files_updated_by_id_fk"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
-      languages: {
+      files_folder_links: {
         Row: {
-          active: boolean | null
-          code: string
-          direction: string | null
-          id: string
-          name_en: string
-          name_native: string
+          file_id: number | null
+          file_order: number | null
+          folder_id: number | null
+          id: number
         }
         Insert: {
-          active?: boolean | null
-          code: string
-          direction?: string | null
-          id?: string
-          name_en: string
-          name_native: string
+          file_id?: number | null
+          file_order?: number | null
+          folder_id?: number | null
+          id?: number
         }
         Update: {
-          active?: boolean | null
-          code?: string
-          direction?: string | null
-          id?: string
-          name_en?: string
-          name_native?: string
+          file_id?: number | null
+          file_order?: number | null
+          folder_id?: number | null
+          id?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "files_folder_links_fk"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "files_folder_links_inv_fk"
+            columns: ["folder_id"]
+            isOneToOne: false
+            referencedRelation: "upload_folders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
-      profiles: {
+      files_related_morphs: {
         Row: {
-          company_name: string | null
-          country: string | null
+          field: string | null
+          file_id: number | null
+          id: number
+          order: number | null
+          related_id: number | null
+          related_type: string | null
+        }
+        Insert: {
+          field?: string | null
+          file_id?: number | null
+          id?: number
+          order?: number | null
+          related_id?: number | null
+          related_type?: string | null
+        }
+        Update: {
+          field?: string | null
+          file_id?: number | null
+          id?: number
+          order?: number | null
+          related_id?: number | null
+          related_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "files_related_morphs_fk"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      globals: {
+        Row: {
           created_at: string | null
-          full_name: string | null
-          id: string
-          kyc_status: string | null
-          phone: string | null
-          role: string | null
+          created_by_id: number | null
+          id: number
+          site_description: string | null
+          site_name: string | null
           updated_at: string | null
-        }
-        Insert: {
-          company_name?: string | null
-          country?: string | null
-          created_at?: string | null
-          full_name?: string | null
-          id: string
-          kyc_status?: string | null
-          phone?: string | null
-          role?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          company_name?: string | null
-          country?: string | null
-          created_at?: string | null
-          full_name?: string | null
-          id?: string
-          kyc_status?: string | null
-          phone?: string | null
-          role?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      proposals: {
-        Row: {
-          created_at: string | null
-          created_by: string | null
-          description: string | null
-          group_id: string | null
-          id: string
-          status: string | null
-          title: string
-          type: string
-          voting_deadline: string | null
+          updated_by_id: number | null
         }
         Insert: {
           created_at?: string | null
-          created_by?: string | null
-          description?: string | null
-          group_id?: string | null
-          id?: string
-          status?: string | null
-          title: string
-          type: string
-          voting_deadline?: string | null
+          created_by_id?: number | null
+          id?: number
+          site_description?: string | null
+          site_name?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
         }
         Update: {
           created_at?: string | null
-          created_by?: string | null
-          description?: string | null
-          group_id?: string | null
-          id?: string
-          status?: string | null
-          title?: string
-          type?: string
-          voting_deadline?: string | null
+          created_by_id?: number | null
+          id?: number
+          site_description?: string | null
+          site_name?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "proposals_group_id_fkey"
-            columns: ["group_id"]
+            foreignKeyName: "globals_created_by_id_fk"
+            columns: ["created_by_id"]
             isOneToOne: false
-            referencedRelation: "groups"
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "globals_updated_by_id_fk"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
             referencedColumns: ["id"]
           },
         ]
       }
-      supplier_proposals: {
+      globals_components: {
         Row: {
-          attachments: Json | null
-          delivery_schedule: Json | null
-          description: string | null
-          group_id: string | null
-          id: string
-          pricing: Json | null
-          reviewed_at: string | null
-          reviewed_by: string | null
-          status: string | null
-          submitted_at: string | null
-          supplier_id: string | null
-          terms_conditions: string | null
-          title: string
+          component_id: number | null
+          component_type: string | null
+          entity_id: number | null
+          field: string | null
+          id: number
+          order: number | null
         }
         Insert: {
-          attachments?: Json | null
-          delivery_schedule?: Json | null
-          description?: string | null
-          group_id?: string | null
-          id?: string
-          pricing?: Json | null
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          status?: string | null
-          submitted_at?: string | null
-          supplier_id?: string | null
-          terms_conditions?: string | null
-          title: string
+          component_id?: number | null
+          component_type?: string | null
+          entity_id?: number | null
+          field?: string | null
+          id?: number
+          order?: number | null
         }
         Update: {
-          attachments?: Json | null
-          delivery_schedule?: Json | null
-          description?: string | null
-          group_id?: string | null
-          id?: string
-          pricing?: Json | null
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          status?: string | null
-          submitted_at?: string | null
-          supplier_id?: string | null
-          terms_conditions?: string | null
-          title?: string
+          component_id?: number | null
+          component_type?: string | null
+          entity_id?: number | null
+          field?: string | null
+          id?: number
+          order?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "supplier_proposals_group_id_fkey"
-            columns: ["group_id"]
+            foreignKeyName: "globals_entity_fk"
+            columns: ["entity_id"]
             isOneToOne: false
-            referencedRelation: "groups"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "supplier_proposals_supplier_id_fkey"
-            columns: ["supplier_id"]
-            isOneToOne: false
-            referencedRelation: "suppliers"
+            referencedRelation: "globals"
             referencedColumns: ["id"]
           },
         ]
       }
-      suppliers: {
+      posts: {
         Row: {
-          compliance_rating: number | null
-          country: string | null
+          content: string | null
           created_at: string | null
-          email: string
-          id: string
+          id: number
           name: string
-          specialization: string[] | null
-          verified: boolean | null
         }
         Insert: {
-          compliance_rating?: number | null
-          country?: string | null
+          content?: string | null
           created_at?: string | null
-          email: string
-          id?: string
+          id?: number
           name: string
-          specialization?: string[] | null
-          verified?: boolean | null
         }
         Update: {
-          compliance_rating?: number | null
-          country?: string | null
+          content?: string | null
           created_at?: string | null
-          email?: string
-          id?: string
+          id?: number
           name?: string
-          specialization?: string[] | null
-          verified?: boolean | null
         }
         Relationships: []
       }
-      votes: {
+      strapi_api_token_permissions: {
         Row: {
-          choice: string
-          id: string
-          proposal_id: string | null
-          reason: string | null
-          user_id: string | null
-          voted_at: string | null
-          weight: number | null
+          action: string | null
+          created_at: string | null
+          created_by_id: number | null
+          id: number
+          updated_at: string | null
+          updated_by_id: number | null
         }
         Insert: {
-          choice: string
-          id?: string
-          proposal_id?: string | null
-          reason?: string | null
-          user_id?: string | null
-          voted_at?: string | null
-          weight?: number | null
+          action?: string | null
+          created_at?: string | null
+          created_by_id?: number | null
+          id?: number
+          updated_at?: string | null
+          updated_by_id?: number | null
         }
         Update: {
-          choice?: string
-          id?: string
-          proposal_id?: string | null
-          reason?: string | null
-          user_id?: string | null
-          voted_at?: string | null
-          weight?: number | null
+          action?: string | null
+          created_at?: string | null
+          created_by_id?: number | null
+          id?: number
+          updated_at?: string | null
+          updated_by_id?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "votes_proposal_id_fkey"
-            columns: ["proposal_id"]
+            foreignKeyName: "strapi_api_token_permissions_created_by_id_fk"
+            columns: ["created_by_id"]
             isOneToOne: false
-            referencedRelation: "proposals"
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "strapi_api_token_permissions_updated_by_id_fk"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      strapi_api_token_permissions_token_links: {
+        Row: {
+          api_token_id: number | null
+          api_token_permission_id: number | null
+          api_token_permission_order: number | null
+          id: number
+        }
+        Insert: {
+          api_token_id?: number | null
+          api_token_permission_id?: number | null
+          api_token_permission_order?: number | null
+          id?: number
+        }
+        Update: {
+          api_token_id?: number | null
+          api_token_permission_id?: number | null
+          api_token_permission_order?: number | null
+          id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "strapi_api_token_permissions_token_links_fk"
+            columns: ["api_token_permission_id"]
+            isOneToOne: false
+            referencedRelation: "strapi_api_token_permissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "strapi_api_token_permissions_token_links_inv_fk"
+            columns: ["api_token_id"]
+            isOneToOne: false
+            referencedRelation: "strapi_api_tokens"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      strapi_api_tokens: {
+        Row: {
+          access_key: string | null
+          created_at: string | null
+          created_by_id: number | null
+          description: string | null
+          expires_at: string | null
+          id: number
+          last_used_at: string | null
+          lifespan: number | null
+          name: string | null
+          type: string | null
+          updated_at: string | null
+          updated_by_id: number | null
+        }
+        Insert: {
+          access_key?: string | null
+          created_at?: string | null
+          created_by_id?: number | null
+          description?: string | null
+          expires_at?: string | null
+          id?: number
+          last_used_at?: string | null
+          lifespan?: number | null
+          name?: string | null
+          type?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Update: {
+          access_key?: string | null
+          created_at?: string | null
+          created_by_id?: number | null
+          description?: string | null
+          expires_at?: string | null
+          id?: number
+          last_used_at?: string | null
+          lifespan?: number | null
+          name?: string | null
+          type?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "strapi_api_tokens_created_by_id_fk"
+            columns: ["created_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "strapi_api_tokens_updated_by_id_fk"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      strapi_core_store_settings: {
+        Row: {
+          environment: string | null
+          id: number
+          key: string | null
+          tag: string | null
+          type: string | null
+          value: string | null
+        }
+        Insert: {
+          environment?: string | null
+          id?: number
+          key?: string | null
+          tag?: string | null
+          type?: string | null
+          value?: string | null
+        }
+        Update: {
+          environment?: string | null
+          id?: number
+          key?: string | null
+          tag?: string | null
+          type?: string | null
+          value?: string | null
+        }
+        Relationships: []
+      }
+      strapi_database_schema: {
+        Row: {
+          hash: string | null
+          id: number
+          schema: Json | null
+          time: string | null
+        }
+        Insert: {
+          hash?: string | null
+          id?: number
+          schema?: Json | null
+          time?: string | null
+        }
+        Update: {
+          hash?: string | null
+          id?: number
+          schema?: Json | null
+          time?: string | null
+        }
+        Relationships: []
+      }
+      strapi_migrations: {
+        Row: {
+          id: number
+          name: string | null
+          time: string | null
+        }
+        Insert: {
+          id?: number
+          name?: string | null
+          time?: string | null
+        }
+        Update: {
+          id?: number
+          name?: string | null
+          time?: string | null
+        }
+        Relationships: []
+      }
+      strapi_release_actions: {
+        Row: {
+          content_type: string | null
+          created_at: string | null
+          created_by_id: number | null
+          id: number
+          is_entry_valid: boolean | null
+          locale: string | null
+          target_id: number | null
+          target_type: string | null
+          type: string | null
+          updated_at: string | null
+          updated_by_id: number | null
+        }
+        Insert: {
+          content_type?: string | null
+          created_at?: string | null
+          created_by_id?: number | null
+          id?: number
+          is_entry_valid?: boolean | null
+          locale?: string | null
+          target_id?: number | null
+          target_type?: string | null
+          type?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Update: {
+          content_type?: string | null
+          created_at?: string | null
+          created_by_id?: number | null
+          id?: number
+          is_entry_valid?: boolean | null
+          locale?: string | null
+          target_id?: number | null
+          target_type?: string | null
+          type?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "strapi_release_actions_created_by_id_fk"
+            columns: ["created_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "strapi_release_actions_updated_by_id_fk"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      strapi_release_actions_release_links: {
+        Row: {
+          id: number
+          release_action_id: number | null
+          release_action_order: number | null
+          release_id: number | null
+        }
+        Insert: {
+          id?: number
+          release_action_id?: number | null
+          release_action_order?: number | null
+          release_id?: number | null
+        }
+        Update: {
+          id?: number
+          release_action_id?: number | null
+          release_action_order?: number | null
+          release_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "strapi_release_actions_release_links_fk"
+            columns: ["release_action_id"]
+            isOneToOne: false
+            referencedRelation: "strapi_release_actions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "strapi_release_actions_release_links_inv_fk"
+            columns: ["release_id"]
+            isOneToOne: false
+            referencedRelation: "strapi_releases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      strapi_releases: {
+        Row: {
+          created_at: string | null
+          created_by_id: number | null
+          id: number
+          name: string | null
+          released_at: string | null
+          scheduled_at: string | null
+          status: string | null
+          timezone: string | null
+          updated_at: string | null
+          updated_by_id: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by_id?: number | null
+          id?: number
+          name?: string | null
+          released_at?: string | null
+          scheduled_at?: string | null
+          status?: string | null
+          timezone?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by_id?: number | null
+          id?: number
+          name?: string | null
+          released_at?: string | null
+          scheduled_at?: string | null
+          status?: string | null
+          timezone?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "strapi_releases_created_by_id_fk"
+            columns: ["created_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "strapi_releases_updated_by_id_fk"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      strapi_transfer_token_permissions: {
+        Row: {
+          action: string | null
+          created_at: string | null
+          created_by_id: number | null
+          id: number
+          updated_at: string | null
+          updated_by_id: number | null
+        }
+        Insert: {
+          action?: string | null
+          created_at?: string | null
+          created_by_id?: number | null
+          id?: number
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Update: {
+          action?: string | null
+          created_at?: string | null
+          created_by_id?: number | null
+          id?: number
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "strapi_transfer_token_permissions_created_by_id_fk"
+            columns: ["created_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "strapi_transfer_token_permissions_updated_by_id_fk"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      strapi_transfer_token_permissions_token_links: {
+        Row: {
+          id: number
+          transfer_token_id: number | null
+          transfer_token_permission_id: number | null
+          transfer_token_permission_order: number | null
+        }
+        Insert: {
+          id?: number
+          transfer_token_id?: number | null
+          transfer_token_permission_id?: number | null
+          transfer_token_permission_order?: number | null
+        }
+        Update: {
+          id?: number
+          transfer_token_id?: number | null
+          transfer_token_permission_id?: number | null
+          transfer_token_permission_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "strapi_transfer_token_permissions_token_links_fk"
+            columns: ["transfer_token_permission_id"]
+            isOneToOne: false
+            referencedRelation: "strapi_transfer_token_permissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "strapi_transfer_token_permissions_token_links_inv_fk"
+            columns: ["transfer_token_id"]
+            isOneToOne: false
+            referencedRelation: "strapi_transfer_tokens"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      strapi_transfer_tokens: {
+        Row: {
+          access_key: string | null
+          created_at: string | null
+          created_by_id: number | null
+          description: string | null
+          expires_at: string | null
+          id: number
+          last_used_at: string | null
+          lifespan: number | null
+          name: string | null
+          updated_at: string | null
+          updated_by_id: number | null
+        }
+        Insert: {
+          access_key?: string | null
+          created_at?: string | null
+          created_by_id?: number | null
+          description?: string | null
+          expires_at?: string | null
+          id?: number
+          last_used_at?: string | null
+          lifespan?: number | null
+          name?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Update: {
+          access_key?: string | null
+          created_at?: string | null
+          created_by_id?: number | null
+          description?: string | null
+          expires_at?: string | null
+          id?: number
+          last_used_at?: string | null
+          lifespan?: number | null
+          name?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "strapi_transfer_tokens_created_by_id_fk"
+            columns: ["created_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "strapi_transfer_tokens_updated_by_id_fk"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      strapi_webhooks: {
+        Row: {
+          enabled: boolean | null
+          events: Json | null
+          headers: Json | null
+          id: number
+          name: string | null
+          url: string | null
+        }
+        Insert: {
+          enabled?: boolean | null
+          events?: Json | null
+          headers?: Json | null
+          id?: number
+          name?: string | null
+          url?: string | null
+        }
+        Update: {
+          enabled?: boolean | null
+          events?: Json | null
+          headers?: Json | null
+          id?: number
+          name?: string | null
+          url?: string | null
+        }
+        Relationships: []
+      }
+      up_permissions: {
+        Row: {
+          action: string | null
+          created_at: string | null
+          created_by_id: number | null
+          id: number
+          updated_at: string | null
+          updated_by_id: number | null
+        }
+        Insert: {
+          action?: string | null
+          created_at?: string | null
+          created_by_id?: number | null
+          id?: number
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Update: {
+          action?: string | null
+          created_at?: string | null
+          created_by_id?: number | null
+          id?: number
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "up_permissions_created_by_id_fk"
+            columns: ["created_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "up_permissions_updated_by_id_fk"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      up_permissions_role_links: {
+        Row: {
+          id: number
+          permission_id: number | null
+          permission_order: number | null
+          role_id: number | null
+        }
+        Insert: {
+          id?: number
+          permission_id?: number | null
+          permission_order?: number | null
+          role_id?: number | null
+        }
+        Update: {
+          id?: number
+          permission_id?: number | null
+          permission_order?: number | null
+          role_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "up_permissions_role_links_fk"
+            columns: ["permission_id"]
+            isOneToOne: false
+            referencedRelation: "up_permissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "up_permissions_role_links_inv_fk"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "up_roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      up_roles: {
+        Row: {
+          created_at: string | null
+          created_by_id: number | null
+          description: string | null
+          id: number
+          name: string | null
+          type: string | null
+          updated_at: string | null
+          updated_by_id: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by_id?: number | null
+          description?: string | null
+          id?: number
+          name?: string | null
+          type?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by_id?: number | null
+          description?: string | null
+          id?: number
+          name?: string | null
+          type?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "up_roles_created_by_id_fk"
+            columns: ["created_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "up_roles_updated_by_id_fk"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      up_users: {
+        Row: {
+          blocked: boolean | null
+          confirmation_token: string | null
+          confirmed: boolean | null
+          created_at: string | null
+          created_by_id: number | null
+          email: string | null
+          id: number
+          password: string | null
+          provider: string | null
+          reset_password_token: string | null
+          updated_at: string | null
+          updated_by_id: number | null
+          username: string | null
+        }
+        Insert: {
+          blocked?: boolean | null
+          confirmation_token?: string | null
+          confirmed?: boolean | null
+          created_at?: string | null
+          created_by_id?: number | null
+          email?: string | null
+          id?: number
+          password?: string | null
+          provider?: string | null
+          reset_password_token?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+          username?: string | null
+        }
+        Update: {
+          blocked?: boolean | null
+          confirmation_token?: string | null
+          confirmed?: boolean | null
+          created_at?: string | null
+          created_by_id?: number | null
+          email?: string | null
+          id?: number
+          password?: string | null
+          provider?: string | null
+          reset_password_token?: string | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+          username?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "up_users_created_by_id_fk"
+            columns: ["created_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "up_users_updated_by_id_fk"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      up_users_role_links: {
+        Row: {
+          id: number
+          role_id: number | null
+          user_id: number | null
+          user_order: number | null
+        }
+        Insert: {
+          id?: number
+          role_id?: number | null
+          user_id?: number | null
+          user_order?: number | null
+        }
+        Update: {
+          id?: number
+          role_id?: number | null
+          user_id?: number | null
+          user_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "up_users_role_links_fk"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "up_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "up_users_role_links_inv_fk"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "up_roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      upload_folders: {
+        Row: {
+          created_at: string | null
+          created_by_id: number | null
+          id: number
+          name: string | null
+          path: string | null
+          path_id: number | null
+          updated_at: string | null
+          updated_by_id: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by_id?: number | null
+          id?: number
+          name?: string | null
+          path?: string | null
+          path_id?: number | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by_id?: number | null
+          id?: number
+          name?: string | null
+          path?: string | null
+          path_id?: number | null
+          updated_at?: string | null
+          updated_by_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "upload_folders_created_by_id_fk"
+            columns: ["created_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "upload_folders_updated_by_id_fk"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      upload_folders_parent_links: {
+        Row: {
+          folder_id: number | null
+          folder_order: number | null
+          id: number
+          inv_folder_id: number | null
+        }
+        Insert: {
+          folder_id?: number | null
+          folder_order?: number | null
+          id?: number
+          inv_folder_id?: number | null
+        }
+        Update: {
+          folder_id?: number | null
+          folder_order?: number | null
+          id?: number
+          inv_folder_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "upload_folders_parent_links_fk"
+            columns: ["folder_id"]
+            isOneToOne: false
+            referencedRelation: "upload_folders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "upload_folders_parent_links_inv_fk"
+            columns: ["inv_folder_id"]
+            isOneToOne: false
+            referencedRelation: "upload_folders"
             referencedColumns: ["id"]
           },
         ]
