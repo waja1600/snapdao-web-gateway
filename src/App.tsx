@@ -36,6 +36,7 @@ import ContractPage from "@/pages/ContractPage";
 import GPOPlatform from "@/pages/GPOPlatform";
 import { ProtectedRoute } from "@/components/navigation/ProtectedRoute";
 import InvestmentGateway from "@/pages/InvestmentGateway";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 // Gateway Pages
 import GroupBuying from "@/pages/GroupBuying";
@@ -49,9 +50,10 @@ import FreelancerManagement from "@/pages/FreelancerManagement";
 
 function App() {
   return (
-    <LanguageProvider>
-      <AuthProvider>
-        <DAOProvider>
+    <ErrorBoundary>
+      <LanguageProvider>
+        <AuthProvider>
+          <DAOProvider>
           <Router>
             <Routes>
               <Route path="/" element={<EnhancedIndex />} />
@@ -232,6 +234,7 @@ function App() {
         </DAOProvider>
       </AuthProvider>
     </LanguageProvider>
+    </ErrorBoundary>
   );
 }
 
