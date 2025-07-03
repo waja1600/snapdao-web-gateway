@@ -32,17 +32,6 @@ export const RegistrationForm = ({
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold text-blue-600">GPOsaas</h1>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onLanguageToggle}
-          title={language === 'en' ? 'Switch to Arabic' : 'التبديل إلى الإنجليزية'}
-        >
-          <Globe className="h-5 w-5" />
-        </Button>
-      </div>
 
       <div>
         <Label htmlFor="fullName">{t('fullName')}</Label>

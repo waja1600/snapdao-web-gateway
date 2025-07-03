@@ -2,9 +2,9 @@
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
-import { Mail } from "lucide-react";
+import { Mail, ArrowLeft } from "lucide-react";
 
 interface OTPVerificationFormProps {
   email: string;
@@ -30,35 +30,50 @@ export const OTPVerificationForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <Label htmlFor="otp">
-          {language === 'en' ? 'Verification Code' : 'رمز التحقق'}
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-3">
+        <Label htmlFor="otp" className="text-center block font-medium">
+          {language === 'en' ? 'Enter 6-digit verification code' : 'أدخل رمز التحقق المكون من 6 أرقام'}
         </Label>
-        <Input
+        <div className="flex justify-center">
+          <InputOTP
+            maxLength={6}
+            value={otpCode}
+            onChange={(value) => setOtpCode(value)}
+          >
+            <InputOTPGroup>
+              <InputOTPSlot index={0} />
+              <InputOTPSlot index={1} />
+              <InputOTPSlot index={2} />
+              <InputOTPSlot index={3} />
+              <InputOTPSlot index={4} />
+              <InputOTPSlot index={5} />
+            </InputOTPGroup>
+          </InputOTP>
+        </div>
+        <input
           id="otp"
-          type="text"
-          maxLength={6}
+          type="hidden"
           value={otpCode}
-          onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
-          placeholder="123456"
-          className="text-center text-2xl tracking-widest"
-          required
+          name="otp"
         />
       </div>
       
-      <Button type="submit" className="w-full" disabled={isLoading}>
+      <Button type="submit" className="w-full" disabled={isLoading || otpCode.length !== 6}>
         <Mail className="w-4 h-4 mr-2" />
-        {language === 'en' ? 'Verify & Login' : 'تأكيد الدخول'}
+        {language === 'en' ? 'Verify & Continue' : 'تأكيد والمتابعة'}
       </Button>
       
-      <Button type="button" variant="outline" className="w-full" onClick={onResend} disabled={isLoading}>
-        {language === 'en' ? 'Resend Code' : 'إعادة إرسال الرمز'}
-      </Button>
-      
-      <Button type="button" variant="ghost" className="w-full" onClick={onBack}>
-        {language === 'en' ? 'Back to Registration' : 'العودة للتسجيل'}
-      </Button>
+      <div className="space-y-2">
+        <Button type="button" variant="outline" className="w-full" onClick={onResend} disabled={isLoading}>
+          {language === 'en' ? 'Resend Code' : 'إعادة إرسال الرمز'}
+        </Button>
+        
+        <Button type="button" variant="ghost" className="w-full" onClick={onBack}>
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          {language === 'en' ? 'Back to Registration' : 'العودة للتسجيل'}
+        </Button>
+      </div>
     </form>
   );
 };
