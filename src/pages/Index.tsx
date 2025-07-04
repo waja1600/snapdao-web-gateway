@@ -27,7 +27,7 @@ import { OpenDealsCards } from "@/components/HomePage/OpenDealsCards";
 import { FooterSection } from "@/components/HomePage/FooterSection";
 
 const Index = () => {
-  const { t, language, setLanguage } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const { user } = useAuth();
   const navigate = useNavigate();
   
@@ -65,7 +65,7 @@ const Index = () => {
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuLink className="px-3 py-2 text-sm font-medium hover:text-blue-600" href="/support">
+                  <NavigationMenuLink className="px-3 py-2 text-sm font-medium hover:text-blue-600" href="/contact">
                     {language === 'en' ? 'Support & Help' : 'الدعم والمساعدة'}
                   </NavigationMenuLink>
                 </NavigationMenuItem>
@@ -104,12 +104,12 @@ const Index = () => {
 
               <Button
                 variant="outline"
-                onClick={() => navigate("/login")}
+                onClick={() => navigate("/register")}
               >
-                {t('login')}
+                {language === 'en' ? 'Login' : 'تسجيل الدخول'}
               </Button>
-              <Button onClick={() => navigate("/login")}>
-                {t('register')}
+              <Button onClick={() => navigate("/register")}>
+                {language === 'en' ? 'Register' : 'التسجيل'}
               </Button>
             </div>
           </div>
@@ -141,7 +141,7 @@ const Index = () => {
                 : 'انضم إلى آلاف الشركات والمهنيين الذين يستخدمون منصتنا بالفعل لتبسيط تعاونهم.'}
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button size="lg" onClick={() => navigate("/login")}>
+              <Button size="lg" onClick={() => navigate("/register")}>
                 {language === 'en' ? 'Register Now' : 'سجل الآن'}
               </Button>
               <Button size="lg" variant="outline" onClick={() => navigate("/how-it-works")}>

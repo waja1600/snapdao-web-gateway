@@ -52,10 +52,9 @@ export const OTPVerificationForm = ({
           </InputOTP>
         </div>
         <input
-          id="otp"
           type="hidden"
-          value={otpCode}
           name="otp"
+          value={otpCode}
         />
       </div>
       

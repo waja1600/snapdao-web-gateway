@@ -3,18 +3,15 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { OTPVerificationForm } from '@/components/auth/OTPVerificationForm';
 import { RegistrationForm } from '@/components/auth/RegistrationForm';
 import { Globe } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Register = () => {
   const { language, setLanguage } = useLanguage();
-  const { signUp, verifyOtp } = useAuth();
+  const { signUp, verifyOtp, signInWithOtp } = useAuth();
   const navigate = useNavigate();
   
   const [step, setStep] = useState<'register' | 'verify'>('register');
@@ -31,7 +28,8 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
     
-    const { error } = await signUp(formData.email, formData.password, formData.fullName);
+    // استخدام signInWithOtp بدلاً من signUp للحصول على OTP
+    const { error } = await signInWithOtp(formData.email);
     
     if (!error) {
       setStep('verify');
@@ -43,7 +41,7 @@ const Register = () => {
   const handleOTPSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formElement = e.target as HTMLFormElement;
-    const otpInput = formElement.querySelector('#otp') as HTMLInputElement;
+    const otpInput = formElement.querySelector('input[name="otp"]') as HTMLInputElement;
     const otpValue = otpInput?.value;
     
     if (!otpValue) return;
@@ -60,7 +58,7 @@ const Register = () => {
 
   const handleResendOTP = async () => {
     setLoading(true);
-    await signUp(formData.email, formData.password, formData.fullName);
+    await signInWithOtp(formData.email);
     setLoading(false);
   };
 
