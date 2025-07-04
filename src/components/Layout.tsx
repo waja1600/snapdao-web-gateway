@@ -16,7 +16,7 @@ export function Layout({ children, sidebar = true }: LayoutProps) {
   
   return (
     <div className={cn(
-      "flex min-h-screen bg-gray-50", 
+      "main-content flex bg-background", 
       language === 'ar' ? "flex-row-reverse" : ""
     )}>
       {sidebar && <Sidebar />}
@@ -25,7 +25,7 @@ export function Layout({ children, sidebar = true }: LayoutProps) {
         sidebar ? (language === 'ar' ? "md:mr-80" : "md:ml-80") : ""
       )}>
         <Header />
-        <div className="flex-1 p-6 bg-white min-h-screen">
+        <div className="flex-1 page-container">
           {children}
         </div>
       </main>

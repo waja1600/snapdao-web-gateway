@@ -63,12 +63,16 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				dao: {
-					blue: "#3B82F6",
-					green: "#10B981",
-					red: "#EF4444",
-					yellow: "#F59E0B",
-					gray: "#6B7280"
+				// GPO Brand Colors - proper HSL
+				gpo: {
+					primary: 'hsl(var(--primary-gpo))',
+					'primary-light': 'hsl(var(--primary-gpo-light))',
+					'primary-dark': 'hsl(var(--primary-gpo-dark))',
+					secondary: 'hsl(var(--secondary-gpo))',
+					accent: 'hsl(var(--accent-gpo))',
+					success: 'hsl(var(--success-gpo))',
+					warning: 'hsl(var(--warning-gpo))',
+					error: 'hsl(var(--error-gpo))'
 				}
 			},
 			borderRadius: {
