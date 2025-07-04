@@ -860,6 +860,56 @@ export type Database = {
           },
         ]
       }
+      freelancer_offers: {
+        Row: {
+          created_at: string
+          delivery_time: string
+          description: string
+          freelancer_id: string
+          group_id: string | null
+          id: string
+          price: number
+          skills_required: string[] | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          delivery_time: string
+          description: string
+          freelancer_id: string
+          group_id?: string | null
+          id?: string
+          price: number
+          skills_required?: string[] | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          delivery_time?: string
+          description?: string
+          freelancer_id?: string
+          group_id?: string | null
+          id?: string
+          price?: number
+          skills_required?: string[] | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "freelancer_offers_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       freelancers: {
         Row: {
           assessment_score: number | null
@@ -1004,46 +1054,64 @@ export type Database = {
       }
       groups: {
         Row: {
+          admins: string[] | null
           business_objective: string | null
           created_at: string | null
           creator_id: string | null
+          current_phase: string | null
           description: string | null
           id: string
           jurisdiction: string | null
           legal_framework: string | null
+          max_members: number | null
+          min_members: number | null
           name: string
+          round_number: number | null
           service_gateway: string
           status: string | null
           type: string
           updated_at: string | null
+          visibility: string | null
         }
         Insert: {
+          admins?: string[] | null
           business_objective?: string | null
           created_at?: string | null
           creator_id?: string | null
+          current_phase?: string | null
           description?: string | null
           id?: string
           jurisdiction?: string | null
           legal_framework?: string | null
+          max_members?: number | null
+          min_members?: number | null
           name: string
+          round_number?: number | null
           service_gateway: string
           status?: string | null
           type: string
           updated_at?: string | null
+          visibility?: string | null
         }
         Update: {
+          admins?: string[] | null
           business_objective?: string | null
           created_at?: string | null
           creator_id?: string | null
+          current_phase?: string | null
           description?: string | null
           id?: string
           jurisdiction?: string | null
           legal_framework?: string | null
+          max_members?: number | null
+          min_members?: number | null
           name?: string
+          round_number?: number | null
           service_gateway?: string
           status?: string | null
           type?: string
           updated_at?: string | null
+          visibility?: string | null
         }
         Relationships: []
       }
@@ -1070,30 +1138,45 @@ export type Database = {
       }
       profiles: {
         Row: {
+          address: string | null
+          bio: string | null
           company_name: string | null
           created_at: string | null
+          experience_years: number | null
           full_name: string | null
           id: string
           kyc_status: string | null
+          phone: string | null
           role: string | null
+          skills: string[] | null
           updated_at: string | null
         }
         Insert: {
+          address?: string | null
+          bio?: string | null
           company_name?: string | null
           created_at?: string | null
+          experience_years?: number | null
           full_name?: string | null
           id: string
           kyc_status?: string | null
+          phone?: string | null
           role?: string | null
+          skills?: string[] | null
           updated_at?: string | null
         }
         Update: {
+          address?: string | null
+          bio?: string | null
           company_name?: string | null
           created_at?: string | null
+          experience_years?: number | null
           full_name?: string | null
           id?: string
           kyc_status?: string | null
+          phone?: string | null
           role?: string | null
+          skills?: string[] | null
           updated_at?: string | null
         }
         Relationships: []
@@ -1679,6 +1762,59 @@ export type Database = {
         }
         Relationships: []
       }
+      supplier_offers: {
+        Row: {
+          company_name: string
+          created_at: string
+          delivery_terms: string | null
+          group_id: string | null
+          id: string
+          offer_description: string
+          payment_terms: string | null
+          price_details: Json | null
+          status: string
+          supplier_id: string
+          updated_at: string
+          valid_until: string | null
+        }
+        Insert: {
+          company_name: string
+          created_at?: string
+          delivery_terms?: string | null
+          group_id?: string | null
+          id?: string
+          offer_description: string
+          payment_terms?: string | null
+          price_details?: Json | null
+          status?: string
+          supplier_id: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Update: {
+          company_name?: string
+          created_at?: string
+          delivery_terms?: string | null
+          group_id?: string | null
+          id?: string
+          offer_description?: string
+          payment_terms?: string | null
+          price_details?: Json | null
+          status?: string
+          supplier_id?: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_offers_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       suppliers: {
         Row: {
           compliance_rating: number | null
@@ -2059,35 +2195,82 @@ export type Database = {
           choice: string
           created_at: string | null
           id: string
-          proposal_id: string | null
           reason: string | null
           user_id: string | null
+          voting_session_id: string | null
           weight: number | null
         }
         Insert: {
           choice: string
           created_at?: string | null
           id?: string
-          proposal_id?: string | null
           reason?: string | null
           user_id?: string | null
+          voting_session_id?: string | null
           weight?: number | null
         }
         Update: {
           choice?: string
           created_at?: string | null
           id?: string
-          proposal_id?: string | null
           reason?: string | null
           user_id?: string | null
+          voting_session_id?: string | null
           weight?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "votes_proposal_id_fkey"
-            columns: ["proposal_id"]
+            foreignKeyName: "votes_voting_session_id_fkey"
+            columns: ["voting_session_id"]
             isOneToOne: false
-            referencedRelation: "proposals"
+            referencedRelation: "voting_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      voting_sessions: {
+        Row: {
+          created_at: string
+          created_by: string
+          deadline: string | null
+          description: string | null
+          group_id: string | null
+          id: string
+          options: Json
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          deadline?: string | null
+          description?: string | null
+          group_id?: string | null
+          id?: string
+          options: Json
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          deadline?: string | null
+          description?: string | null
+          group_id?: string | null
+          id?: string
+          options?: Json
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voting_sessions_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
             referencedColumns: ["id"]
           },
         ]
