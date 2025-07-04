@@ -86,6 +86,53 @@ export type Database = {
           },
         ]
       }
+      admin_elections: {
+        Row: {
+          candidates: string[]
+          created_at: string
+          elected_admins: string[] | null
+          group_id: string
+          id: string
+          phase: string
+          status: string
+          title: string
+          updated_at: string
+          votes: Json | null
+        }
+        Insert: {
+          candidates?: string[]
+          created_at?: string
+          elected_admins?: string[] | null
+          group_id: string
+          id?: string
+          phase: string
+          status?: string
+          title: string
+          updated_at?: string
+          votes?: Json | null
+        }
+        Update: {
+          candidates?: string[]
+          created_at?: string
+          elected_admins?: string[] | null
+          group_id?: string
+          id?: string
+          phase?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          votes?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_elections_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admin_permissions: {
         Row: {
           action: string | null
@@ -328,6 +375,38 @@ export type Database = {
             columns: ["role_id"]
             isOneToOne: false
             referencedRelation: "admin_roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_votes: {
+        Row: {
+          created_at: string
+          election_id: string
+          id: string
+          selected_admins: string[]
+          voter_id: string
+        }
+        Insert: {
+          created_at?: string
+          election_id: string
+          id?: string
+          selected_admins: string[]
+          voter_id: string
+        }
+        Update: {
+          created_at?: string
+          election_id?: string
+          id?: string
+          selected_admins?: string[]
+          voter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_votes_election_id_fkey"
+            columns: ["election_id"]
+            isOneToOne: false
+            referencedRelation: "admin_elections"
             referencedColumns: ["id"]
           },
         ]
@@ -1017,12 +1096,90 @@ export type Database = {
           },
         ]
       }
+      group_actions_log: {
+        Row: {
+          action: string
+          admin_id: string
+          created_at: string
+          group_id: string
+          id: string
+          reason: string | null
+          target_user_id: string | null
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          created_at?: string
+          group_id: string
+          id?: string
+          reason?: string | null
+          target_user_id?: string | null
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          created_at?: string
+          group_id?: string
+          id?: string
+          reason?: string | null
+          target_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_actions_log_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_join_requests: {
+        Row: {
+          created_at: string
+          group_id: string
+          id: string
+          points_required: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          group_id: string
+          id?: string
+          points_required?: number
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          group_id?: string
+          id?: string
+          points_required?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_join_requests_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       group_members: {
         Row: {
           group_id: string | null
           id: string
           joined_at: string | null
+          points_held: number | null
           role: string | null
+          status: string | null
           user_id: string | null
           voting_weight: number | null
         }
@@ -1030,7 +1187,9 @@ export type Database = {
           group_id?: string | null
           id?: string
           joined_at?: string | null
+          points_held?: number | null
           role?: string | null
+          status?: string | null
           user_id?: string | null
           voting_weight?: number | null
         }
@@ -1038,7 +1197,9 @@ export type Database = {
           group_id?: string | null
           id?: string
           joined_at?: string | null
+          points_held?: number | null
           role?: string | null
+          status?: string | null
           user_id?: string | null
           voting_weight?: number | null
         }
@@ -1066,6 +1227,7 @@ export type Database = {
           max_members: number | null
           min_members: number | null
           name: string
+          points_required: number | null
           round_number: number | null
           service_gateway: string
           status: string | null
@@ -1086,6 +1248,7 @@ export type Database = {
           max_members?: number | null
           min_members?: number | null
           name: string
+          points_required?: number | null
           round_number?: number | null
           service_gateway: string
           status?: string | null
@@ -1106,6 +1269,7 @@ export type Database = {
           max_members?: number | null
           min_members?: number | null
           name?: string
+          points_required?: number | null
           round_number?: number | null
           service_gateway?: string
           status?: string | null

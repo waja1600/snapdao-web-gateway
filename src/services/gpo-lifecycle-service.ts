@@ -85,7 +85,13 @@ export class GPOLifecycleService {
       const { data: group, error } = await supabase
         .from('groups')
         .insert([{
-          ...groupData,
+          name: groupData.name,
+          description: groupData.description,
+          type: groupData.type,
+          service_gateway: 'gpo',
+          points_required: groupData.points_required,
+          min_members: groupData.min_members,
+          max_members: groupData.max_members,
           current_phase: 'pending_members',
           status: 'awaiting_activation',
           visibility: 'private',
