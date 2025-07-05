@@ -48,13 +48,18 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">
+          <div className="mb-8">
+            <div className="w-16 h-16 bg-gradient-to-br from-gpo-primary to-gpo-primary-light rounded-full mx-auto mb-4 flex items-center justify-center">
+              <span className="text-2xl font-bold text-white">GPO</span>
+            </div>
+          </div>
+          <h2 className="text-3xl font-bold text-foreground">
             {language === 'en' ? 'Welcome to GPO Platform' : 'مرحباً بك في منصة GPO'}
           </h2>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-muted-foreground">
             {language === 'en' 
               ? 'Sign in to your account or create a new one'
               : 'سجل دخولك أو أنشئ حساباً جديداً'
@@ -112,12 +117,12 @@ const Login = () => {
                       required
                     />
                   </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading 
-                      ? (language === 'en' ? 'Signing in...' : 'جاري تسجيل الدخول...')
-                      : (language === 'en' ? 'Sign In' : 'تسجيل الدخول')
-                    }
-                  </Button>
+                   <Button type="submit" className="w-full bg-gpo-primary hover:bg-gpo-primary-dark text-white" disabled={loading}>
+                     {loading 
+                       ? (language === 'en' ? 'Signing in...' : 'جاري تسجيل الدخول...')
+                       : (language === 'en' ? 'Sign In' : 'تسجيل الدخول')
+                     }
+                   </Button>
                 </form>
               </CardContent>
             </Card>
@@ -175,12 +180,12 @@ const Login = () => {
                       required
                     />
                   </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading 
-                      ? (language === 'en' ? 'Creating account...' : 'جاري إنشاء الحساب...')
-                      : (language === 'en' ? 'Create Account' : 'إنشاء حساب')
-                    }
-                  </Button>
+                   <Button type="submit" className="w-full bg-gpo-secondary hover:bg-gpo-secondary/90 text-white" disabled={loading}>
+                     {loading 
+                       ? (language === 'en' ? 'Creating account...' : 'جاري إنشاء الحساب...')
+                       : (language === 'en' ? 'Create Account' : 'إنشاء حساب')
+                     }
+                   </Button>
                 </form>
               </CardContent>
             </Card>
@@ -188,7 +193,7 @@ const Login = () => {
         </Tabs>
 
         <div className="text-center">
-          <Link to="/" className="text-blue-600 hover:text-blue-500">
+          <Link to="/" className="text-gpo-primary hover:text-gpo-primary-dark transition-colors">
             {language === 'en' ? 'Back to Home' : 'العودة للرئيسية'}
           </Link>
         </div>
