@@ -43,29 +43,32 @@ const Index = () => {
   };
   
   return (
-    <div className={`min-h-screen bg-white ${language === 'ar' ? 'text-right' : 'text-left'}`}>
+    <div className={`min-h-screen bg-background ${language === 'ar' ? 'text-right' : 'text-left'}`}>
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <header className="bg-card border-b border-border sticky top-0 z-50 shadow-[var(--shadow-card)]">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-blue-600">GPOsaas</h1>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-gpo-primary to-gpo-primary-light rounded-full flex items-center justify-center">
+              <span className="text-sm font-bold text-white">GPO</span>
+            </div>
+            <h1 className="text-2xl font-bold text-gpo-primary">GPOsaas</h1>
           </div>
           
           <div className="flex items-center gap-4">
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuLink className="px-3 py-2 text-sm font-medium hover:text-blue-600" href="/about">
+                  <NavigationMenuLink className="nav-item text-foreground hover:text-gpo-primary" href="/about">
                     {language === 'en' ? 'About Us' : 'من نحن'}
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuLink className="px-3 py-2 text-sm font-medium hover:text-blue-600" href="/how-it-works">
+                  <NavigationMenuLink className="nav-item text-foreground hover:text-gpo-primary" href="/how-it-works">
                     {language === 'en' ? 'How It Works' : 'كيف تعمل المنصة'}
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuLink className="px-3 py-2 text-sm font-medium hover:text-blue-600" href="/contact">
+                  <NavigationMenuLink className="nav-item text-foreground hover:text-gpo-primary" href="/contact">
                     {language === 'en' ? 'Support & Help' : 'الدعم والمساعدة'}
                   </NavigationMenuLink>
                 </NavigationMenuItem>
@@ -104,11 +107,15 @@ const Index = () => {
 
               <Button
                 variant="outline"
-                onClick={() => navigate("/register")}
+                onClick={() => navigate("/login")}
+                className="border-gpo-primary text-gpo-primary hover:bg-gpo-primary hover:text-white"
               >
                 {language === 'en' ? 'Login' : 'تسجيل الدخول'}
               </Button>
-              <Button onClick={() => navigate("/register")}>
+              <Button 
+                onClick={() => navigate("/register")}
+                className="bg-gpo-primary hover:bg-gpo-primary-dark text-white"
+              >
                 {language === 'en' ? 'Register' : 'التسجيل'}
               </Button>
             </div>
@@ -130,21 +137,30 @@ const Index = () => {
         <OpenDealsCards />
         
         {/* Call to Action Section */}
-        <section className="py-16 bg-blue-50">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold mb-6">
+        <section className="section-spacing bg-gradient-to-br from-gpo-primary/5 to-gpo-secondary/5">
+          <div className="container-responsive text-center">
+            <h2 className="text-3xl font-bold mb-6 text-foreground">
               {language === 'en' ? 'Ready to Get Started?' : 'هل أنت مستعد للبدء؟'}
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto mb-8">
+            <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
               {language === 'en' 
                 ? 'Join thousands of businesses and professionals already using our platform to streamline their collaboration.'
                 : 'انضم إلى آلاف الشركات والمهنيين الذين يستخدمون منصتنا بالفعل لتبسيط تعاونهم.'}
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button size="lg" onClick={() => navigate("/register")}>
+              <Button 
+                size="lg" 
+                onClick={() => navigate("/register")}
+                className="bg-gpo-primary hover:bg-gpo-primary-dark text-white shadow-[var(--shadow-gpo)]"
+              >
                 {language === 'en' ? 'Register Now' : 'سجل الآن'}
               </Button>
-              <Button size="lg" variant="outline" onClick={() => navigate("/how-it-works")}>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                onClick={() => navigate("/how-it-works")}
+                className="border-gpo-primary text-gpo-primary hover:bg-gpo-primary hover:text-white"
+              >
                 {language === 'en' ? 'Learn More' : 'اعرف المزيد'}
               </Button>
             </div>

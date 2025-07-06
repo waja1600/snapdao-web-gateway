@@ -20,11 +20,11 @@ export const SearchSection = () => {
   };
 
   return (
-    <section className="py-12 px-4 bg-gray-50">
-      <div className="max-w-6xl mx-auto">
-        <Card>
+    <section className="section-spacing px-4 bg-gradient-to-br from-muted/30 to-background">
+      <div className="container-responsive">
+        <Card className="card shadow-[var(--shadow-elevated)]">
           <CardContent className="p-6">
-            <h3 className="text-xl font-semibold mb-6 text-center">
+            <h3 className="text-xl font-semibold mb-6 text-center text-foreground">
               {language === 'en' ? 'Find Open Opportunities' : 'ابحث عن الفرص المفتوحة'}
             </h3>
             
@@ -74,7 +74,10 @@ export const SearchSection = () => {
                 </SelectContent>
               </Select>
 
-              <Button onClick={handleSearch} className="w-full">
+              <Button 
+                onClick={handleSearch} 
+                className="w-full bg-gpo-primary hover:bg-gpo-primary-dark text-white"
+              >
                 <Search className="w-4 h-4 mr-2" />
                 {language === 'en' ? 'Search' : 'بحث'}
               </Button>
