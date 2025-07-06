@@ -247,15 +247,6 @@
     @apply container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl;
   }
   
-  /* Main content area improvements */
-  .main-content {
-    @apply min-h-screen w-full overflow-x-hidden;
-  }
-  
-  .page-container {
-    @apply container-responsive section-spacing;
-  }
-  
   /* Role Selector Component */
   .role-selector {
     @apply flex items-center gap-2 p-3 rounded-lg border border-border hover:bg-accent transition-colors duration-200 min-h-[44px];

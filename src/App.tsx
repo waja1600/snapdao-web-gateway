@@ -223,15 +223,14 @@ function App() {
               
               <Route path="*" element={<NotFound />} />
             </Routes>
-            
-            <Toaster />
-            
-            {/* PWA Install Button */}
-            <PWAInstaller />
-            
-            {/* Quick Navigation */}
-            <QuickNavigation />
           </Router>
+          <Toaster />
+          
+          {/* PWA Install Button */}
+          <PWAInstaller />
+          
+          {/* Quick Navigation */}
+          <QuickNavigation />
         </DAOProvider>
       </AuthProvider>
     </LanguageProvider>

@@ -94,42 +94,42 @@ const Dashboard = () => {
       description: language === 'en' ? 'Join or create buying groups' : 'انضم أو أنشئ مجموعات شراء',
       icon: ShoppingCart,
       path: '/cooperative-buying',
-      color: 'bg-gpo-primary'
+      color: 'bg-blue-500'
     },
     {
       title: language === 'en' ? 'Cooperative Marketing' : 'التسويق التعاوني',
       description: language === 'en' ? 'Collaborative marketing campaigns' : 'حملات التسويق التعاونية',
       icon: Megaphone,
       path: '/cooperative-marketing',
-      color: 'bg-gpo-success'
+      color: 'bg-green-500'
     },
     {
       title: language === 'en' ? 'Company Formation' : 'تأسيس الشركات',
       description: language === 'en' ? 'Start your business venture' : 'ابدأ مشروعك التجاري',
       icon: Building2,
       path: '/company-formation',
-      color: 'bg-gpo-secondary'
+      color: 'bg-purple-500'
     },
     {
       title: language === 'en' ? 'Find Suppliers' : 'البحث عن موردين',
       description: language === 'en' ? 'Connect with verified suppliers' : 'تواصل مع موردين معتمدين',
       icon: Users,
       path: '/supplier-sourcing',
-      color: 'bg-gpo-accent'
+      color: 'bg-orange-500'
     },
     {
       title: language === 'en' ? 'Hire Freelancers' : 'توظيف المستقلين',
       description: language === 'en' ? 'Find skilled professionals' : 'ابحث عن محترفين مهرة',
       icon: UserCheck,
       path: '/freelancer-management',
-      color: 'bg-gpo-primary-light'
+      color: 'bg-indigo-500'
     },
     {
       title: language === 'en' ? 'Arbitration' : 'التحكيم',
       description: language === 'en' ? 'Resolve disputes' : 'حل النزاعات',
       icon: Gavel,
       path: '/arbitration-ipfs',
-      color: 'bg-gpo-error'
+      color: 'bg-red-500'
     }
   ];
 
@@ -153,7 +153,7 @@ const Dashboard = () => {
     <Layout>
       <div className="space-y-6">
         {/* Welcome Section */}
-        <div className="bg-gradient-to-r from-gpo-primary to-gpo-secondary text-white p-6 rounded-lg shadow-[var(--shadow-elevated)]">
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-lg">
           <h1 className="text-2xl font-bold mb-2">
             {language === 'en' 
               ? `Welcome back, ${profile?.full_name || 'User'}!`
@@ -168,7 +168,7 @@ const Dashboard = () => {
           </p>
           {profile?.kyc_status === 'pending' && (
             <div className="mt-4">
-              <Badge variant="secondary" className="bg-gpo-warning text-white">
+              <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
                 {language === 'en' ? 'KYC Verification Pending' : 'التحقق من الهوية معلق'}
               </Badge>
             </div>
@@ -176,33 +176,33 @@ const Dashboard = () => {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex space-x-1 border-b border-border">
+        <div className="flex space-x-1 border-b">
           <button
             onClick={() => setActiveTab('overview')}
-            className={`px-4 py-2 font-medium rounded-t-lg transition-colors ${
+            className={`px-4 py-2 font-medium rounded-t-lg ${
               activeTab === 'overview' 
-                ? 'bg-gpo-primary/10 text-gpo-primary border-b-2 border-gpo-primary' 
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                ? 'bg-blue-100 text-blue-700 border-b-2 border-blue-700' 
+                : 'text-gray-600 hover:text-gray-800'
             }`}
           >
             {language === 'en' ? 'Overview' : 'نظرة عامة'}
           </button>
           <button
             onClick={() => setActiveTab('projects')}
-            className={`px-4 py-2 font-medium rounded-t-lg transition-colors ${
+            className={`px-4 py-2 font-medium rounded-t-lg ${
               activeTab === 'projects' 
-                ? 'bg-gpo-primary/10 text-gpo-primary border-b-2 border-gpo-primary' 
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                ? 'bg-blue-100 text-blue-700 border-b-2 border-blue-700' 
+                : 'text-gray-600 hover:text-gray-800'
             }`}
           >
             {language === 'en' ? 'Projects' : 'المشاريع'}
           </button>
           <button
             onClick={() => setActiveTab('activities')}
-            className={`px-4 py-2 font-medium rounded-t-lg transition-colors ${
+            className={`px-4 py-2 font-medium rounded-t-lg ${
               activeTab === 'activities' 
-                ? 'bg-gpo-primary/10 text-gpo-primary border-b-2 border-gpo-primary' 
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                ? 'bg-blue-100 text-blue-700 border-b-2 border-blue-700' 
+                : 'text-gray-600 hover:text-gray-800'
             }`}
           >
             {language === 'en' ? 'Activities' : 'الأنشطة'}
@@ -270,11 +270,11 @@ const Dashboard = () => {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {quickActions.map((action, index) => (
-                  <Card key={index} className="card hover:shadow-[var(--shadow-elevated)] transition-all cursor-pointer"
+                  <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer"
                         onClick={() => navigate(action.path)}>
                     <CardHeader>
                       <CardTitle className="flex items-center text-lg">
-                        <div className={`p-2 rounded-lg ${action.color} text-white mr-3 shadow-sm`}>
+                        <div className={`p-2 rounded-lg ${action.color} text-white mr-3`}>
                           <action.icon className="h-5 w-5" />
                         </div>
                         {action.title}
@@ -282,10 +282,7 @@ const Dashboard = () => {
                       <CardDescription>{action.description}</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <Button 
-                        variant="outline" 
-                        className="w-full border-gpo-primary text-gpo-primary hover:bg-gpo-primary hover:text-white"
-                      >
+                      <Button variant="outline" className="w-full">
                         {language === 'en' ? 'Get Started' : 'ابدأ الآن'}
                       </Button>
                     </CardContent>
@@ -308,35 +305,35 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/30 transition-colors">
-                  <div className="w-2 h-2 bg-gpo-success rounded-full"></div>
+                <div className="flex items-center space-x-3 p-3 border rounded-lg">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   <div className="flex-1">
-                    <p className="font-medium text-foreground">
+                    <p className="font-medium">
                       {language === 'en' ? 'New project created' : 'تم إنشاء مشروع جديد'}
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-gray-500">
                       {language === 'en' ? '2 hours ago' : 'منذ ساعتين'}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/30 transition-colors">
-                  <div className="w-2 h-2 bg-gpo-primary rounded-full"></div>
+                <div className="flex items-center space-x-3 p-3 border rounded-lg">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   <div className="flex-1">
-                    <p className="font-medium text-foreground">
+                    <p className="font-medium">
                       {language === 'en' ? 'Contract signed' : 'تم توقيع العقد'}
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-gray-500">
                       {language === 'en' ? '1 day ago' : 'منذ يوم واحد'}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/30 transition-colors">
-                  <div className="w-2 h-2 bg-gpo-warning rounded-full"></div>
+                <div className="flex items-center space-x-3 p-3 border rounded-lg">
+                  <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
                   <div className="flex-1">
-                    <p className="font-medium text-foreground">
+                    <p className="font-medium">
                       {language === 'en' ? 'Vote pending' : 'تصويت معلق'}
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-gray-500">
                       {language === 'en' ? '3 days ago' : 'منذ 3 أيام'}
                     </p>
                   </div>

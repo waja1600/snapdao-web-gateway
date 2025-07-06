@@ -27,7 +27,7 @@ export const ServiceCards = () => {
         ? 'Join groups to buy products or services in bulk and get better deals.'
         : 'انضم إلى مجموعات لشراء منتجات أو خدمات بكميات واحصل على صفقات أفضل.',
       route: "/cooperative-buying",
-      color: "bg-gpo-primary"
+      color: "bg-blue-500"
     },
     {
       icon: Globe,
@@ -36,7 +36,7 @@ export const ServiceCards = () => {
         ? 'Collaborate with others to create smart marketing campaigns.'
         : 'تعاون مع آخرين لإنشاء حملات تسويقية ذكية.',
       route: "/cooperative-marketing",
-      color: "bg-gpo-success"
+      color: "bg-green-500"
     },
     {
       icon: Users,
@@ -45,7 +45,7 @@ export const ServiceCards = () => {
         ? 'Showcase your skills or participate in collaborative tasks.'
         : 'اعرض مهاراتك أو شارك في مهام تعاونية.',
       route: "/freelancers",
-      color: "bg-gpo-secondary"
+      color: "bg-purple-500"
     },
     {
       icon: Truck,
@@ -54,33 +54,33 @@ export const ServiceCards = () => {
         ? 'Submit your offers to groups ready for negotiation.'
         : 'قدم عروضك للمجموعات الجاهزة للتفاوض.',
       route: "/suppliers",
-      color: "bg-gpo-accent"
+      color: "bg-orange-500"
     }
   ];
 
   return (
-    <section className="section-spacing px-4">
-      <div className="container-responsive">
-        <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
+    <section className="py-16 px-4">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-3xl font-bold text-center mb-12">
           {language === 'en' ? 'Main Service Gateways' : 'البوابات الأساسية للخدمات'}
         </h2>
         
-        <div className="grid-responsive">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((service, index) => (
-            <Card key={index} className="card text-center hover:shadow-[var(--shadow-elevated)] transition-all cursor-pointer">
+            <Card key={index} className="text-center hover:shadow-lg transition-shadow">
               <CardHeader>
-                <div className={`w-16 h-16 ${service.color} rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm`}>
+                <div className={`w-16 h-16 ${service.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
                   <service.icon className="w-8 h-8 text-white" />
                 </div>
-                <CardTitle className="text-lg text-foreground">{service.title}</CardTitle>
+                <CardTitle className="text-lg">{service.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="mb-4 min-h-[60px] text-muted-foreground">
+                <CardDescription className="mb-4 min-h-[60px]">
                   {service.description}
                 </CardDescription>
                 <Button 
                   variant="outline" 
-                  className="w-full border-gpo-primary text-gpo-primary hover:bg-gpo-primary hover:text-white"
+                  className="w-full"
                   onClick={() => handleServiceClick(service.route)}
                 >
                   {language === 'en' ? 'Start' : 'ابدأ'}

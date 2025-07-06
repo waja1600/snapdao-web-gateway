@@ -18,22 +18,22 @@ export const HeroSection = () => {
   };
 
   return (
-    <section className="relative section-spacing px-4 text-center bg-gradient-to-br from-gpo-primary/5 to-gpo-secondary/10">
-      <div className="container-responsive">
+    <section className="relative py-20 px-4 text-center">
+      <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <div className="w-full h-64 bg-gradient-to-r from-gpo-primary/10 to-gpo-secondary/10 rounded-lg flex items-center justify-center mb-8 border border-border shadow-[var(--shadow-card)]">
-            <div className="text-6xl animate-bounce">🤝</div>
+          <div className="w-full h-64 bg-gradient-to-r from-blue-100 to-green-100 rounded-lg flex items-center justify-center mb-8">
+            <div className="text-6xl">🤝</div>
           </div>
         </div>
         
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-foreground">
+        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gray-800">
           {language === 'en' 
             ? 'Smart Contracting Platform Between Buyers, Suppliers & Freelancers'
             : 'منصة التعاقد الذكي بين المشترين والموردين والمستقلين'
           }
         </h1>
         
-        <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
           {language === 'en'
             ? 'Join groups, negotiate better deals, and connect with trusted suppliers and skilled freelancers in a secure environment.'
             : 'انضم إلى المجموعات، تفاوض على صفقات أفضل، وتواصل مع موردين موثوقين ومستقلين ماهرين في بيئة آمنة.'
@@ -42,7 +42,7 @@ export const HeroSection = () => {
         
         <Button 
           size="lg" 
-          className="text-lg px-8 py-4 bg-gpo-primary hover:bg-gpo-primary-dark text-white shadow-[var(--shadow-gpo)]"
+          className="text-lg px-8 py-4 bg-blue-600 hover:bg-blue-700"
           onClick={handleStartNow}
         >
           {language === 'en' ? 'Start Now' : 'ابدأ الآن'}

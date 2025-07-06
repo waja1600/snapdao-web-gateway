@@ -71,7 +71,7 @@ const Register = () => {
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-gpo-primary/5 to-gpo-secondary/5 py-12 px-4 sm:px-6 lg:px-8 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
+    <div className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 to-secondary/5 py-12 px-4 sm:px-6 lg:px-8 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-foreground">
@@ -88,7 +88,7 @@ const Register = () => {
           </p>
         </div>
 
-        <Card className="shadow-[var(--shadow-elevated)] border border-border bg-card/95 backdrop-blur-sm">
+        <Card className="shadow-lg border-0 bg-card/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>
@@ -136,7 +136,7 @@ const Register = () => {
 
         {step === 'register' && (
           <div className="text-center">
-            <Link to="/login" className="text-gpo-primary hover:text-gpo-primary-dark transition-colors font-medium">
+            <Link to="/login" className="text-primary hover:text-primary/80 transition-colors">
               {language === 'en' ? 'Already have an account? Sign in' : 'لديك حساب بالفعل؟ سجل دخولك'}
             </Link>
           </div>
