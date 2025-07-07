@@ -1,5 +1,5 @@
 
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { Sidebar } from "./Sidebar";
@@ -16,7 +16,7 @@ export function Layout({ children, sidebar = true }: LayoutProps) {
   
   return (
     <div className={cn(
-      "flex min-h-screen bg-gray-50", 
+      "flex min-h-screen bg-background", 
       language === 'ar' ? "flex-row-reverse" : ""
     )}>
       {sidebar && <Sidebar />}
@@ -25,8 +25,10 @@ export function Layout({ children, sidebar = true }: LayoutProps) {
         sidebar ? (language === 'ar' ? "md:mr-80" : "md:ml-80") : ""
       )}>
         <Header />
-        <div className="flex-1 p-6 bg-white min-h-screen">
-          {children}
+        <div className="flex-1 bg-background min-h-screen">
+          <div className="container-responsive section-spacing">
+            {children}
+          </div>
         </div>
       </main>
       <MCPAssistant />

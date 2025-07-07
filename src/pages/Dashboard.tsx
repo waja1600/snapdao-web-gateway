@@ -79,7 +79,6 @@ const Dashboard = () => {
   const fetchStats = async () => {
     if (!user) return;
 
-    // Mock stats for demonstration
     setStats({
       totalGroups: 3,
       activeContracts: 5,
@@ -94,14 +93,14 @@ const Dashboard = () => {
       description: language === 'en' ? 'Join or create buying groups' : 'انضم أو أنشئ مجموعات شراء',
       icon: ShoppingCart,
       path: '/cooperative-buying',
-      color: 'bg-blue-500'
+      color: 'bg-primary'
     },
     {
       title: language === 'en' ? 'Cooperative Marketing' : 'التسويق التعاوني',
       description: language === 'en' ? 'Collaborative marketing campaigns' : 'حملات التسويق التعاونية',
       icon: Megaphone,
       path: '/cooperative-marketing',
-      color: 'bg-green-500'
+      color: 'bg-dao-green'
     },
     {
       title: language === 'en' ? 'Company Formation' : 'تأسيس الشركات',
@@ -129,7 +128,7 @@ const Dashboard = () => {
       description: language === 'en' ? 'Resolve disputes' : 'حل النزاعات',
       icon: Gavel,
       path: '/arbitration-ipfs',
-      color: 'bg-red-500'
+      color: 'bg-dao-red'
     }
   ];
 
@@ -137,7 +136,7 @@ const Dashboard = () => {
     return (
       <Layout>
         <div className="flex items-center justify-center h-64">
-          <div className="text-lg">
+          <div className="text-lg text-muted-foreground">
             {language === 'en' ? 'Loading...' : 'جاري التحميل...'}
           </div>
         </div>
@@ -151,24 +150,24 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="space-y-6">
+      <div className="space-y-8">
         {/* Welcome Section */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-lg">
-          <h1 className="text-2xl font-bold mb-2">
+        <div className="gradient-hero text-primary-foreground p-8 rounded-xl shadow-lg">
+          <h1 className="text-3xl font-bold mb-3">
             {language === 'en' 
               ? `Welcome back, ${profile?.full_name || 'User'}!`
               : `مرحباً بعودتك، ${profile?.full_name || 'المستخدم'}!`
             }
           </h1>
-          <p className="opacity-90">
+          <p className="text-lg opacity-90 max-w-2xl">
             {language === 'en' 
-              ? 'Manage your groups, contracts, and business activities'
-              : 'إدارة مجموعاتك وعقودك وأنشطتك التجارية'
+              ? 'Manage your groups, contracts, and business activities from your centralized dashboard'
+              : 'إدارة مجموعاتك وعقودك وأنشطتك التجارية من لوحة التحكم المركزية'
             }
           </p>
           {profile?.kyc_status === 'pending' && (
             <div className="mt-4">
-              <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+              <Badge variant="secondary" className="bg-dao-yellow/20 text-dao-yellow border-dao-yellow">
                 {language === 'en' ? 'KYC Verification Pending' : 'التحقق من الهوية معلق'}
               </Badge>
             </div>
@@ -176,172 +175,159 @@ const Dashboard = () => {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex space-x-1 border-b">
-          <button
-            onClick={() => setActiveTab('overview')}
-            className={`px-4 py-2 font-medium rounded-t-lg ${
-              activeTab === 'overview' 
-                ? 'bg-blue-100 text-blue-700 border-b-2 border-blue-700' 
-                : 'text-gray-600 hover:text-gray-800'
-            }`}
-          >
-            {language === 'en' ? 'Overview' : 'نظرة عامة'}
-          </button>
-          <button
-            onClick={() => setActiveTab('projects')}
-            className={`px-4 py-2 font-medium rounded-t-lg ${
-              activeTab === 'projects' 
-                ? 'bg-blue-100 text-blue-700 border-b-2 border-blue-700' 
-                : 'text-gray-600 hover:text-gray-800'
-            }`}
-          >
-            {language === 'en' ? 'Projects' : 'المشاريع'}
-          </button>
-          <button
-            onClick={() => setActiveTab('activities')}
-            className={`px-4 py-2 font-medium rounded-t-lg ${
-              activeTab === 'activities' 
-                ? 'bg-blue-100 text-blue-700 border-b-2 border-blue-700' 
-                : 'text-gray-600 hover:text-gray-800'
-            }`}
-          >
-            {language === 'en' ? 'Activities' : 'الأنشطة'}
-          </button>
+        <div className="flex space-x-1 border-b border-border bg-card rounded-t-lg">
+          {[
+            { key: 'overview', label: language === 'en' ? 'Overview' : 'نظرة عامة' },
+            { key: 'projects', label: language === 'en' ? 'Projects' : 'المشاريع' },
+            { key: 'activities', label: language === 'en' ? 'Activities' : 'الأنشطة' }
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`px-6 py-3 font-medium rounded-t-lg transition-colors ${
+                activeTab === tab.key 
+                  ? 'bg-primary text-primary-foreground border-b-2 border-primary' 
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
         {/* Tab Content */}
-        {activeTab === 'overview' && (
-          <>
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    {language === 'en' ? 'My Groups' : 'مجموعاتي'}
-                  </CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.totalGroups}</div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    {language === 'en' ? 'Active Contracts' : 'العقود النشطة'}
-                  </CardTitle>
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.activeContracts}</div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    {language === 'en' ? 'Pending Votes' : 'التصويتات المعلقة'}
-                  </CardTitle>
-                  <Vote className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.pendingVotes}</div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    {language === 'en' ? 'My Proposals' : 'مقترحاتي'}
-                  </CardTitle>
-                  <Plus className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.myProposals}</div>
-                </CardContent>
-              </Card>
-            </div>
+        <div className="bg-card rounded-b-lg rounded-tr-lg shadow-sm">
+          {activeTab === 'overview' && (
+            <div className="p-6 space-y-8">
+              {/* Stats Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <Card className="card-hover">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                      {language === 'en' ? 'My Groups' : 'مجموعاتي'}
+                    </CardTitle>
+                    <Users className="h-5 w-5 text-primary" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-primary">{stats.totalGroups}</div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="card-hover">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                      {language === 'en' ? 'Active Contracts' : 'العقود النشطة'}
+                    </CardTitle>
+                    <FileText className="h-5 w-5 text-dao-green" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-dao-green">{stats.activeContracts}</div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="card-hover">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                      {language === 'en' ? 'Pending Votes' : 'التصويتات المعلقة'}
+                    </CardTitle>
+                    <Vote className="h-5 w-5 text-dao-yellow" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-dao-yellow">{stats.pendingVotes}</div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="card-hover">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                      {language === 'en' ? 'My Proposals' : 'مقترحاتي'}
+                    </CardTitle>
+                    <Plus className="h-5 w-5 text-purple-500" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-purple-500">{stats.myProposals}</div>
+                  </CardContent>
+                </Card>
+              </div>
 
-            {/* Quick Actions */}
-            <div>
-              <h2 className="text-xl font-semibold mb-4">
-                {language === 'en' ? 'Quick Actions' : 'الإجراءات السريعة'}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {quickActions.map((action, index) => (
-                  <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer"
-                        onClick={() => navigate(action.path)}>
-                    <CardHeader>
-                      <CardTitle className="flex items-center text-lg">
-                        <div className={`p-2 rounded-lg ${action.color} text-white mr-3`}>
-                          <action.icon className="h-5 w-5" />
+              {/* Quick Actions */}
+              <div>
+                <h2 className="text-2xl font-semibold mb-6 text-foreground">
+                  {language === 'en' ? 'Quick Actions' : 'الإجراءات السريعة'}
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {quickActions.map((action, index) => (
+                    <Card key={index} className="card-hover cursor-pointer border-2 hover:border-primary/20"
+                          onClick={() => navigate(action.path)}>
+                      <CardHeader>
+                        <CardTitle className="flex items-center text-lg">
+                          <div className={`p-3 rounded-xl ${action.color} text-white mr-4 shadow-md`}>
+                            <action.icon className="h-6 w-6" />
+                          </div>
+                          <span className="text-foreground">{action.title}</span>
+                        </CardTitle>
+                        <CardDescription className="text-muted-foreground">{action.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <Button className="w-full gradient-primary">
+                          {language === 'en' ? 'Get Started' : 'ابدأ الآن'}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'projects' && (
+            <div className="p-6">
+              <ProjectsOverview />
+            </div>
+          )}
+
+          {activeTab === 'activities' && (
+            <div className="p-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center text-foreground">
+                    <Activity className="h-6 w-6 mr-3 text-primary" />
+                    {language === 'en' ? 'Recent Activities' : 'الأنشطة الحديثة'}
+                  </CardTitle>
+                </CardContent>
+                <CardContent>
+                  <div className="space-y-4">
+                    {[
+                      {
+                        text: language === 'en' ? 'New project created' : 'تم إنشاء مشروع جديد',
+                        time: language === 'en' ? '2 hours ago' : 'منذ ساعتين',
+                        color: 'bg-dao-green'
+                      },
+                      {
+                        text: language === 'en' ? 'Contract signed' : 'تم توقيع العقد',
+                        time: language === 'en' ? '1 day ago' : 'منذ يوم واحد',
+                        color: 'bg-primary'
+                      },
+                      {
+                        text: language === 'en' ? 'Vote pending' : 'تصويت معلق',
+                        time: language === 'en' ? '3 days ago' : 'منذ 3 أيام',
+                        color: 'bg-dao-yellow'
+                      }
+                    ].map((activity, idx) => (
+                      <div key={idx} className="flex items-center space-x-4 p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
+                        <div className={`w-3 h-3 ${activity.color} rounded-full shadow-sm`}></div>
+                        <div className="flex-1">
+                          <p className="font-medium text-foreground">{activity.text}</p>
+                          <p className="text-sm text-muted-foreground">{activity.time}</p>
                         </div>
-                        {action.title}
-                      </CardTitle>
-                      <CardDescription>{action.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Button variant="outline" className="w-full">
-                        {language === 'en' ? 'Get Started' : 'ابدأ الآن'}
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </>
-        )}
-
-        {activeTab === 'projects' && <ProjectsOverview />}
-
-        {activeTab === 'activities' && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Activity className="h-5 w-5 mr-2" />
-                {language === 'en' ? 'Recent Activities' : 'الأنشطة الحديثة'}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3 p-3 border rounded-lg">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <div className="flex-1">
-                    <p className="font-medium">
-                      {language === 'en' ? 'New project created' : 'تم إنشاء مشروع جديد'}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {language === 'en' ? '2 hours ago' : 'منذ ساعتين'}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-3 p-3 border rounded-lg">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  <div className="flex-1">
-                    <p className="font-medium">
-                      {language === 'en' ? 'Contract signed' : 'تم توقيع العقد'}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {language === 'en' ? '1 day ago' : 'منذ يوم واحد'}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-3 p-3 border rounded-lg">
-                  <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                  <div className="flex-1">
-                    <p className="font-medium">
-                      {language === 'en' ? 'Vote pending' : 'تصويت معلق'}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {language === 'en' ? '3 days ago' : 'منذ 3 أيام'}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+          )}
+        </div>
       </div>
     </Layout>
   );
