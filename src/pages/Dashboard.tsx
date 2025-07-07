@@ -294,7 +294,7 @@ const Dashboard = () => {
                     <Activity className="h-6 w-6 mr-3 text-primary" />
                     {language === 'en' ? 'Recent Activities' : 'الأنشطة الحديثة'}
                   </CardTitle>
-                </CardContent>
+                </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {[
