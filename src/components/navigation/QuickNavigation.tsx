@@ -1,29 +1,14 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { PawPrint, Home, Users, Building, Gavel, Vote, DollarSign, Settings, User } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { PawPrint, Home, Users, Building, Gavel, Vote, DollarSign, Settings, User, ChevronDown, ChevronRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link, useLocation } from 'react-router-dom';
 import { RoleSelector } from '@/components/dashboard/RoleSelector';
-
-/**
- * Quick Navigation Component
- * 
- * Features:
- * - Floating navigation button accessible from all pages
- * - Slide-out menu with all major app sections
- * - Role selector for quick user type switching
- * - Current page indication
- * - Responsive design optimized for mobile
- * 
- * Architecture:
- * - Uses Sheet component for slide-out navigation
- * - Integrates with existing routing system
- * - Maintains state for menu open/close
- * - Provides visual feedback for current location
- */
 
 interface NavigationItem {
   label: string;
@@ -34,154 +19,204 @@ interface NavigationItem {
   badgeAr?: string;
 }
 
+interface NavigationSection {
+  title: string;
+  titleAr: string;
+  items: NavigationItem[];
+  defaultOpen?: boolean;
+}
+
 export const QuickNavigation: React.FC = () => {
   const { language } = useLanguage();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    main: true,
+    services: true,
+    governance: false,
+    management: false
+  });
 
-  // Main navigation items grouped by category
-  const mainNavigation: NavigationItem[] = [
+  const navigationSections: NavigationSection[] = [
     {
-      label: 'Dashboard',
-      labelAr: 'لوحة القيادة',
-      href: '/dashboard',
-      icon: Home,
+      title: "Main",
+      titleAr: "الرئيسية",
+      items: [
+        {
+          label: 'Dashboard',
+          labelAr: 'لوحة القيادة',
+          href: '/dashboard',
+          icon: Home,
+        },
+        {
+          label: 'My Groups',
+          labelAr: 'مجموعاتي',
+          href: '/groups',
+          icon: Users,
+        },
+        {
+          label: 'Create Group',
+          labelAr: 'إنشاء مجموعة',
+          href: '/create-group',
+          icon: Building,
+        },
+      ],
+      defaultOpen: true
     },
     {
-      label: 'My Groups',
-      labelAr: 'مجموعاتي',
-      href: '/groups',
-      icon: Users,
+      title: "Services",
+      titleAr: "الخدمات",
+      items: [
+        {
+          label: 'Group Buying',
+          labelAr: 'الشراء الجماعي',
+          href: '/cooperative-buying',
+          icon: DollarSign,
+        },
+        {
+          label: 'Cooperative Marketing',
+          labelAr: 'التسويق التعاوني',
+          href: '/cooperative-marketing',
+          icon: Users,
+        },
+        {
+          label: 'Company Formation',
+          labelAr: 'تأسيس الشركات',
+          href: '/company-formation',
+          icon: Building,
+        },
+        {
+          label: 'Investment Gateway',
+          labelAr: 'بوابة الاستثمار',
+          href: '/investment-gateway',
+          icon: DollarSign,
+          badge: 'New',
+          badgeAr: 'جديد',
+        },
+      ],
+      defaultOpen: true
     },
     {
-      label: 'Create Group',
-      labelAr: 'إنشاء مجموعة',
-      href: '/create-group',
-      icon: Building,
-    },
-  ];
-
-  const servicesNavigation: NavigationItem[] = [
-    {
-      label: 'Group Buying',
-      labelAr: 'الشراء الجماعي',
-      href: '/cooperative-buying',
-      icon: DollarSign,
-    },
-    {
-      label: 'Cooperative Marketing',
-      labelAr: 'التسويق التعاوني',
-      href: '/cooperative-marketing',
-      icon: Users,
-    },
-    {
-      label: 'Company Formation',
-      labelAr: 'تأسيس الشركات',
-      href: '/company-formation',
-      icon: Building,
+      title: "Governance",
+      titleAr: "الحكم",
+      items: [
+        {
+          label: 'Proposals',
+          labelAr: 'المقترحات',
+          href: '/proposals',
+          icon: Vote,
+        },
+        {
+          label: 'Voting',
+          labelAr: 'التصويت',
+          href: '/voting',
+          icon: Vote,
+        },
+        {
+          label: 'Arbitration',
+          labelAr: 'التحكيم',
+          href: '/arbitration',
+          icon: Gavel,
+        },
+      ]
     },
     {
-      label: 'Investment Gateway',
-      labelAr: 'بوابة الاستثمار',
-      href: '/investment-gateway',
-      icon: DollarSign,
-      badge: 'New',
-      badgeAr: 'جديد',
-    },
-  ];
-
-  const governanceNavigation: NavigationItem[] = [
-    {
-      label: 'Proposals',
-      labelAr: 'المقترحات',
-      href: '/proposals',
-      icon: Vote,
-    },
-    {
-      label: 'Voting',
-      labelAr: 'التصويت',
-      href: '/voting',
-      icon: Vote,
-    },
-    {
-      label: 'Arbitration',
-      labelAr: 'التحكيم',
-      href: '/arbitration',
-      icon: Gavel,
-    },
-  ];
-
-  const managementNavigation: NavigationItem[] = [
-    {
-      label: 'Suppliers & Freelancers',
-      labelAr: 'الموردين والمستقلين',
-      href: '/supplier-sourcing',
-      icon: Users,
-    },
-    {
-      label: 'Invoices',
-      labelAr: 'الفواتير',
-      href: '/invoices',
-      icon: DollarSign,
-    },
-    {
-      label: 'Expenses',
-      labelAr: 'المصروفات',
-      href: '/expenses',
-      icon: DollarSign,
-    },
+      title: "Management",
+      titleAr: "الإدارة",
+      items: [
+        {
+          label: 'Suppliers & Freelancers',
+          labelAr: 'الموردين والمستقلين',
+          href: '/supplier-sourcing',
+          icon: Users,
+        },
+        {
+          label: 'Invoices',
+          labelAr: 'الفواتير',
+          href: '/invoices',
+          icon: DollarSign,
+        },
+        {
+          label: 'Expenses',
+          labelAr: 'المصروفات',
+          href: '/expenses',
+          icon: DollarSign,
+        },
+      ]
+    }
   ];
 
   const isActiveRoute = (href: string) => {
     return location.pathname === href;
   };
 
+  const toggleSection = (sectionKey: string) => {
+    setOpenSections(prev => ({
+      ...prev,
+      [sectionKey]: !prev[sectionKey]
+    }));
+  };
+
   const NavigationSection: React.FC<{
-    title: string;
-    titleAr: string;
-    items: NavigationItem[];
-  }> = ({ title, titleAr, items }) => (
-    <div className="space-y-2">
-      <h3 className="text-sm font-semibold text-muted-foreground px-2">
-        {language === 'ar' ? titleAr : title}
-      </h3>
-      <div className="space-y-1">
-        {items.map((item) => {
-          const Icon = item.icon;
-          const isActive = isActiveRoute(item.href);
-          
-          return (
-            <Link
-              key={item.href}
-              to={item.href}
-              onClick={() => setIsOpen(false)}
-              className={`nav-item w-full justify-start ${
-                isActive 
-                  ? 'bg-[hsl(var(--primary-gpo))] text-white hover:bg-[hsl(var(--primary-gpo-dark))]' 
-                  : 'hover:bg-accent hover:text-accent-foreground'
-              }`}
-            >
-              <Icon className="h-4 w-4 mr-3" />
-              <span className="flex-1">
-                {language === 'ar' ? item.labelAr : item.label}
-              </span>
-              {item.badge && (
-                <Badge variant="secondary" className="ml-2 text-xs">
-                  {language === 'ar' ? item.badgeAr : item.badge}
-                </Badge>
-              )}
-            </Link>
-          );
-        })}
-      </div>
-    </div>
-  );
+    section: NavigationSection;
+    sectionKey: string;
+  }> = ({ section, sectionKey }) => {
+    const isOpen = openSections[sectionKey] ?? section.defaultOpen ?? false;
+    
+    return (
+      <Collapsible open={isOpen} onOpenChange={() => toggleSection(sectionKey)}>
+        <CollapsibleTrigger asChild>
+          <Button 
+            variant="ghost" 
+            className="w-full justify-between p-2 h-auto font-medium text-muted-foreground hover:text-foreground"
+          >
+            <span>{language === 'ar' ? section.titleAr : section.title}</span>
+            {isOpen ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )}
+          </Button>
+        </CollapsibleTrigger>
+        
+        <CollapsibleContent className="space-y-1 pl-2">
+          {section.items.map((item) => {
+            const Icon = item.icon;
+            const isActive = isActiveRoute(item.href);
+            
+            return (
+              <Link
+                key={item.href}
+                to={item.href}
+                onClick={() => setIsOpen(false)}
+                className={`nav-item w-full justify-start ${
+                  isActive 
+                    ? 'bg-[hsl(var(--primary-gpo))] text-white hover:bg-[hsl(var(--primary-gpo-dark))]' 
+                    : 'hover:bg-accent hover:text-accent-foreground'
+                }`}
+              >
+                <Icon className="h-4 w-4 mr-3" />
+                <span className="flex-1">
+                  {language === 'ar' ? item.labelAr : item.label}
+                </span>
+                {item.badge && (
+                  <Badge variant="secondary" className="ml-2 text-xs">
+                    {language === 'ar' ? item.badgeAr : item.badge}
+                  </Badge>
+                )}
+              </Link>
+            );
+          })}
+        </CollapsibleContent>
+      </Collapsible>
+    );
+  };
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button 
-          className="quick-nav-btn group"
+          className="quick-nav-btn group fixed bottom-6 right-6 z-50 shadow-lg"
           size="lg"
           aria-label={language === 'ar' ? 'فتح قائمة التنقل السريع' : 'Open quick navigation'}
         >
@@ -205,53 +240,39 @@ export const QuickNavigation: React.FC = () => {
           </SheetTitle>
         </SheetHeader>
         
-        <div className="mt-6 space-y-6">
+        <div className="mt-6 space-y-4">
           {/* Role Selector */}
           <div className="p-3 bg-muted/50 rounded-lg">
-            <h4 className="text-sm font-medium mb-3">
-              {language === 'ar' ? 'نوع المستخدم' : 'User Role'}
-            </h4>
-            <RoleSelector 
-              currentRole="user" 
-              onRoleChange={(role) => console.log('Role changed to:', role)} 
-            />
+            <Collapsible>
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" className="w-full justify-between p-0 h-auto">
+                  <h4 className="text-sm font-medium">
+                    {language === 'ar' ? 'نوع المستخدم' : 'User Role'}
+                  </h4>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="mt-3">
+                <RoleSelector 
+                  currentRole="user" 
+                  onRoleChange={(role) => console.log('Role changed to:', role)} 
+                />
+              </CollapsibleContent>
+            </Collapsible>
           </div>
           
           <Separator />
           
-          {/* Main Navigation */}
-          <NavigationSection
-            title="Main"
-            titleAr="الرئيسية"
-            items={mainNavigation}
-          />
-          
-          <Separator />
-          
-          {/* Services */}
-          <NavigationSection
-            title="Services"
-            titleAr="الخدمات"
-            items={servicesNavigation}
-          />
-          
-          <Separator />
-          
-          {/* Governance */}
-          <NavigationSection
-            title="Governance"
-            titleAr="الحكم"
-            items={governanceNavigation}
-          />
-          
-          <Separator />
-          
-          {/* Management */}
-          <NavigationSection
-            title="Management"
-            titleAr="الإدارة"
-            items={managementNavigation}
-          />
+          {/* Navigation Sections */}
+          {navigationSections.map((section, index) => (
+            <div key={section.title}>
+              <NavigationSection 
+                section={section} 
+                sectionKey={Object.keys(openSections)[index] || section.title.toLowerCase()}
+              />
+              {index < navigationSections.length - 1 && <Separator className="my-2" />}
+            </div>
+          ))}
           
           <Separator />
           
@@ -267,6 +288,14 @@ export const QuickNavigation: React.FC = () => {
             >
               <User className="h-4 w-4 mr-3" />
               {language === 'ar' ? 'تسجيل الدخول' : 'Login / Register'}
+            </Link>
+            <Link
+              to="/dashboard?tab=settings"
+              onClick={() => setIsOpen(false)}
+              className="nav-item w-full justify-start text-muted-foreground"
+            >
+              <Settings className="h-4 w-4 mr-3" />
+              {language === 'ar' ? 'الإعدادات' : 'Settings'}
             </Link>
           </div>
         </div>

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
@@ -10,6 +9,9 @@ import { UserProfile } from "./sidebar/UserProfile";
 import { useSidebarState } from "./sidebar/useSidebarState";
 import { useSidebarNavigation } from "./sidebar/useSidebarNavigation";
 import { useSidebarUser } from "./sidebar/useSidebarUser";
+
+// Keep this as a legacy component for backward compatibility
+// New layouts should use AppSidebar with SidebarProvider
 
 export const Sidebar = () => {
   const { language } = useLanguage();
