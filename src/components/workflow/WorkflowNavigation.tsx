@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { workflowService, UserWorkflow } from '@/services/workflow-service';
+import { WorkflowService, UserWorkflow } from '@/services/workflow-service';
 import { ArrowRight, CheckCircle, Clock } from 'lucide-react';
 
 export const WorkflowNavigation: React.FC = () => {
@@ -18,8 +18,8 @@ export const WorkflowNavigation: React.FC = () => {
   const userRole = 'company';
   const userStatus = ['verified'];
   
-  const workflow: UserWorkflow = workflowService.getUserWorkflow(userRole, userStatus);
-  const nextSteps = workflowService.getNextSteps(workflow.currentStep);
+  const workflow: UserWorkflow = WorkflowService.getUserWorkflow(userRole, userStatus);
+  const nextSteps = WorkflowService.getNextSteps(workflow.currentStep);
 
   return (
     <Card>

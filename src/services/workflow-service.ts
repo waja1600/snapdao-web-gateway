@@ -1,4 +1,3 @@
-
 import { PortalType } from '@/types/platform';
 
 export interface WorkflowStep {
@@ -19,6 +18,21 @@ export interface UserWorkflowState {
   userId: string;
   portalId: PortalType;
   status: 'not_started' | 'in_progress' | 'completed' | 'blocked';
+}
+
+export interface UserWorkflow {
+  userRole: string;
+  currentStep: number;
+  steps: WorkflowStep[];
+  completedSteps: string[];
+  status: string;
+}
+
+export interface NextStep {
+  id: string;
+  title: string;
+  description: string;
+  route: string;
 }
 
 export class WorkflowService {
@@ -368,4 +382,34 @@ export class WorkflowService {
       }
     ];
   }
+
+  static getUserWorkflow(userRole: string, userStatus: string[]): UserWorkflow {
+    return {
+      userRole,
+      currentStep: 0,
+      steps: [],
+      completedSteps: [],
+      status: 'not_started'
+    };
+  }
+
+  static getNextSteps(currentStep: number): NextStep[] {
+    return [
+      {
+        id: 'kyc_upload',
+        title: 'Upload KYC Documents',
+        description: 'Complete your identity verification',
+        route: '/account/kyc'
+      },
+      {
+        id: 'join_group',
+        title: 'Join a Group',
+        description: 'Browse and join available groups',
+        route: '/cooperative-purchasing'
+      }
+    ];
+  }
 }
+
+// Export an instance for convenience
+export const workflowService = new WorkflowService();
