@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -19,6 +18,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Badge } from "@/components/ui/badge";
 import { DateTimeDisplay } from "./sidebar/DateTimeDisplay";
 import { UserProfile } from "./sidebar/UserProfile";
 import { useSidebarState } from "./sidebar/useSidebarState";
@@ -48,6 +48,50 @@ export const AppSidebar = () => {
   } = useSidebarUser(userRole, language);
 
   const isCollapsed = state === 'collapsed';
+
+  // Group navigation items by categories
+  const dashboardItems = navigation.slice(0, 3); // Dashboard, Account, Wallet
+  const portalItems = navigation.slice(3, 15); // All 12 portals
+  const activityItems = navigation.slice(15, 21); // My Groups, As Supplier, etc.
+  const adminItems = navigation.slice(21).filter(item => item.href.includes('/admin'));
+  const otherItems = navigation.slice(21).filter(item => !item.href.includes('/admin'));
+
+  const renderNavigationGroup = (items: typeof navigation, label: string, labelAr: string) => (
+    <SidebarGroup>
+      <SidebarGroupLabel>
+        {language === 'ar' ? labelAr : label}
+      </SidebarGroupLabel>
+      <SidebarGroupContent>
+        <SidebarMenu>
+          {items.map((item) => {
+            const isActive = location.pathname === item.href;
+            
+            return (
+              <SidebarMenuItem key={item.name}>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={isActive}
+                  tooltip={isCollapsed ? item.name : undefined}
+                >
+                  <Link to={item.href} className="flex items-center justify-between w-full">
+                    <div className="flex items-center gap-2">
+                      <item.icon className="h-5 w-5" />
+                      <span>{item.name}</span>
+                    </div>
+                    {item.badge && (
+                      <Badge variant="secondary" className="ml-auto text-xs">
+                        {item.badge}
+                      </Badge>
+                    )}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
+        </SidebarMenu>
+      </SidebarGroupContent>
+    </SidebarGroup>
+  );
 
   return (
     <Sidebar 
@@ -88,33 +132,40 @@ export const AppSidebar = () => {
       )}
       
       <SidebarContent className="flex-1 overflow-auto">
-        <SidebarGroup>
-          <SidebarGroupLabel>
-            {language === 'ar' ? 'التنقل الرئيسي' : 'Main Navigation'}
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navigation.map((item) => {
-                const isActive = location.pathname === item.href;
-                
-                return (
-                  <SidebarMenuItem key={item.name}>
-                    <SidebarMenuButton 
-                      asChild 
-                      isActive={isActive}
-                      tooltip={isCollapsed ? item.name : undefined}
-                    >
-                      <Link to={item.href}>
-                        <item.icon className="h-5 w-5" />
-                        <span>{item.name}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {/* Dashboard Section */}
+        {renderNavigationGroup(
+          dashboardItems, 
+          'Dashboard', 
+          'لوحة التحكم'
+        )}
+
+        {/* Main Portals Section */}
+        {renderNavigationGroup(
+          portalItems, 
+          'Main Portals', 
+          'البوابات الرئيسية'
+        )}
+
+        {/* My Activity Section */}
+        {renderNavigationGroup(
+          activityItems, 
+          'My Activity', 
+          'نشاطي'
+        )}
+
+        {/* Admin Section - Only for admins */}
+        {adminItems.length > 0 && renderNavigationGroup(
+          adminItems, 
+          'Administration', 
+          'الإدارة'
+        )}
+
+        {/* Other Items */}
+        {otherItems.length > 0 && renderNavigationGroup(
+          otherItems, 
+          'Other', 
+          'أخرى'
+        )}
       </SidebarContent>
       
       <SidebarFooter className="border-t border-sidebar-border">
