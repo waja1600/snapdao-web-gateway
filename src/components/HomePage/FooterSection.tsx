@@ -1,104 +1,169 @@
 
+import React from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Globe, MessageCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { 
+  Mail, Phone, MapPin, Globe, 
+  Facebook, Twitter, Linkedin, Instagram,
+  FileText, Shield, HelpCircle, Users
+} from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const FooterSection = () => {
-  const { language, setLanguage } = useLanguage();
+  const { language } = useLanguage();
 
-  const toggleLanguage = () => {
-    setLanguage(language === 'en' ? 'ar' : 'en');
-  };
+  const footerSections = [
+    {
+      title: language === 'ar' ? 'المنصة' : 'Platform',
+      links: [
+        { name: language === 'ar' ? 'عن المنصة' : 'About Us', href: '/about' },
+        { name: language === 'ar' ? 'كيف تعمل' : 'How It Works', href: '/how-it-works' },
+        { name: language === 'ar' ? 'الأسعار' : 'Pricing', href: '/pricing' },
+        { name: language === 'ar' ? 'المميزات' : 'Features', href: '/features' }
+      ]
+    },
+    {
+      title: language === 'ar' ? 'البوابات' : 'Portals',
+      links: [
+        { name: language === 'ar' ? 'الشراء التعاوني' : 'Cooperative Purchasing', href: '/cooperative-buying' },
+        { name: language === 'ar' ? 'التسويق التعاوني' : 'Cooperative Marketing', href: '/cooperative-marketing' },
+        { name: language === 'ar' ? 'تأسيس الشركات' : 'Company Formation', href: '/company-formation' },
+        { name: language === 'ar' ? 'المستقلون' : 'Freelancers', href: '/freelancers' }
+      ]
+    },
+    {
+      title: language === 'ar' ? 'الدعم' : 'Support',
+      links: [
+        { name: language === 'ar' ? 'مركز المساعدة' : 'Help Center', href: '/help' },
+        { name: language === 'ar' ? 'الاتصال بنا' : 'Contact Us', href: '/contact' },
+        { name: language === 'ar' ? 'الدعم الفني' : 'Technical Support', href: '/support' },
+        { name: language === 'ar' ? 'التدريب' : 'Training', href: '/training' }
+      ]
+    },
+    {
+      title: language === 'ar' ? 'قانوني' : 'Legal',
+      links: [
+        { name: language === 'ar' ? 'الشروط والأحكام' : 'Terms of Service', href: '/terms' },
+        { name: language === 'ar' ? 'سياسة الخصوصية' : 'Privacy Policy', href: '/privacy' },
+        { name: language === 'ar' ? 'سياسة الملفات' : 'Cookie Policy', href: '/cookies' },
+        { name: language === 'ar' ? 'إخلاء المسؤولية' : 'Disclaimer', href: '/disclaimer' }
+      ]
+    }
+  ];
 
   return (
-    <footer className="bg-gray-900 text-white py-12">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+    <footer className="bg-card border-t border-border">
+      {/* Newsletter Section */}
+      <div className="container-responsive py-12 border-b border-border">
+        <div className="max-w-4xl mx-auto text-center">
+          <h3 className="text-2xl font-bold mb-4">
+            {language === 'ar' ? 'ابق على اطلاع بآخر التحديثات' : 'Stay Updated with Latest News'}
+          </h3>
+          <p className="text-muted-foreground mb-6">
+            {language === 'ar' 
+              ? 'اشترك في نشرتنا الإخبارية لتحصل على آخر الأخبار والعروض الحصرية'
+              : 'Subscribe to our newsletter for the latest news and exclusive offers'
+            }
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <Input 
+              type="email" 
+              placeholder={language === 'ar' ? 'عنوان البريد الإلكتروني' : 'Email address'}
+              className="flex-1"
+            />
+            <Button className="gradient-primary">
+              {language === 'ar' ? 'اشتراك' : 'Subscribe'}
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Footer Content */}
+      <div className="container-responsive py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* Company Info */}
-          <div>
-            <h3 className="text-xl font-bold mb-4">GPOsaas</h3>
-            <p className="text-gray-300 mb-4">
-              {language === 'en'
-                ? 'Smart contracting platform connecting buyers, suppliers, and freelancers.'
-                : 'منصة التعاقد الذكي التي تربط المشترين والموردين والمستقلين.'
+          <div className="lg:col-span-2">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">GPO</span>
+              </div>
+              <span className="gradient-text text-xl font-bold">GPO WORLD</span>
+            </div>
+            <p className="text-muted-foreground mb-6 leading-relaxed">
+              {language === 'ar' 
+                ? 'منصة الأعمال التعاونية الرائدة عالمياً التي تربط الشركات والأفراد لتحقيق وفورات هائلة وفرص استثمارية متميزة.'
+                : 'The world\'s leading cooperative business platform connecting companies and individuals to achieve massive savings and exceptional investment opportunities.'
               }
             </p>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h4 className="font-semibold mb-4">
-              {language === 'en' ? 'Quick Links' : 'روابط سريعة'}
-            </h4>
-            <ul className="space-y-2 text-gray-300">
-              <li><a href="/about" className="hover:text-white">{language === 'en' ? 'About Us' : 'من نحن'}</a></li>
-              <li><a href="/how-it-works" className="hover:text-white">{language === 'en' ? 'How It Works' : 'كيف تعمل المنصة'}</a></li>
-              <li><a href="/support" className="hover:text-white">{language === 'en' ? 'Support & Help' : 'الدعم والمساعدة'}</a></li>
-              <li><a href="/contact" className="hover:text-white">{language === 'en' ? 'Contact Us' : 'اتصل بنا'}</a></li>
-            </ul>
-          </div>
-
-          {/* Legal */}
-          <div>
-            <h4 className="font-semibold mb-4">
-              {language === 'en' ? 'Legal' : 'قانوني'}
-            </h4>
-            <ul className="space-y-2 text-gray-300">
-              <li><a href="/privacy" className="hover:text-white">{language === 'en' ? 'Privacy Policy' : 'سياسة الخصوصية'}</a></li>
-              <li><a href="/terms" className="hover:text-white">{language === 'en' ? 'Terms of Use' : 'شروط الاستخدام'}</a></li>
-              <li><a href="/sitemap" className="hover:text-white">{language === 'en' ? 'Site Map' : 'خريطة الموقع'}</a></li>
-            </ul>
-          </div>
-
-          {/* Language & Support */}
-          <div>
-            <h4 className="font-semibold mb-4">
-              {language === 'en' ? 'Settings' : 'الإعدادات'}
-            </h4>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm text-gray-300 mb-2">
-                  {language === 'en' ? 'Language' : 'اللغة'}
-                </label>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={toggleLanguage}
-                  className="w-full justify-start"
-                >
-                  <Globe className="w-4 h-4 mr-2" />
-                  {language === 'en' ? 'العربية' : 'English'}
-                </Button>
+            
+            {/* Contact Info */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                <Mail className="h-4 w-4 text-primary" />
+                <span>support@gpoworld.com</span>
               </div>
-              
-              <div>
-                <label className="block text-sm text-gray-300 mb-2">
-                  {language === 'en' ? 'Country' : 'الدولة'}
-                </label>
-                <Select>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder={language === 'en' ? 'Select Country' : 'اختر الدولة'} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="sa">{language === 'en' ? 'Saudi Arabia' : 'السعودية'}</SelectItem>
-                    <SelectItem value="ae">{language === 'en' ? 'UAE' : 'الإمارات'}</SelectItem>
-                    <SelectItem value="eg">{language === 'en' ? 'Egypt' : 'مصر'}</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                <Phone className="h-4 w-4 text-primary" />
+                <span>+1 (555) 123-4567</span>
               </div>
+              <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                <MapPin className="h-4 w-4 text-primary" />
+                <span>{language === 'ar' ? 'متاح عالمياً' : 'Available Worldwide'}</span>
+              </div>
+            </div>
+          </div>
 
-              <Button size="sm" className="w-full">
-                <MessageCircle className="w-4 h-4 mr-2" />
-                {language === 'en' ? 'Quick Support' : 'الدعم السريع'}
+          {/* Footer Links */}
+          {footerSections.map((section, index) => (
+            <div key={index}>
+              <h4 className="font-semibold mb-4 text-foreground">{section.title}</h4>
+              <ul className="space-y-3">
+                {section.links.map((link, linkIndex) => (
+                  <li key={linkIndex}>
+                    <Link 
+                      to={link.href}
+                      className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom Footer */}
+      <div className="border-t border-border">
+        <div className="container-responsive py-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <span>&copy; 2024 GPO WORLD. {language === 'ar' ? 'جميع الحقوق محفوظة' : 'All rights reserved'}.</span>
+              <span className="hidden md:inline">•</span>
+              <div className="flex items-center gap-2">
+                <Globe className="h-4 w-4" />
+                <span>{language === 'ar' ? 'متاح في 50+ دولة' : 'Available in 50+ countries'}</span>
+              </div>
+            </div>
+            
+            {/* Social Links */}
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <Facebook className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <Twitter className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <Linkedin className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <Instagram className="h-4 w-4" />
               </Button>
             </div>
           </div>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="border-t border-gray-700 pt-8 text-center text-gray-300">
-          <p>© 2025 GPOsaas. {language === 'en' ? 'All rights reserved.' : 'جميع الحقوق محفوظة.'}</p>
         </div>
       </div>
     </footer>
