@@ -1,3 +1,4 @@
+
 import { PortalType } from '@/types/platform';
 
 export interface WorkflowStep {
@@ -384,30 +385,112 @@ export class WorkflowService {
   }
 
   static getUserWorkflow(userRole: string, userStatus: string[]): UserWorkflow {
+    // Determine steps based on user role and status
+    let steps: WorkflowStep[] = [];
+    let currentStep = 0;
+    let completedSteps: string[] = [];
+
+    // Basic workflow for different user roles
+    if (userRole === 'freelancer') {
+      steps = this.getPortalEntryWorkflow('freelancers', userRole);
+    } else if (userRole === 'supplier') {
+      steps = this.getPortalEntryWorkflow('suppliers', userRole);
+    } else if (userRole === 'company') {
+      steps = this.getPortalEntryWorkflow('cooperative_purchasing', userRole);
+    } else {
+      // Default user workflow
+      steps = [
+        {
+          id: 'account_setup',
+          title: 'Complete Account Setup',
+          titleAr: 'إكمال إعداد الحساب',
+          description: 'Add profile information and preferences',
+          descriptionAr: 'إضافة معلومات الملف الشخصي والتفضيلات',
+          status: 'pending',
+          required: true,
+          estimatedTime: '10 minutes'
+        }
+      ];
+    }
+
+    // Determine current step based on user status
+    if (userStatus.includes('verified')) {
+      completedSteps = ['register', 'kyc_upload', 'kyc_review'];
+      currentStep = 3;
+    } else if (userStatus.includes('kyc_submitted')) {
+      completedSteps = ['register', 'kyc_upload'];
+      currentStep = 2;
+    } else if (userStatus.includes('registered')) {
+      completedSteps = ['register'];
+      currentStep = 1;
+    }
+
     return {
       userRole,
-      currentStep: 0,
-      steps: [],
-      completedSteps: [],
-      status: 'not_started'
+      currentStep,
+      steps,
+      completedSteps,
+      status: completedSteps.length === steps.length ? 'completed' : 'in_progress'
     };
   }
 
   static getNextSteps(currentStep: number): NextStep[] {
-    return [
+    // Return next steps based on current progress
+    const allSteps: NextStep[] = [
+      {
+        id: 'account_setup',
+        title: 'Complete Profile Setup',
+        description: 'Add your profile information and preferences',
+        route: '/account/profile'
+      },
       {
         id: 'kyc_upload',
         title: 'Upload KYC Documents',
-        description: 'Complete your identity verification',
+        description: 'Complete your identity verification to access premium features',
         route: '/account/kyc'
+      },
+      {
+        id: 'mcp_test',
+        title: 'Take MCP Assessment',
+        description: 'Complete the Multi-Competency Platform test for freelancers',
+        route: '/mcp/assessment'
       },
       {
         id: 'join_group',
         title: 'Join a Group',
-        description: 'Browse and join available groups',
+        description: 'Browse and join available groups to start collaborating',
         route: '/cooperative-purchasing'
+      },
+      {
+        id: 'explore_features',
+        title: 'Explore Platform Features',
+        description: 'Discover all the tools and services available to you',
+        route: '/explore'
       }
     ];
+
+    // Return steps based on current progress
+    return allSteps.slice(currentStep, currentStep + 3);
+  }
+
+  // Helper method to get workflow for specific portal
+  static getPortalWorkflow(portalId: PortalType, userRole: string): WorkflowStep[] {
+    return this.getPortalEntryWorkflow(portalId, userRole);
+  }
+
+  // Helper method to check if user can access portal
+  static canAccessPortal(portalId: PortalType, userStatus: string[]): boolean {
+    const requirements = this.getPortalRequirements(portalId);
+    
+    if (requirements.requiresKYC && !userStatus.includes('verified')) {
+      return false;
+    }
+    
+    if (requirements.requiresMCPExam && !userStatus.includes('mcp_passed')) {
+      return false;
+    }
+    
+    return true;
   }
 }
 
