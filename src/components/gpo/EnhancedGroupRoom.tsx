@@ -1,405 +1,496 @@
-
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { gpoLifecycleService } from '@/services/gpo-lifecycle-service';
-import { AdminPanel } from './AdminPanel';
-import { JoinRequestModal } from './JoinRequestModal';
-import { MCPAssistant } from '@/components/mcp/MCPAssistant';
+import { Textarea } from '@/components/ui/textarea';
 import { 
-  Users, 
-  Vote, 
   FileText, 
-  MessageCircle, 
-  Settings, 
+  Users, 
+  MessageSquare, 
+  Vote, 
+  Archive, 
+  Upload,
+  CheckCircle,
+  Clock,
   AlertTriangle,
-  Crown,
-  Shield,
-  Clock
+  Briefcase,
+  Calendar,
+  Settings,
+  Globe,
+  Bot,
+  Video
 } from 'lucide-react';
+import { gpoWorkflowService, GroupWorkflow, VotingSession } from '@/services/gpo-workflow-service';
 import { toast } from 'sonner';
 
-interface GroupRoomData {
-  group: any;
-  members: any[];
-  votingSessions: any[];
-  userAccess: {
-    level: string;
-    role: string;
-    canViewDetails: boolean;
-    canParticipate: boolean;
-    isAdmin: boolean;
-  };
+interface EnhancedGroupRoomProps {
+  groupId?: string;
 }
 
-export const EnhancedGroupRoom: React.FC = () => {
-  const { id: groupId } = useParams<{ id: string }>();
+export const EnhancedGroupRoom: React.FC<EnhancedGroupRoomProps> = ({ 
+  groupId = 'demo-group-1' 
+}) => {
   const { language } = useLanguage();
-  const [roomData, setRoomData] = useState<GroupRoomData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [showJoinModal, setShowJoinModal] = useState(false);
+  const { user } = useAuth();
+  const [workflow, setWorkflow] = useState<GroupWorkflow | null>(null);
+  const [votingSessions, setVotingSessions] = useState<VotingSession[]>([]);
   const [activeTab, setActiveTab] = useState('overview');
-
-  const currentUserId = 'current-user'; // Would come from auth context
+  const [newMessage, setNewMessage] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (groupId) {
-      loadGroupRoomData();
-    }
+    initializeGroupRoom();
   }, [groupId]);
 
-  const loadGroupRoomData = async () => {
-    if (!groupId) return;
-    
-    setLoading(true);
-    const result = await gpoLifecycleService.getGroupRoomData(groupId, currentUserId);
-    
-    if (result.success) {
-      setRoomData(result.data);
-    } else {
-      toast.error('فشل في تحميل بيانات المجموعة');
+  const initializeGroupRoom = async () => {
+    try {
+      // Initialize or get existing workflow
+      let groupWorkflow = gpoWorkflowService.getWorkflow(groupId);
+      if (!groupWorkflow) {
+        groupWorkflow = gpoWorkflowService.initializeWorkflow(groupId);
+      }
+      
+      setWorkflow(groupWorkflow);
+      
+      // Get active voting sessions
+      const sessions = gpoWorkflowService.getActiveVotingSessions(groupId);
+      setVotingSessions(sessions);
+      
+    } catch (error) {
+      console.error('Error initializing group room:', error);
+      toast.error(language === 'ar' ? 'فشل في تحميل غرفة المجموعة' : 'Failed to load group room');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
-  const handleJoinRequest = async () => {
-    if (!groupId) return;
+  const handleAdvancePhase = async () => {
+    if (!workflow) return;
     
-    const result = await gpoLifecycleService.requestToJoinGroup(groupId, currentUserId, 1000);
-    if (result.success) {
-      setShowJoinModal(false);
-      loadGroupRoomData();
+    const phaseOrder = ['initial', 'loi', 'icpo', 'fco', 'dd', 'spa', 'shipping', 'completed'] as const;
+    const currentIndex = phaseOrder.indexOf(workflow.phase);
+    const nextPhase = phaseOrder[currentIndex + 1];
+    
+    if (nextPhase) {
+      const success = gpoWorkflowService.advanceWorkflowPhase(groupId, nextPhase);
+      if (success) {
+        const updatedWorkflow = gpoWorkflowService.getWorkflow(groupId);
+        setWorkflow(updatedWorkflow || workflow);
+        toast.success(language === 'ar' ? 'تم تقدم المرحلة بنجاح' : 'Phase advanced successfully');
+      }
     }
+  };
+
+  const handleCreateVoting = () => {
+    const newVoting = gpoWorkflowService.createVotingSession({
+      groupId,
+      type: 'simple',
+      title: language === 'ar' ? 'تصويت على المرحلة التالية' : 'Vote on Next Phase',
+      description: language === 'ar' ? 'هل تريد المتابعة إلى المرحلة التالية؟' : 'Do you want to proceed to the next phase?',
+      options: [
+        { id: 'yes', title: language === 'ar' ? 'نعم' : 'Yes' },
+        { id: 'no', title: language === 'ar' ? 'لا' : 'No' }
+      ],
+      votingMethod: '1person1vote'
+    });
+    
+    setVotingSessions(prev => [...prev, newVoting]);
+    toast.success(language === 'ar' ? 'تم إنشاء جلسة التصويت' : 'Voting session created');
+  };
+
+  const getPhaseProgress = (): number => {
+    if (!workflow) return 0;
+    
+    const phases = ['initial', 'loi', 'icpo', 'fco', 'dd', 'spa', 'shipping', 'completed'];
+    const currentIndex = phases.indexOf(workflow.phase);
+    return ((currentIndex + 1) / phases.length) * 100;
+  };
+
+  const getPhaseColor = (phase: string): string => {
+    const colors: Record<string, string> = {
+      initial: 'bg-blue-100 text-blue-800',
+      loi: 'bg-purple-100 text-purple-800',
+      icpo: 'bg-orange-100 text-orange-800',
+      fco: 'bg-yellow-100 text-yellow-800',
+      dd: 'bg-indigo-100 text-indigo-800',
+      spa: 'bg-green-100 text-green-800',
+      shipping: 'bg-teal-100 text-teal-800',
+      completed: 'bg-gray-100 text-gray-800'
+    };
+    return colors[phase] || 'bg-gray-100 text-gray-800';
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p>{language === 'ar' ? 'جاري التحميل...' : 'Loading...'}</p>
+        </div>
       </div>
     );
   }
 
-  if (!roomData) {
+  if (!workflow) {
     return (
       <div className="text-center py-12">
         <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-        <h3 className="text-lg font-medium">لا يمكن الوصول إلى المجموعة</h3>
+        <p className="text-gray-600">
+          {language === 'ar' ? 'فشل في تحميل بيانات المجموعة' : 'Failed to load group data'}
+        </p>
       </div>
     );
   }
 
-  const { group, members, votingSessions, userAccess } = roomData;
-
-  // If user is not a member, show join option
-  if (userAccess.level === 'no_access') {
-    return (
-      <div className="max-w-2xl mx-auto mt-12">
-        <Card>
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">{group.name}</CardTitle>
-            <p className="text-gray-600">{group.description}</p>
-          </CardHeader>
-          <CardContent className="text-center space-y-4">
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="font-medium">النوع:</span>
-                <p>{group.type}</p>
-              </div>
-              <div>
-                <span className="font-medium">الأعضاء:</span>
-                <p>{members.length}/{group.max_members}</p>
-              </div>
-            </div>
-            <Button onClick={() => setShowJoinModal(true)} className="w-full">
-              <Users className="h-4 w-4 mr-2" />
-              طلب الانضمام للمجموعة
-            </Button>
-          </CardContent>
-        </Card>
-
-        <JoinRequestModal 
-          isOpen={showJoinModal}
-          onClose={() => setShowJoinModal(false)}
-          onConfirm={handleJoinRequest}
-          group={group}
-        />
-      </div>
-    );
-  }
-
-  // If user is awaiting approval, show limited view
-  if (userAccess.level === 'awaiting_approval') {
-    return (
-      <div className="max-w-2xl mx-auto mt-12">
-        <Card>
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">{group.name}</CardTitle>
-            <Badge className="bg-yellow-100 text-yellow-800">
-              في انتظار الموافقة
-            </Badge>
-          </CardHeader>
-          <CardContent className="text-center">
-            <Clock className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
-            <p className="text-gray-600">
-              طلبك قيد المراجعة من قبل مشرفي المجموعة
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Full group room interface for active members
   return (
     <div className="space-y-6">
-      {/* Group Header */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-3">
-                <CardTitle className="text-2xl">{group.name}</CardTitle>
-                {userAccess.isAdmin && (
-                  <Badge className="bg-purple-100 text-purple-800">
-                    <Crown className="h-3 w-3 mr-1" />
-                    مشرف
-                  </Badge>
-                )}
-              </div>
-              <p className="text-gray-600 mt-2">{group.description}</p>
-              
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 text-sm">
-                <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  <span>{members.length}/{group.max_members} عضو</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Shield className="h-4 w-4" />
-                  <span>المرحلة: {group.current_phase}</span>
-                </div>
-                <div>
-                  <span>النقاط المطلوبة: {group.points_required}</span>
-                </div>
-                <div>
-                  <Badge className="bg-green-100 text-green-800">
-                    {group.status}
-                  </Badge>
-                </div>
-              </div>
-            </div>
+      {/* Header with Progress */}
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg p-6">
+        <div className="flex justify-between items-start mb-4">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">
+              {language === 'ar' ? 'غرفة المجموعة الذكية' : 'Smart Group Room'}
+            </h1>
+            <p className="text-blue-100">
+              {language === 'ar' ? 'إدارة متقدمة للمجموعات التعاونية' : 'Advanced Cooperative Group Management'}
+            </p>
           </div>
-        </CardHeader>
-      </Card>
+          <Badge className={getPhaseColor(workflow.phase)}>
+            {workflow.phase.toUpperCase()}
+          </Badge>
+        </div>
 
-      {/* Admin Panel - Only visible to admins */}
-      {userAccess.isAdmin && (
-        <AdminPanel groupId={groupId!} onDataChange={loadGroupRoomData} />
-      )}
+        {/* Progress Bar */}
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm">
+            <span>{language === 'ar' ? 'التقدم' : 'Progress'}</span>
+            <span>{Math.round(getPhaseProgress())}% {language === 'ar' ? 'مكتمل' : 'Complete'}</span>
+          </div>
+          <Progress value={getPhaseProgress()} className="h-3" />
+          <div className="flex justify-between text-xs text-blue-100">
+            <span>{workflow.currentStep}</span>
+            <span>{workflow.phase === 'completed' ? (language === 'ar' ? 'مكتمل' : 'Completed') : (language === 'ar' ? 'جاري' : 'In Progress')}</span>
+          </div>
+        </div>
+      </div>
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-9">
           <TabsTrigger value="overview">
-            نظرة عامة
-          </TabsTrigger>
-          <TabsTrigger value="discussions">
-            <MessageCircle className="h-4 w-4 mr-2" />
-            النقاشات
-          </TabsTrigger>
-          <TabsTrigger value="voting">
-            <Vote className="h-4 w-4 mr-2" />
-            التصويت
-          </TabsTrigger>
-          <TabsTrigger value="contracts">
-            <FileText className="h-4 w-4 mr-2" />
-            العقود
+            {language === 'ar' ? 'نظرة عامة' : 'Overview'}
           </TabsTrigger>
           <TabsTrigger value="members">
-            <Users className="h-4 w-4 mr-2" />
-            الأعضاء
+            {language === 'ar' ? 'الأعضاء' : 'Members'}
           </TabsTrigger>
-          <TabsTrigger value="assistant">
-            مساعد MCP
+          <TabsTrigger value="discussions">
+            {language === 'ar' ? 'النقاشات' : 'Discussions'}
+          </TabsTrigger>
+          <TabsTrigger value="voting">
+            {language === 'ar' ? 'التصويت' : 'Voting'}
+          </TabsTrigger>
+          <TabsTrigger value="offers">
+            {language === 'ar' ? 'العروض' : 'Offers'}
+          </TabsTrigger>
+          <TabsTrigger value="ipfs">
+            {language === 'ar' ? 'المستندات' : 'IPFS Vault'}
+          </TabsTrigger>
+          <TabsTrigger value="bots">
+            {language === 'ar' ? 'الروبوتات' : 'AI Bots'}
+          </TabsTrigger>
+          <TabsTrigger value="meetings">
+            {language === 'ar' ? 'الاجتماعات' : 'Meetings'}
+          </TabsTrigger>
+          <TabsTrigger value="legal">
+            {language === 'ar' ? 'القانونية' : 'Legal'}
           </TabsTrigger>
         </TabsList>
 
+        {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">{members.length}</div>
-                  <div className="text-sm text-gray-600">الأعضاء النشطون</div>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="h-5 w-5" />
+                  {language === 'ar' ? 'المرحلة الحالية' : 'Current Phase'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <h3 className="font-semibold mb-2">{workflow.currentStep}</h3>
+                  <ul className="space-y-1">
+                    {workflow.nextSteps.map((step, index) => (
+                      <li key={index} className="flex items-center text-sm text-gray-600">
+                        <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                        {step}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
+                <Button onClick={handleAdvancePhase} className="w-full">
+                  {language === 'ar' ? 'تقدم إلى المرحلة التالية' : 'Advance to Next Phase'}
+                </Button>
               </CardContent>
             </Card>
-            
+
             <Card>
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">{votingSessions.length}</div>
-                  <div className="text-sm text-gray-600">التصويتات النشطة</div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">
-                    {group.current_phase}
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  {language === 'ar' ? 'المستندات الأخيرة' : 'Recent Documents'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {workflow.documents.length === 0 ? (
+                  <p className="text-gray-500 text-center py-4">
+                    {language === 'ar' ? 'لا توجد مستندات بعد' : 'No documents yet'}
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {workflow.documents.slice(-3).map((doc) => (
+                      <div key={doc.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                        <div>
+                          <p className="font-medium">{doc.title}</p>
+                          <p className="text-xs text-gray-500">{doc.type.toUpperCase()}</p>
+                        </div>
+                        <Badge variant="outline">{doc.status}</Badge>
+                      </div>
+                    ))}
                   </div>
-                  <div className="text-sm text-gray-600">المرحلة الحالية</div>
-                </div>
+                )}
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
 
-          {/* Phase Progress */}
+        {/* Members Tab */}
+        <TabsContent value="members" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  {language === 'ar' ? 'إدارة المجموعة' : 'Group Management'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 mb-4">
+                  {language === 'ar' 
+                    ? 'سيتم انتخاب 3 مدراء للمجموعة بالتناوب'
+                    : '3 rotating managers will be elected for this group'}
+                </p>
+                <Button variant="outline" className="w-full">
+                  {language === 'ar' ? 'بدء انتخاب المدراء' : 'Start Manager Election'}
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Globe className="h-5 w-5" />
+                  {language === 'ar' ? 'دعوة بالبريد الإلكتروني' : 'Email Invitations'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 mb-4">
+                  {language === 'ar' 
+                    ? 'دعوة أطراف خارجية للانضمام'
+                    : 'Invite external stakeholders to join'}
+                </p>
+                <Button variant="outline" className="w-full">
+                  {language === 'ar' ? 'إرسال دعوات' : 'Send Invitations'}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Discussions Tab */}
+        <TabsContent value="discussions" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>تقدم المرحلة</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <MessageSquare className="h-5 w-5" />
+                {language === 'ar' ? 'نقاشات المجموعة' : 'Group Discussions'}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="bg-gray-50 p-4 rounded-lg min-h-[200px]">
+                <p className="text-gray-500 text-center">
+                  {language === 'ar' ? 'النقاشات ستظهر هنا' : 'Discussions will appear here'}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Textarea
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  placeholder={language === 'ar' ? 'اكتب رسالتك...' : 'Type your message...'}
+                  className="flex-1"
+                />
+                <Button>
+                  {language === 'ar' ? 'إرسال' : 'Send'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Voting Tab */}
+        <TabsContent value="voting" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-xl font-semibold">
+              {language === 'ar' ? 'جلسات التصويت' : 'Voting Sessions'}
+            </h3>
+            <Button onClick={handleCreateVoting}>
+              {language === 'ar' ? 'إنشاء تصويت' : 'Create Vote'}
+            </Button>
+          </div>
+
+          {votingSessions.length === 0 ? (
+            <Card>
+              <CardContent className="pt-6">
+                <div className="text-center py-12">
+                  <Vote className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-600">
+                    {language === 'ar' ? 'لا توجد جلسات تصويت نشطة' : 'No active voting sessions'}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-4">
+              {votingSessions.map((session) => (
+                <Card key={session.id}>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <span>{session.title}</span>
+                      <Badge>{session.type}</Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600 mb-4">{session.description}</p>
+                    <div className="space-y-2">
+                      {session.options.map((option) => (
+                        <Button key={option.id} variant="outline" className="w-full justify-start">
+                          {option.title}
+                        </Button>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        {/* AI Bots Tab */}
+        <TabsContent value="bots" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bot className="h-5 w-5" />
+                  {language === 'ar' ? 'مساعد MCP' : 'MCP Assistant'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 mb-4">
+                  {language === 'ar' 
+                    ? 'تنبيهات المجموعة والتوجيه الذكي'
+                    : 'Group alerts and smart guidance'}
+                </p>
+                <Button variant="outline" className="w-full">
+                  {language === 'ar' ? 'تفعيل المساعد' : 'Activate Assistant'}
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Briefcase className="h-5 w-5" />
+                  {language === 'ar' ? 'روبوت السوق' : 'Market Bot'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 mb-4">
+                  {language === 'ar' 
+                    ? 'البحث عن موردين عالميين'
+                    : 'Global supplier discovery'}
+                </p>
+                <Button variant="outline" className="w-full">
+                  {language === 'ar' ? 'بحث عن موردين' : 'Search Suppliers'}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Meetings Tab */}
+        <TabsContent value="meetings" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Video className="h-5 w-5" />
+                {language === 'ar' ? 'اجتماعات Zoom' : 'Zoom Meetings'}
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                <div className="flex justify-between text-sm">
-                  <span>المرحلة: {group.current_phase}</span>
-                  <span>65% مكتملة</span>
-                </div>
-                <Progress value={65} className="h-2" />
-                <p className="text-sm text-gray-600">
-                  الإجراءات المطلوبة: مراجعة العقد، التصويت على الشروط
+              <p className="text-gray-600 mb-4">
+                {language === 'ar' 
+                  ? 'متاح للمدراء المنتخبين الثلاثة'
+                  : 'Available for 3 elected managers'}
+              </p>
+              <Button variant="outline" className="w-full">
+                {language === 'ar' ? 'جدولة اجتماع' : 'Schedule Meeting'}
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Other tabs would be implemented similarly */}
+        <TabsContent value="offers">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="text-center py-12">
+                <p className="text-gray-600">
+                  {language === 'ar' ? 'قسم العروض قيد التطوير' : 'Offers section under development'}
                 </p>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="discussions">
+        <TabsContent value="ipfs">
           <Card>
-            <CardHeader>
-              <CardTitle>لوحة النقاشات</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <p className="text-gray-600">لوحة النقاشات قيد التطوير...</p>
-                <Button variant="outline">
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  بدء نقاش جديد
-                </Button>
+            <CardContent className="pt-6">
+              <div className="text-center py-12">
+                <Archive className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-600">
+                  {language === 'ar' ? 'خزنة IPFS للمستندات' : 'IPFS Document Vault'}
+                </p>
+                <p className="text-sm text-gray-500 mt-2">
+                  {gpoWorkflowService.generateIPFSPath(groupId, workflow.phase)}
+                </p>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="voting">
-          <div className="space-y-4">
-            {votingSessions.map((session) => (
-              <Card key={session.id}>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Vote className="h-5 w-5" />
-                    {session.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">{session.description}</p>
-                  <div className="space-y-2">
-                    {session.options?.map((option: string, index: number) => (
-                      <Button
-                        key={index}
-                        variant="outline"
-                        className="w-full justify-start"
-                      >
-                        <Vote className="h-4 w-4 mr-2" />
-                        {option}
-                      </Button>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-            
-            {votingSessions.length === 0 && (
-              <Card>
-                <CardContent className="text-center py-8">
-                  <Vote className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">لا توجد تصويتات نشطة حالياً</p>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="contracts">
+        <TabsContent value="legal">
           <Card>
-            <CardHeader>
-              <CardTitle>العقود والملفات</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <p className="text-gray-600">قسم العقود والملفات قيد التطوير...</p>
-                <Button variant="outline">
-                  <FileText className="h-4 w-4 mr-2" />
-                  رفع ملف جديد
-                </Button>
+            <CardContent className="pt-6">
+              <div className="text-center py-12">
+                <p className="text-gray-600">
+                  {language === 'ar' ? 'الروبوت القانوني قيد التطوير' : 'Legal Bot under development'}
+                </p>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="members">
-          <Card>
-            <CardHeader>
-              <CardTitle>قائمة الأعضاء</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {members.map((member) => (
-                  <div key={member.user_id} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="font-semibold">
-                          {member.profiles?.full_name?.charAt(0) || 'U'}
-                        </span>
-                      </div>
-                      <div>
-                        <div className="font-medium">
-                          {member.profiles?.full_name || 'مستخدم'}
-                        </div>
-                        <div className="text-sm text-gray-600">{member.role}</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge 
-                        variant={member.status === 'active' ? 'default' : 'secondary'}
-                      >
-                        {member.status}
-                      </Badge>
-                      {member.role === 'admin' && (
-                        <Crown className="h-4 w-4 text-purple-500" />
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="assistant">
-          <Card>
-            <CardHeader>
-              <CardTitle>مساعد MCP الذكي</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <MCPAssistant />
             </CardContent>
           </Card>
         </TabsContent>

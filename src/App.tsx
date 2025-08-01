@@ -9,8 +9,9 @@ import { LanguageProvider } from '@/contexts/LanguageContext';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ProtectedRoute } from '@/components/navigation/ProtectedRoute';
 
+import Index from '@/pages/Index';
 import Dashboard from '@/pages/Dashboard';
-import Profile from '@/pages/Profile';
+import UserProfile from '@/pages/UserProfile';
 import Gpos from '@/pages/GPOPlatform';
 import GroupRoom from '@/pages/GroupRoom';
 import Suppliers from '@/pages/Suppliers';
@@ -30,8 +31,9 @@ function App() {
           <ErrorBoundary>
             <BrowserRouter>
               <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                <Route path="/" element={<Index />} />
+                <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
                 <Route path="/gpos" element={<ProtectedRoute><Gpos /></ProtectedRoute>} />
                 <Route path="/group-room" element={<ProtectedRoute><GroupRoom /></ProtectedRoute>} />
                 <Route path="/suppliers" element={<ProtectedRoute><Suppliers /></ProtectedRoute>} />
