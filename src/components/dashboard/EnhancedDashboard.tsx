@@ -7,6 +7,7 @@ import { DashboardItems } from './DashboardItems';
 import { QuickNavigation } from './QuickNavigation';
 import { RecentActivities } from './RecentActivities';
 import { ProjectsOverview } from './ProjectsOverview';
+import { getCommonDashboardItems, getRoleDashboardItems } from './dashboardData';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart3, Activity, Folder, User } from 'lucide-react';
@@ -22,6 +23,14 @@ const EnhancedDashboard: React.FC = () => {
                        (language === 'ar' ? 'مستخدم' : 'User');
     return language === 'ar' ? `مرحباً ${displayName}` : `Welcome ${displayName}`;
   };
+
+  // Get dashboard items based on user role and language
+  const kycStatus = user?.user_metadata?.kyc_status || 'not_started';
+  const userRole = user?.user_metadata?.role || 'user';
+  
+  const commonItems = getCommonDashboardItems(language, kycStatus);
+  const roleItems = getRoleDashboardItems(language)[userRole] || [];
+  const allItems = [...commonItems, ...roleItems];
 
   return (
     <div className="space-y-6 p-6">
@@ -63,7 +72,7 @@ const EnhancedDashboard: React.FC = () => {
         <TabsContent value="overview" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
-              <DashboardItems />
+              <DashboardItems items={allItems} />
             </div>
             <div>
               <QuickNavigation />
