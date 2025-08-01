@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instanciate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+    PostgrestVersion: "12.2.12 (cd3cf9e)"
   }
   public: {
     Tables: {
@@ -1395,6 +1395,104 @@ export type Database = {
         }
         Relationships: []
       }
+      investment_groups: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          creator_id: string | null
+          current_amount: number | null
+          current_investors: number | null
+          description: string | null
+          duration: string | null
+          expected_return: string | null
+          id: string
+          max_investors: number
+          min_investment: number
+          name: string
+          risk_level: string
+          status: string | null
+          target_amount: number
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          creator_id?: string | null
+          current_amount?: number | null
+          current_investors?: number | null
+          description?: string | null
+          duration?: string | null
+          expected_return?: string | null
+          id?: string
+          max_investors: number
+          min_investment: number
+          name: string
+          risk_level: string
+          status?: string | null
+          target_amount: number
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          creator_id?: string | null
+          current_amount?: number | null
+          current_investors?: number | null
+          description?: string | null
+          duration?: string | null
+          expected_return?: string | null
+          id?: string
+          max_investors?: number
+          min_investment?: number
+          name?: string
+          risk_level?: string
+          status?: string | null
+          target_amount?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      investment_participations: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          investment_group_id: string | null
+          share_percentage: number | null
+          status: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          id?: string
+          investment_group_id?: string | null
+          share_percentage?: number | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          investment_group_id?: string | null
+          share_percentage?: number | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investment_participations_investment_group_id_fkey"
+            columns: ["investment_group_id"]
+            isOneToOne: false
+            referencedRelation: "investment_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       point_transactions: {
         Row: {
           amount: number
@@ -2737,6 +2835,45 @@ export type Database = {
           },
         ]
       }
+      wallet_transactions: {
+        Row: {
+          amount: number
+          balance_after: number
+          created_at: string | null
+          description: string | null
+          id: string
+          reference_id: string | null
+          reference_type: string | null
+          status: string | null
+          type: string
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          balance_after: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          status?: string | null
+          type: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          balance_after?: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          status?: string | null
+          type?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -2851,11 +2988,19 @@ export type Database = {
           created_at: string
         }[]
       }
+      get_wallet_balance: {
+        Args: { p_user_id: string }
+        Returns: number
+      }
       has_role: {
         Args: {
           _user_id: string
           _role: Database["public"]["Enums"]["user_role"]
         }
+        Returns: boolean
+      }
+      join_investment_group: {
+        Args: { p_group_id: string; p_user_id: string; p_amount: number }
         Returns: boolean
       }
       manage_user_points: {
