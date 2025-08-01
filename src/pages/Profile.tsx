@@ -10,6 +10,23 @@ import { User, Mail, MapPin, Calendar, Settings } from 'lucide-react';
 const Profile = () => {
   const { user } = useAuth();
 
+  // Helper functions to get user data from metadata or email
+  const getUserDisplayName = () => {
+    if (!user) return 'المستخدم';
+    return user.user_metadata?.full_name || 
+           user.email?.split('@')[0] || 
+           'المستخدم';
+  };
+
+  const getUserAvatarUrl = () => {
+    return user?.user_metadata?.avatar_url;
+  };
+
+  const getUserInitial = () => {
+    const displayName = getUserDisplayName();
+    return displayName.charAt(0).toUpperCase();
+  };
+
   return (
     <div className="container mx-auto p-6 max-w-4xl">
       <div className="grid gap-6 md:grid-cols-2">
@@ -24,14 +41,14 @@ const Profile = () => {
           <CardContent className="space-y-4">
             <div className="flex items-center gap-4">
               <Avatar className="h-20 w-20">
-                <AvatarImage src={user?.avatar_url} />
+                <AvatarImage src={getUserAvatarUrl()} />
                 <AvatarFallback>
-                  {user?.full_name?.charAt(0) || 'U'}
+                  {getUserInitial()}
                 </AvatarFallback>
               </Avatar>
               <div className="space-y-2">
                 <h3 className="text-xl font-semibold">
-                  {user?.full_name || 'المستخدم'}
+                  {getUserDisplayName()}
                 </h3>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Mail className="h-4 w-4" />
@@ -47,7 +64,7 @@ const Profile = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span>عضو منذ يناير 2024</span>
+                <span>عضو منذ {user?.created_at ? new Date(user.created_at).toLocaleDateString('ar-SA') : 'يناير 2024'}</span>
               </div>
             </div>
 
