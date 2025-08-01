@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Layout } from '@/components/Layout';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -9,27 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingUp, Users, DollarSign, Target, Calendar, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { InvestmentGroupRoom } from '@/components/investment/InvestmentGroupRoom';
-
-interface InvestmentGroup {
-  id: string;
-  name: string;
-  description: string;
-  target_amount: number;
-  current_amount: number;
-  min_investment: number;
-  max_investors: number;
-  current_investors: number;
-  risk_level: 'low' | 'medium' | 'high';
-  expected_return: string;
-  duration: string;
-  category: string;
-  status: string;
-  creator_id: string;
-  created_at: string;
-}
+import { investmentService, InvestmentGroup } from '@/services/wallet-service';
 
 const InvestmentGroups = () => {
   const { language } = useLanguage();
@@ -47,13 +28,8 @@ const InvestmentGroups = () => {
   const fetchInvestmentGroups = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('investment_groups')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setInvestmentGroups(data || []);
+      const groups = await investmentService.getInvestmentGroups();
+      setInvestmentGroups(groups);
     } catch (error) {
       console.error('Error fetching investment groups:', error);
       toast.error(language === 'ar' ? 'فشل في تحميل مجموعات الاستثمار' : 'Failed to load investment groups');
@@ -123,8 +99,8 @@ const InvestmentGroups = () => {
             <p className="text-sm text-gray-600 mt-1">{group.description}</p>
           </div>
           <div className="flex flex-col space-y-2">
-            <Badge className={getStatusColor(group.status)}>
-              {getStatusText(group.status)}
+            <Badge className={getStatusColor(group.status || 'forming')}>
+              {getStatusText(group.status || 'forming')}
             </Badge>
             <Badge className={getRiskColor(group.risk_level)}>
               {getRiskText(group.risk_level)}
@@ -151,12 +127,12 @@ const InvestmentGroups = () => {
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span>{language === 'en' ? 'Funding Progress' : 'تقدم التمويل'}</span>
-            <span>${group.current_amount.toLocaleString()} / ${group.target_amount.toLocaleString()}</span>
+            <span>${(group.current_amount || 0).toLocaleString()} / ${group.target_amount.toLocaleString()}</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
               className="bg-blue-600 h-2 rounded-full" 
-              style={{ width: `${Math.min(100, (group.current_amount / group.target_amount) * 100)}%` }}
+              style={{ width: `${Math.min(100, ((group.current_amount || 0) / group.target_amount) * 100)}%` }}
             ></div>
           </div>
         </div>
@@ -164,7 +140,7 @@ const InvestmentGroups = () => {
         <div className="grid grid-cols-3 gap-4 text-sm">
           <div className="flex items-center space-x-1">
             <Users className="h-4 w-4 text-gray-500" />
-            <span>{group.current_investors}/{group.max_investors}</span>
+            <span>{group.current_investors || 0}/{group.max_investors}</span>
           </div>
           <div className="flex items-center space-x-1">
             <Calendar className="h-4 w-4 text-gray-500" />
@@ -179,13 +155,13 @@ const InvestmentGroups = () => {
         <div className="flex space-x-2 pt-2">
           <Button 
             className="flex-1" 
-            onClick={() => setSelectedGroupId(group.id)}
+            onClick={() => setSelectedGroupId(group.id!)}
           >
             <TrendingUp className="h-4 w-4 mr-2" />
             {language === 'en' ? 'View Details' : 'عرض التفاصيل'}
           </Button>
           {group.status === 'forming' && (
-            <Button variant="outline" onClick={() => setSelectedGroupId(group.id)}>
+            <Button variant="outline" onClick={() => setSelectedGroupId(group.id!)}>
               {language === 'en' ? 'Join' : 'انضم'}
             </Button>
           )}
@@ -209,9 +185,9 @@ const InvestmentGroups = () => {
 
   // Calculate summary statistics
   const totalInvestments = investmentGroups.length;
-  const totalValue = investmentGroups.reduce((sum, inv) => sum + inv.current_amount, 0);
+  const totalValue = investmentGroups.reduce((sum, inv) => sum + (inv.current_amount || 0), 0);
   const activeInvestments = investmentGroups.filter(inv => inv.status === 'active').length;
-  const totalInvestors = investmentGroups.reduce((sum, inv) => sum + inv.current_investors, 0);
+  const totalInvestors = investmentGroups.reduce((sum, inv) => sum + (inv.current_investors || 0), 0);
 
   return (
     <Layout>

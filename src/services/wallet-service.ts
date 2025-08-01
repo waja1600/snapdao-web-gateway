@@ -30,6 +30,8 @@ export interface InvestmentGroup {
   category?: string;
   status?: 'forming' | 'active' | 'completed' | 'cancelled';
   creator_id: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface InvestmentParticipation {
@@ -39,6 +41,8 @@ export interface InvestmentParticipation {
   amount: number;
   share_percentage?: number;
   status?: 'pending' | 'confirmed' | 'withdrawn';
+  created_at?: string;
+  updated_at?: string;
 }
 
 export class WalletService {
@@ -67,7 +71,13 @@ export class WalletService {
         .limit(limit);
 
       if (error) throw error;
-      return data || [];
+      
+      // Type assertion to ensure proper typing
+      return (data || []).map(transaction => ({
+        ...transaction,
+        type: transaction.type as WalletTransaction['type'],
+        status: transaction.status as WalletTransaction['status']
+      }));
     } catch (error) {
       console.error('Error getting transaction history:', error);
       return [];
@@ -192,7 +202,13 @@ export class InvestmentService {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      
+      // Type assertion to ensure proper typing
+      return (data || []).map(group => ({
+        ...group,
+        risk_level: group.risk_level as InvestmentGroup['risk_level'],
+        status: group.status as InvestmentGroup['status']
+      }));
     } catch (error) {
       console.error('Error getting investment groups:', error);
       return [];
@@ -209,7 +225,15 @@ export class InvestmentService {
         .single();
 
       if (error) throw error;
-      return data;
+      
+      if (!data) return null;
+      
+      // Type assertion to ensure proper typing
+      return {
+        ...data,
+        risk_level: data.risk_level as InvestmentGroup['risk_level'],
+        status: data.status as InvestmentGroup['status']
+      };
     } catch (error) {
       console.error('Error getting investment group:', error);
       return null;
@@ -263,7 +287,12 @@ export class InvestmentService {
         .eq('user_id', userId);
 
       if (error) throw error;
-      return data || [];
+      
+      // Type assertion to ensure proper typing
+      return (data || []).map(participation => ({
+        ...participation,
+        status: participation.status as InvestmentParticipation['status']
+      }));
     } catch (error) {
       console.error('Error getting user participations:', error);
       return [];
@@ -279,7 +308,12 @@ export class InvestmentService {
         .eq('investment_group_id', groupId);
 
       if (error) throw error;
-      return data || [];
+      
+      // Type assertion to ensure proper typing
+      return (data || []).map(participation => ({
+        ...participation,
+        status: participation.status as InvestmentParticipation['status']
+      }));
     } catch (error) {
       console.error('Error getting group participations:', error);
       return [];

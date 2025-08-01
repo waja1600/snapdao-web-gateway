@@ -9,7 +9,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { 
   TrendingUp, 
   Users, 
@@ -18,40 +17,11 @@ import {
   MessageSquare,
   BarChart3,
   FileText,
-  Shield,
-  AlertTriangle,
   CheckCircle,
   Calendar
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-
-interface InvestmentGroup {
-  id: string;
-  name: string;
-  description: string;
-  target_amount: number;
-  current_amount: number;
-  min_investment: number;
-  max_investors: number;
-  current_investors: number;
-  risk_level: 'low' | 'medium' | 'high';
-  expected_return: string;
-  duration: string;
-  category: string;
-  status: string;
-  creator_id: string;
-  created_at: string;
-}
-
-interface InvestmentParticipation {
-  id: string;
-  user_id: string;
-  amount: number;
-  share_percentage: number;
-  status: string;
-  created_at: string;
-}
+import { investmentService, walletService, InvestmentGroup, InvestmentParticipation } from '@/services/wallet-service';
 
 interface InvestmentGroupRoomProps {
   groupId: string;
@@ -77,26 +47,17 @@ export const InvestmentGroupRoom: React.FC<InvestmentGroupRoomProps> = ({ groupI
   const fetchGroupData = async () => {
     try {
       // Fetch group details
-      const { data: groupData, error: groupError } = await supabase
-        .from('investment_groups')
-        .select('*')
-        .eq('id', groupId)
-        .single();
-
-      if (groupError) throw groupError;
-      setGroup(groupData);
+      const groupData = await investmentService.getInvestmentGroup(groupId);
+      if (groupData) {
+        setGroup(groupData);
+      }
 
       // Fetch participations
-      const { data: participationsData, error: participationsError } = await supabase
-        .from('investment_participations')
-        .select('*')
-        .eq('investment_group_id', groupId);
-
-      if (participationsError) throw participationsError;
-      setParticipations(participationsData || []);
+      const participationsData = await investmentService.getGroupParticipations(groupId);
+      setParticipations(participationsData);
 
       // Find user's participation
-      const userParticipationData = participationsData?.find(p => p.user_id === user?.id);
+      const userParticipationData = participationsData.find(p => p.user_id === user?.id);
       setUserParticipation(userParticipationData || null);
 
     } catch (error) {
@@ -111,11 +72,8 @@ export const InvestmentGroupRoom: React.FC<InvestmentGroupRoomProps> = ({ groupI
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
-        .rpc('get_wallet_balance', { p_user_id: user.id });
-
-      if (error) throw error;
-      setBalance(data || 0);
+      const userBalance = await walletService.getWalletBalance(user.id);
+      setBalance(userBalance);
     } catch (error) {
       console.error('Error fetching balance:', error);
     }
@@ -140,16 +98,9 @@ export const InvestmentGroupRoom: React.FC<InvestmentGroupRoomProps> = ({ groupI
     }
 
     try {
-      const { data, error } = await supabase
-        .rpc('join_investment_group', {
-          p_group_id: groupId,
-          p_user_id: user?.id,
-          p_amount: amount
-        });
+      const success = await investmentService.joinInvestmentGroup(groupId, user?.id!, amount);
 
-      if (error) throw error;
-
-      if (data) {
+      if (success) {
         toast.success(language === 'ar' ? 'تم الانضمام للمجموعة بنجاح' : 'Successfully joined the group');
         setInvestmentAmount('');
         fetchGroupData();
@@ -212,7 +163,7 @@ export const InvestmentGroupRoom: React.FC<InvestmentGroupRoomProps> = ({ groupI
     );
   }
 
-  const fundingProgress = (group.current_amount / group.target_amount) * 100;
+  const fundingProgress = ((group.current_amount || 0) / group.target_amount) * 100;
 
   return (
     <div className="space-y-6">
@@ -224,8 +175,8 @@ export const InvestmentGroupRoom: React.FC<InvestmentGroupRoomProps> = ({ groupI
             <p className="text-blue-100">{group.description}</p>
           </div>
           <div className="text-right">
-            <Badge className={getStatusColor(group.status)}>
-              {getStatusText(group.status)}
+            <Badge className={getStatusColor(group.status || 'forming')}>
+              {getStatusText(group.status || 'forming')}
             </Badge>
             <div className="mt-2">
               <Badge className={getRiskColor(group.risk_level)}>
@@ -239,12 +190,12 @@ export const InvestmentGroupRoom: React.FC<InvestmentGroupRoomProps> = ({ groupI
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span>{language === 'ar' ? 'التقدم' : 'Progress'}</span>
-            <span>${group.current_amount.toLocaleString()} / ${group.target_amount.toLocaleString()}</span>
+            <span>${(group.current_amount || 0).toLocaleString()} / ${group.target_amount.toLocaleString()}</span>
           </div>
           <Progress value={fundingProgress} className="h-3" />
           <div className="flex justify-between text-xs text-blue-100">
             <span>{fundingProgress.toFixed(1)}% {language === 'ar' ? 'مكتمل' : 'Complete'}</span>
-            <span>{group.current_investors}/{group.max_investors} {language === 'ar' ? 'مستثمر' : 'investors'}</span>
+            <span>{group.current_investors || 0}/{group.max_investors} {language === 'ar' ? 'مستثمر' : 'investors'}</span>
           </div>
         </div>
       </div>
@@ -301,7 +252,7 @@ export const InvestmentGroupRoom: React.FC<InvestmentGroupRoomProps> = ({ groupI
                 <p className="text-sm font-medium text-gray-600">
                   {language === 'ar' ? 'المستثمرون' : 'Investors'}
                 </p>
-                <p className="text-2xl font-bold">{group.current_investors}</p>
+                <p className="text-2xl font-bold">{group.current_investors || 0}</p>
               </div>
             </div>
           </CardContent>
@@ -410,11 +361,11 @@ export const InvestmentGroupRoom: React.FC<InvestmentGroupRoomProps> = ({ groupI
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">{language === 'ar' ? 'تاريخ الإنشاء:' : 'Created:'}</span>
-                    <span className="font-medium">{new Date(group.created_at).toLocaleDateString()}</span>
+                    <span className="font-medium">{group.created_at ? new Date(group.created_at).toLocaleDateString() : 'N/A'}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">{language === 'ar' ? 'المبلغ المحصل:' : 'Amount Raised:'}</span>
-                    <span className="font-medium">${group.current_amount.toLocaleString()}</span>
+                    <span className="font-medium">${(group.current_amount || 0).toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">{language === 'ar' ? 'الهدف:' : 'Target:'}</span>
@@ -450,7 +401,7 @@ export const InvestmentGroupRoom: React.FC<InvestmentGroupRoomProps> = ({ groupI
                             {language === 'ar' ? 'مستثمر' : 'Investor'} #{index + 1}
                           </p>
                           <p className="text-sm text-gray-600">
-                            {new Date(participation.created_at).toLocaleDateString()}
+                            {participation.created_at ? new Date(participation.created_at).toLocaleDateString() : 'N/A'}
                           </p>
                         </div>
                       </div>
