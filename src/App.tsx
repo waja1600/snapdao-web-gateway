@@ -19,6 +19,8 @@ import Freelancers from '@/pages/Freelancers';
 import InvestmentGateway from '@/pages/InvestmentGateway';
 import InvestmentGroups from '@/pages/InvestmentGroups';
 import MyWallet from '@/pages/MyWallet';
+import KYCVerification from '@/pages/KYCVerification';
+import MCPExamPage from '@/pages/MCPExamPage';
 
 const queryClient = new QueryClient();
 
@@ -41,6 +43,8 @@ function App() {
                 <Route path="/investment-gateway" element={<ProtectedRoute><InvestmentGateway /></ProtectedRoute>} />
                 <Route path="/investment-groups" element={<ProtectedRoute><InvestmentGroups /></ProtectedRoute>} />
                 <Route path="/my-wallet" element={<ProtectedRoute><MyWallet /></ProtectedRoute>} />
+                <Route path="/kyc-verification" element={<ProtectedRoute><KYCVerification /></ProtectedRoute>} />
+                <Route path="/mcp-exam" element={<ProtectedRoute><MCPExamPage /></ProtectedRoute>} />
               </Routes>
             </BrowserRouter>
           </ErrorBoundary>
