@@ -1,163 +1,328 @@
+
 import React, { useState } from 'react';
 import { Layout } from '@/components/Layout';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
-import { Truck, Star, MapPin, Phone, Mail, Filter } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Search, Star, MapPin, Package, Factory, Award, Users, Filter, Grid, List, Plus, Phone, Mail } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Supplier {
   id: string;
-  name: string;
-  description: string;
+  companyName: string;
   category: string;
-  location: string;
+  description: string;
   rating: number;
   reviews: number;
+  location: string;
+  yearEstablished: number;
+  employees: string;
+  products: string[];
   verified: boolean;
-  minOrder: number;
+  certification: string[];
+  image: string;
+  contactEmail: string;
+  contactPhone: string;
+  minimumOrder: string;
   deliveryTime: string;
-  specialties: string[];
-  contact: {
-    phone: string;
-    email: string;
-  };
+  paymentTerms: string;
 }
 
+const mockSuppliers: Supplier[] = [
+  {
+    id: '1',
+    companyName: 'GlobalTech Manufacturing',
+    category: 'Electronics',
+    description: 'Leading manufacturer of electronic components and consumer electronics with 20+ years experience',
+    rating: 4.8,
+    reviews: 342,
+    location: 'Shenzhen, China',
+    yearEstablished: 2003,
+    employees: '500-1000',
+    products: ['Smartphones', 'Tablets', 'Accessories', 'Components'],
+    verified: true,
+    certification: ['ISO 9001', 'CE', 'FCC'],
+    image: '/placeholder.svg',
+    contactEmail: 'info@globaltech.com',
+    contactPhone: '+86-755-12345678',
+    minimumOrder: '$10,000',
+    deliveryTime: '15-20 days',
+    paymentTerms: 'T/T, L/C'
+  },
+  {
+    id: '2',
+    companyName: 'Premium Textiles Ltd',
+    category: 'Textiles',
+    description: 'High-quality textile manufacturer specializing in organic cotton and sustainable fabrics',
+    rating: 4.6,
+    reviews: 189,
+    location: 'Mumbai, India',
+    yearEstablished: 1998,
+    employees: '200-500',
+    products: ['Cotton Fabrics', 'Organic Materials', 'Denim', 'Knits'],
+    verified: true,
+    certification: ['GOTS', 'OEKO-TEX', 'ISO 14001'],
+    image: '/placeholder.svg',
+    contactEmail: 'export@premiumtextiles.com',
+    contactPhone: '+91-22-12345678',
+    minimumOrder: '$5,000',
+    deliveryTime: '20-25 days',
+    paymentTerms: 'T/T, L/C at sight'
+  },
+  {
+    id: '3',
+    companyName: 'Industrial Solutions Inc',
+    category: 'Machinery',
+    description: 'Advanced industrial machinery and automation solutions for manufacturing industries',
+    rating: 4.9,
+    reviews: 156,
+    location: 'Hamburg, Germany',
+    yearEstablished: 1985,
+    employees: '1000+',
+    products: ['CNC Machines', 'Automation Systems', 'Industrial Tools', 'Parts'],
+    verified: true,
+    certification: ['ISO 9001', 'CE', 'TUV'],
+    image: '/placeholder.svg',
+    contactEmail: 'sales@industrialsolutions.de',
+    contactPhone: '+49-40-12345678',
+    minimumOrder: '$50,000',
+    deliveryTime: '30-45 days',
+    paymentTerms: 'T/T, Bank Guarantee'
+  }
+];
+
 const Suppliers = () => {
-  const { language } = useLanguage();
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedLocation, setSelectedLocation] = useState('all');
+  const [viewMode, setViewMode] = useState('grid');
+  const [suppliers] = useState<Supplier[]>(mockSuppliers);
 
-  const suppliers: Supplier[] = [
-    {
-      id: '1',
-      name: language === 'en' ? 'Tech Solutions Ltd' : 'شركة الحلول التقنية المحدودة',
-      description: language === 'en' 
-        ? 'Leading supplier of IT equipment and software solutions for businesses'
-        : 'مورد رائد لمعدات تقنية المعلومات وحلول البرمجيات للشركات',
-      category: 'Technology',
-      location: 'Dubai, UAE',
-      rating: 4.8,
-      reviews: 152,
-      verified: true,
-      minOrder: 1000,
-      deliveryTime: '3-5 days',
-      specialties: ['Hardware', 'Software', 'Cloud Services'],
-      contact: {
-        phone: '+971-4-123-4567',
-        email: 'info@techsolutions.ae'
-      }
-    },
-    {
-      id: '2',
-      name: language === 'en' ? 'Global Manufacturing Co' : 'شركة التصنيع العالمية',
-      description: language === 'en'
-        ? 'Industrial manufacturing and custom production services'
-        : 'خدمات التصنيع الصناعي والإنتاج المخصص',
-      category: 'Manufacturing',
-      location: 'Riyadh, KSA',
-      rating: 4.6,
-      reviews: 89,
-      verified: true,
-      minOrder: 5000,
-      deliveryTime: '7-14 days',
-      specialties: ['Custom Parts', 'Bulk Production', 'Quality Control'],
-      contact: {
-        phone: '+966-11-987-6543',
-        email: 'orders@globalmanuf.sa'
-      }
-    }
-  ];
+  const categories = ['all', 'Electronics', 'Textiles', 'Machinery', 'Chemicals', 'Food & Beverage', 'Construction'];
+  const locations = ['all', 'China', 'India', 'Germany', 'USA', 'Turkey', 'Vietnam'];
 
-  const renderSupplierCard = (supplier: Supplier) => (
-    <Card key={supplier.id} className="hover:shadow-lg transition-shadow">
+  const filteredSuppliers = suppliers.filter(supplier => {
+    const matchesSearch = supplier.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         supplier.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         supplier.products.some(product => product.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesCategory = selectedCategory === 'all' || supplier.category === selectedCategory;
+    const matchesLocation = selectedLocation === 'all' || supplier.location.includes(selectedLocation);
+    
+    return matchesSearch && matchesCategory && matchesLocation;
+  });
+
+  const handleContactSupplier = (supplierId: string) => {
+    toast.success('Contact request sent successfully!');
+  };
+
+  const handleRequestQuote = (supplierId: string) => {
+    toast.success('Quote request submitted!');
+  };
+
+  const SupplierCard = ({ supplier }: { supplier: Supplier }) => (
+    <Card className="group hover:shadow-lg transition-shadow">
       <CardHeader>
-        <div className="flex justify-between items-start">
+        <div className="flex items-start gap-3">
+          <img
+            src={supplier.image}
+            alt={supplier.companyName}
+            className="w-16 h-16 rounded-lg object-cover"
+          />
           <div className="flex-1">
-            <div className="flex items-center space-x-2">
-              <CardTitle className="text-lg">{supplier.name}</CardTitle>
+            <CardTitle className="text-lg flex items-center gap-2">
+              {supplier.companyName}
               {supplier.verified && (
-                <Badge className="bg-green-100 text-green-800">
-                  {language === 'en' ? 'Verified' : 'موثق'}
+                <Badge variant="secondary" className="bg-green-100 text-green-800">
+                  Verified
                 </Badge>
               )}
+            </CardTitle>
+            <p className="text-sm text-gray-600">{supplier.category}</p>
+            <div className="flex items-center gap-1 mt-1">
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <span className="font-semibold">{supplier.rating}</span>
+              <span className="text-sm text-gray-600">({supplier.reviews})</span>
             </div>
-            <p className="text-sm text-gray-600 mt-1">{supplier.description}</p>
           </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-1">
-            <Star className="h-4 w-4 text-yellow-500 fill-current" />
-            <span className="font-medium">{supplier.rating}</span>
-            <span className="text-gray-500">({supplier.reviews})</span>
-          </div>
-          <div className="flex items-center space-x-1 text-gray-500">
-            <MapPin className="h-4 w-4" />
-            <span className="text-sm">{supplier.location}</span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <div className="text-sm text-gray-600">
-              {language === 'en' ? 'Min Order' : 'الحد الأدنى للطلب'}
-            </div>
-            <div className="font-semibold">${supplier.minOrder.toLocaleString()}</div>
-          </div>
-          <div>
-            <div className="text-sm text-gray-600">
-              {language === 'en' ? 'Delivery' : 'التسليم'}
-            </div>
-            <div className="font-semibold">{supplier.deliveryTime}</div>
-          </div>
-        </div>
-
-        <div>
-          <div className="text-sm text-gray-600 mb-2">
-            {language === 'en' ? 'Specialties' : 'التخصصات'}
-          </div>
-          <div className="flex flex-wrap gap-1">
-            {supplier.specialties.map((specialty, index) => (
-              <Badge key={index} variant="secondary" className="text-xs">
-                {specialty}
-              </Badge>
-            ))}
-          </div>
-        </div>
-
+        <p className="text-sm text-gray-700 line-clamp-3">{supplier.description}</p>
+        
         <div className="grid grid-cols-2 gap-2 text-sm">
-          <div className="flex items-center space-x-1">
-            <Phone className="h-4 w-4 text-gray-500" />
-            <span>{supplier.contact.phone}</span>
+          <div className="flex items-center gap-1">
+            <MapPin className="h-4 w-4 text-gray-400" />
+            <span className="text-gray-600">{supplier.location}</span>
           </div>
-          <div className="flex items-center space-x-1">
-            <Mail className="h-4 w-4 text-gray-500" />
-            <span>{supplier.contact.email}</span>
+          <div className="flex items-center gap-1">
+            <Factory className="h-4 w-4 text-gray-400" />
+            <span className="text-gray-600">Est. {supplier.yearEstablished}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Users className="h-4 w-4 text-gray-400" />
+            <span className="text-gray-600">{supplier.employees} employees</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Package className="h-4 w-4 text-gray-400" />
+            <span className="text-gray-600">Min: {supplier.minimumOrder}</span>
           </div>
         </div>
 
-        <Badge variant="outline" className="w-fit">
-          {supplier.category}
-        </Badge>
+        <div className="space-y-2">
+          <div className="text-sm">
+            <span className="font-medium">Delivery: </span>
+            <span className="text-gray-600">{supplier.deliveryTime}</span>
+          </div>
+          <div className="text-sm">
+            <span className="font-medium">Payment: </span>
+            <span className="text-gray-600">{supplier.paymentTerms}</span>
+          </div>
+        </div>
 
-        <div className="flex space-x-2 pt-2">
+        <div className="flex flex-wrap gap-1">
+          {supplier.products.slice(0, 3).map((product) => (
+            <Badge key={product} variant="outline" className="text-xs">
+              {product}
+            </Badge>
+          ))}
+          {supplier.products.length > 3 && (
+            <Badge variant="outline" className="text-xs">
+              +{supplier.products.length - 3} more
+            </Badge>
+          )}
+        </div>
+
+        <div className="flex flex-wrap gap-1">
+          {supplier.certification.map((cert) => (
+            <Badge key={cert} className="text-xs bg-blue-100 text-blue-800">
+              <Award className="h-3 w-3 mr-1" />
+              {cert}
+            </Badge>
+          ))}
+        </div>
+
+        <div className="flex gap-2 pt-2">
           <Button 
-            className="flex-1" 
-            onClick={() => navigate(`/suppliers/${supplier.id}`)}
+            variant="outline" 
+            size="sm" 
+            className="flex-1"
+            onClick={() => handleContactSupplier(supplier.id)}
           >
-            <Truck className="h-4 w-4 mr-2" />
-            {language === 'en' ? 'Request Quote' : 'طلب عرض سعر'}
+            Contact
           </Button>
-          <Button variant="outline" onClick={() => navigate(`/suppliers/${supplier.id}/profile`)}>
-            {language === 'en' ? 'View Profile' : 'عرض الملف'}
+          <Button 
+            size="sm" 
+            className="flex-1"
+            onClick={() => handleRequestQuote(supplier.id)}
+          >
+            Request Quote
           </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  const SupplierListItem = ({ supplier }: { supplier: Supplier }) => (
+    <Card>
+      <CardContent className="p-6">
+        <div className="flex items-start gap-4">
+          <img
+            src={supplier.image}
+            alt={supplier.companyName}
+            className="w-20 h-20 rounded-lg object-cover"
+          />
+          <div className="flex-1">
+            <div className="flex items-start justify-between">
+              <div className="space-y-2">
+                <div>
+                  <h3 className="text-xl font-semibold flex items-center gap-2">
+                    {supplier.companyName}
+                    {supplier.verified && (
+                      <Badge variant="secondary" className="bg-green-100 text-green-800">
+                        Verified
+                      </Badge>
+                    )}
+                  </h3>
+                  <p className="text-gray-600">{supplier.category}</p>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <span className="font-semibold">{supplier.rating}</span>
+                  <span className="text-sm text-gray-600">({supplier.reviews} reviews)</span>
+                </div>
+                <p className="text-gray-700">{supplier.description}</p>
+                <div className="flex items-center gap-6 text-sm">
+                  <div className="flex items-center gap-1">
+                    <MapPin className="h-4 w-4 text-gray-400" />
+                    <span className="text-gray-600">{supplier.location}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Factory className="h-4 w-4 text-gray-400" />
+                    <span className="text-gray-600">Est. {supplier.yearEstablished}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Users className="h-4 w-4 text-gray-400" />
+                    <span className="text-gray-600">{supplier.employees}</span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Min Order: </span>
+                    <span className="text-gray-600">{supplier.minimumOrder}</span>
+                  </div>
+                  <div>
+                    <span className="font-medium">Delivery: </span>
+                    <span className="text-gray-600">{supplier.deliveryTime}</span>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {supplier.products.map((product) => (
+                    <Badge key={product} variant="outline" className="text-xs">
+                      {product}
+                    </Badge>
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {supplier.certification.map((cert) => (
+                    <Badge key={cert} className="text-xs bg-blue-100 text-blue-800">
+                      <Award className="h-3 w-3 mr-1" />
+                      {cert}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+              <div className="text-right space-y-2">
+                <div className="space-y-1 text-sm">
+                  <div className="flex items-center gap-1">
+                    <Mail className="h-4 w-4 text-gray-400" />
+                    <span className="text-gray-600">{supplier.contactEmail}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Phone className="h-4 w-4 text-gray-400" />
+                    <span className="text-gray-600">{supplier.contactPhone}</span>
+                  </div>
+                </div>
+                <div className="flex gap-2 pt-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleContactSupplier(supplier.id)}
+                  >
+                    Contact
+                  </Button>
+                  <Button 
+                    size="sm"
+                    onClick={() => handleRequestQuote(supplier.id)}
+                  >
+                    Request Quote
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -166,151 +331,162 @@ const Suppliers = () => {
   return (
     <Layout>
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold">
-              {language === 'en' ? 'Suppliers Directory' : 'دليل الموردين'}
-            </h1>
-            <p className="text-gray-600 mt-2">
-              {language === 'en' 
-                ? 'Connect with verified suppliers for your business needs'
-                : 'تواصل مع الموردين الموثقين لاحتياجات عملك'}
-            </p>
+            <h1 className="text-3xl font-bold">Suppliers</h1>
+            <p className="text-gray-600 mt-2">Connect with verified manufacturers and suppliers worldwide</p>
           </div>
-          <Button onClick={() => navigate('/become-supplier')}>
-            {language === 'en' ? 'Become a Supplier' : 'كن مورد'}
+          <Button className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Register as Supplier
           </Button>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1">
-            <Input
-              placeholder={language === 'en' ? 'Search suppliers...' : 'البحث عن الموردين...'}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full"
-            />
-          </div>
-          <Button variant="outline" className="flex items-center space-x-2">
-            <Filter className="h-4 w-4" />
-            <span>{language === 'en' ? 'Filters' : 'الفلاتر'}</span>
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    {language === 'en' ? 'Total Suppliers' : 'إجمالي الموردين'}
-                  </p>
-                  <p className="text-2xl font-bold">1,247</p>
-                </div>
-                <Truck className="h-8 w-8 text-blue-600" />
+        {/* Search and Filters */}
+        <Card>
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="lg:col-span-2 relative">
+                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search suppliers, products..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
               </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    {language === 'en' ? 'Verified' : 'موثق'}
-                  </p>
-                  <p className="text-2xl font-bold">892</p>
-                </div>
-                <Star className="h-8 w-8 text-yellow-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    {language === 'en' ? 'Categories' : 'الفئات'}
-                  </p>
-                  <p className="text-2xl font-bold">24</p>
-                </div>
-                <Filter className="h-8 w-8 text-green-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    {language === 'en' ? 'Avg Rating' : 'متوسط التقييم'}
-                  </p>
-                  <p className="text-2xl font-bold">4.6</p>
-                </div>
-                <Star className="h-8 w-8 text-purple-600" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="all">
-              {language === 'en' ? 'All Suppliers' : 'جميع الموردين'}
-            </TabsTrigger>
-            <TabsTrigger value="verified">
-              {language === 'en' ? 'Verified' : 'موثق'}
-            </TabsTrigger>
-            <TabsTrigger value="featured">
-              {language === 'en' ? 'Featured' : 'مميز'}
-            </TabsTrigger>
-            <TabsTrigger value="my-requests">
-              {language === 'en' ? 'My Requests' : 'طلباتي'}
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="all" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {suppliers.map(renderSupplierCard)}
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map(category => (
+                    <SelectItem key={category} value={category}>
+                      {category === 'all' ? 'All Categories' : category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Location" />
+                </SelectTrigger>
+                <SelectContent>
+                  {locations.map(location => (
+                    <SelectItem key={location} value={location}>
+                      {location === 'all' ? 'All Locations' : location}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          </TabsContent>
-          
-          <TabsContent value="verified" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {suppliers.filter(s => s.verified).map(renderSupplierCard)}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="featured" className="space-y-6">
-            <div className="text-center py-12">
-              <Star className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {language === 'en' ? 'No featured suppliers yet' : 'لا يوجد موردون مميزون حتى الآن'}
-              </h3>
-              <p className="text-gray-600">
-                {language === 'en' 
-                  ? 'Featured suppliers will be displayed here'
-                  : 'سيتم عرض الموردين المميزين هنا'}
+            <div className="flex justify-between items-center mt-4">
+              <div className="flex gap-2">
+                <Button
+                  variant={viewMode === 'grid' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('grid')}
+                >
+                  <Grid className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </div>
+              <p className="text-sm text-gray-600">
+                {filteredSuppliers.length} suppliers found
               </p>
             </div>
-          </TabsContent>
-          
-          <TabsContent value="my-requests" className="space-y-6">
-            <div className="text-center py-12">
-              <Truck className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {language === 'en' ? 'No requests submitted yet' : 'لم يتم تقديم أي طلبات حتى الآن'}
-              </h3>
-              <p className="text-gray-600">
-                {language === 'en' 
-                  ? 'Your submitted requests will appear here'
-                  : 'ستظهر طلباتك المقدمة هنا'}
-              </p>
+          </CardContent>
+        </Card>
+
+        {/* Featured Suppliers */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Featured Suppliers</CardTitle>
+            <p className="text-gray-600">Top-rated suppliers recommended by our platform</p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {suppliers.filter(s => s.rating >= 4.8).map(supplier => (
+                <div key={supplier.id} className="border rounded-lg p-4 bg-gradient-to-r from-green-50 to-blue-50">
+                  <div className="flex items-center gap-3 mb-3">
+                    <img
+                      src={supplier.image}
+                      alt={supplier.companyName}
+                      className="w-12 h-12 rounded-lg object-cover"
+                    />
+                    <div>
+                      <h3 className="font-semibold">{supplier.companyName}</h3>
+                      <p className="text-sm text-gray-600">{supplier.category}</p>
+                      <div className="flex items-center gap-1">
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        <span className="font-semibold">{supplier.rating}</span>
+                        <Badge className="bg-green-100 text-green-800 ml-2">Featured</Badge>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Min: {supplier.minimumOrder}</span>
+                    <Button size="sm" onClick={() => handleRequestQuote(supplier.id)}>
+                      Request Quote
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
-          </TabsContent>
-        </Tabs>
+          </CardContent>
+        </Card>
+
+        {/* Suppliers */}
+        <div className="space-y-4">
+          {viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredSuppliers.map(supplier => (
+                <SupplierCard key={supplier.id} supplier={supplier} />
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredSuppliers.map(supplier => (
+                <SupplierListItem key={supplier.id} supplier={supplier} />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Statistics */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="p-6 text-center">
+              <div className="text-2xl font-bold text-blue-600">5k+</div>
+              <div className="text-sm text-gray-600">Verified Suppliers</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6 text-center">
+              <div className="text-2xl font-bold text-green-600">50+</div>
+              <div className="text-sm text-gray-600">Countries</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6 text-center">
+              <div className="text-2xl font-bold text-purple-600">100k+</div>
+              <div className="text-sm text-gray-600">Products Listed</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6 text-center">
+              <div className="text-2xl font-bold text-orange-600">4.7</div>
+              <div className="text-sm text-gray-600">Average Rating</div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </Layout>
   );
